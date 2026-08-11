@@ -337,6 +337,82 @@
     window.addEventListener('resize', sync, { passive: true });
   }
 
+  /* --- Scroll reveal ----------------------------------------------------- */
+  /* Blocks fade and rise as they enter the viewport. Deliberately conservative:
+     - nothing above the fold is touched, so the LCP element paints immediately
+       and the hero never animates in late;
+     - carousels and the marquee are excluded — they already move, and hiding a
+       horizontally-scrolled child fights the scroll;
+     - only opacity/transform, so layout never shifts (CLS stays 0);
+     - the hiding CSS is gated on a class this function adds, so if any of the
+       preconditions fail the page simply renders normally. */
+  function initReveal() {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var SELECTOR = [
+      '.section-head',
+      '.svc-card-cell',
+      '.journey__step',
+      '.stories__grid > li',
+      '.plans__grid > li',
+      '.ep-faq__item',
+      '.wizard-card',
+      '.cta-block__copy',
+      '.panel-green',
+      '.press-band__row',
+      '.plat-card',
+      '.value-card',
+      '.why-grid > *',
+      '.doc__block'
+    ].join(',');
+
+    var EXCLUDE = '.ep-scroller, .marquee, .svc-hero, .ep-header';
+    var fold    = window.innerHeight * 0.9;
+
+    var targets = Array.prototype.filter.call(
+      document.querySelectorAll(SELECTOR),
+      function (el) {
+        if (el.closest(EXCLUDE)) return false;
+        return el.getBoundingClientRect().top > fold;   // below the fold only
+      }
+    );
+    if (!targets.length) return;
+
+    targets.forEach(function (el) {
+      el.setAttribute('data-reveal', '');
+
+      // Stagger siblings so a grid arrives as a wave rather than a slab.
+      var sibs = el.parentNode
+        ? Array.prototype.indexOf.call(el.parentNode.children, el)
+        : 0;
+      el.style.setProperty('--reveal-delay', Math.min(sibs, 5) * 70 + 'ms');
+    });
+
+    document.documentElement.classList.add('has-reveal');
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        io.unobserve(entry.target);      // reveal once; never re-hide on scroll up
+      });
+      // Positive bottom margin extends the root *past* the fold, so an element
+      // starts its entrance just before it is actually on screen. A negative
+      // margin (waiting until it is 8% inside) leaves a band at the bottom of
+      // the viewport where content is visible but still transparent — which
+      // looks like a bug if the visitor happens to stop scrolling there.
+    }, { rootMargin: '0px 0px 8% 0px', threshold: 0 });
+
+    targets.forEach(function (el) { io.observe(el); });
+
+    // If anything is asked to print, or the tab is restored from bfcache
+    // mid-scroll, make sure nothing is left invisible.
+    window.addEventListener('beforeprint', function () {
+      targets.forEach(function (el) { el.classList.add('is-revealed'); });
+    });
+  }
+
   /* --- Boot -------------------------------------------------------------- */
   function boot() {
     initNav();
@@ -347,6 +423,7 @@
     initWizards();
     initMarquees();
     initScrollerA11y();
+    initReveal();
   }
 
   if (document.readyState === 'loading') {

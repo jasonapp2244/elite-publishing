@@ -82,6 +82,26 @@ Read in this order:
 | `docs/PERF-REPORT.md` | Lighthouse results and payload, with honest caveats |
 | `docs/CLIENT-QUESTIONS.md` | **Open items needing client answers before launch** |
 
+### Motion
+
+Blocks fade and rise as they scroll into view, plus small hover touches (the ↗
+glyph leans into its direction, book covers lift). All of it is deliberately
+defensive:
+
+- **Nothing above the fold is animated**, so the LCP element paints immediately.
+- **Only `opacity` and `transform`** are animated, so motion can never move
+  layout — CLS stays at 0.00, measured.
+- **The hiding CSS is gated on a class that JavaScript adds**, and only after it
+  has confirmed `IntersectionObserver` support and checked the motion
+  preference. A stylesheet that loads without its script cannot blank the page.
+- **`prefers-reduced-motion: reduce` disables it entirely** — the script returns
+  before tagging anything.
+- Carousels and the testimonial marquee are excluded; they already move.
+- Printing forces everything visible.
+
+To change the feel, `--dur-reveal` and `--ease-out` are in `tokens.css`. To turn
+it off completely, delete the `initReveal()` call in `assets/js/main.js`.
+
 ### Two things that look like bugs but are not
 
 1. **The design's copy bugs are reproduced on purpose** — `romance , christian ,`

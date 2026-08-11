@@ -547,6 +547,58 @@ p:last-child { margin-bottom: 0; }
 .book-band { width: 100%; overflow: hidden; line-height: 0; }
 .book-band img { width: 100%; height: auto; object-fit: cover; }
 
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+/* --- Scroll reveal -------------------------------------------------------- */
+/* Opt-in by design: `has-reveal` is put on <html> by main.js only once it has
+   confirmed IntersectionObserver support, checked the motion preference, AND
+   tagged the elements it is about to observe. Nothing is ever hidden by CSS
+   that JS is not standing by to reveal — a stylesheet that loads without its
+   script must not blank half the page.
+   Only opacity and transform are animated, so this cannot move layout and
+   cannot cost a point of CLS. */
+.has-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--dur-reveal) var(--ease-out),
+              transform var(--dur-reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.has-reveal [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* Belt and braces: JS already declines to start under this preference. */
+@media (prefers-reduced-motion: reduce) {
+  .has-reveal [data-reveal] {
+    opacity: 1; transform: none; transition: none;
+  }
+}
+
+/* Printing happens without a scroll, so nothing would ever intersect. */
+@media print {
+  .has-reveal [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+
+/* --- Micro-interactions --------------------------------------------------- */
+/* The ↗ glyph leans into the direction it points on hover. Small, and it makes
+   every CTA on the site feel connected to the same system. */
+.ep-btn .arrow,
+.link-arrow .arrow {
+  transition: transform var(--dur) var(--ease);
+}
+.ep-btn:hover .arrow,
+.link-arrow:hover .arrow { transform: translate(2px, -2px); }
+
+/* Book covers lift very slightly under the pointer. */
+.book-cell img, .books-track img { transition: transform var(--dur) var(--ease); }
+.book-cell:hover img, .books-track li:hover img { transform: translateY(-4px) scale(1.02); }
+
 /* --- Utility ------------------------------------------------------------- */
 .stack-8  > * + * { margin-top: 8px; }
 .stack-16 > * + * { margin-top: 16px; }
