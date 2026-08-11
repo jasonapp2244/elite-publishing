@@ -1,5 +1,46 @@
 # QA report — Elite Publishing
 
+> ## Resolution — all findings addressed
+>
+> Every item below has been fixed and re-verified. The audit text is preserved
+> unedited as the record of what was found.
+>
+> | § | Finding | Fix, and how it was verified |
+> |---|---|---|
+> | 1.1 | `/about-our-company` 404s | Explicit rewrite added, plus `EP_PAGE_URLS` so nav, footer, sitemap and canonicals all publish extensionless URLs. All 17 URLs return 200; `.php` variants now canonicalise to the pretty form. |
+> | 1.2 | Failed wizard submission invisible | Wizard banner gained `id="form-result"` + `tabindex="-1"`; `initWizards()` opens the step owning the first error and focuses the banner. Re-measured: banner **in viewport and focused**, active step **3** (was 0), scrollY **7692** (was 0). |
+> | 1.3 | Closed drawer in the tab order | `visibility: hidden` when closed. Verified at 390: nav and its links compute `hidden` closed, `visible` open. The visibility transition is delayed on close and instant on open — a duration would have flipped it at 50%, leaving the drawer unfocusable for 100ms. |
+> | 1.4 | Open drawer leaks focus | `inert` applied to `<main>` and `.ep-footer` while open, removed on close. Verified both toggle correctly. |
+> | 1.5 | Three dead play buttons | Cards render as `<figure>` unless a card carries a `video` URL, in which case they become real links. Verified: 3 figures, **0** focusable dead controls. |
+> | 1.6 | Carousels keyboard-unreachable ≤767px | `initScrollerA11y()` makes any overflowing rail with no focusable children `tabindex="0"` with a label, so arrow keys scroll it. Deliberately sets no `role` — see the regression note below. |
+> | 2.1 | Footer brand green, not mint | Now `--ep-green-tint` (`#EAF5EF`) with the spec'd 3px green top rule. Verified computed `rgb(234,245,239)`. |
+> | 2.2 | Services dropdown order | New `EP_SERVICES_DROPDOWN` constant in the design's row-major order, kept separate from `EP_SERVICES` so the footer, sitemap and 404 list are unaffected. |
+> | 2.3 | No header CTA below 1200px | `Publish Your Book` added inside the drawer, `display:none` on desktop so only one copy is ever in the accessibility tree. Verified `display: flex` at 390. |
+> | 2.4 | About header inverts at 768/1024 | `align-items: start` below 1200px. Delta was 103px/145px; now **0 at both**. |
+> | 2.5 | Pricing loses symmetry at 1024 | Equal heights between 992–1199px. All three cards now `top 664 / height 526` (was 700/454, 667/521, 664/526). |
+> | 2.6 | Surviving white-on-green | `.ep-btn--green-outline:hover` moved to `--ep-on-green`. |
+> | 3.1 | JS-off loses 5 of 6 FAQ answers | `hidden` removed from markup; a `.js`-gated CSS rule collapses panels only when JS can reopen them. |
+> | 3.2 | Six dead buttons in the no-JS wizard | Stepping controls are `display:none` until `.js` is present. |
+> | 3.3 | Marquee cannot be paused | Real Pause/Play toggle with `aria-pressed`. Verified running → paused → running. |
+> | 3.4 | Escape doesn't close the dropdown | Wired, returning focus to the trigger. |
+> | 3.5 | Wizard ships pre-answered | `selected` no longer applied — steps 1–3 ship blank, so the guard is reachable and no lead carries a fabricated budget. Verified **0** pre-checked radios. |
+> | 3.6 | No `scroll-padding-top` | Added, breakpoint-aware, plus `tabindex="-1"` on `<main>` so the skip link moves focus. |
+> | 4 | Footer tap targets · 404 canonical · CSRF discards typing · inflated `scrollWidth` | Links padded to 32px; 404 emits `noindex` instead of a canonical; CSRF failure now hands back what was typed; `overflow-x: clip` on `body` unifies the reported width. |
+>
+> **One regression I introduced and caught:** the first version of the carousel
+> fix set `role="group"` on the rails, which are `<ul>`s — that overrode the
+> implicit list role and orphaned every `<li>`. Lighthouse dropped to 97. The
+> role was removed; `tabindex` and a label are all a scroll region needs.
+>
+> **Re-verified after all fixes:** Lighthouse **100 / 100 / 100 / 100** on home
+> (desktop) and a service page (mobile), zero failed audits; 17/17 URLs 200 with
+> no PHP errors; `data/` and `docs/` still 403; unknown paths still 404.
+>
+> Still outstanding and **not** QA's to fix: mail delivery is untested (no MTA),
+> service hero photography is a 3× upscale of a 635px source (DECISIONS §15),
+> and book-cover/press-masthead rights are unresolved (CLIENT-QUESTIONS).
+
+
 **Scope:** all 17 URLs plus a 404 check, at 1920 / 1440 / 1024 / 768 / 390, in Chrome via
 Chrome DevTools MCP and a Playwright-driven Chromium (device-metrics emulation, so 1920 and 390
 are true viewports, not window sizes).

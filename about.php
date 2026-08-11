@@ -93,11 +93,11 @@ $reasons = [
         distribution network you need to succeed.
       </p>
       <p class="about-story__actions">
-        <a class="ep-btn ep-btn--green" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Get Started
           <span class="ep-btn__badge"><?= ep_icon('arrow-up-right') ?></span>
         </a>
-        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Book a Free Consultation
         </a>
       </p>
@@ -144,7 +144,7 @@ $reasons = [
               View Services
               <span class="ep-btn__badge"><?= ep_icon('arrow-up-right') ?></span>
             </a>
-            <a class="ep-btn ep-btn--green-outline" href="<?= esc(url('contact.php')) ?>">
+            <a class="ep-btn ep-btn--green-outline" href="<?= esc(url(ep_page_url('contact'))) ?>">
               Book a Free Consultation
             </a>
           </p>

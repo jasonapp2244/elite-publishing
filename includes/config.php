@@ -83,20 +83,68 @@ const EP_SERVICES = [
  * 'children' turns an item into a dropdown. 'key' is matched against the
  * $pageKey each page sets, to mark the active item.
  */
+/**
+ * Order the Services dropdown is drawn in — SPEC §B.1 / §F.1, two columns of
+ * five read row by row.
+ *
+ * Deliberately separate from EP_SERVICES: that array also drives the footer
+ * columns, the sitemap and the 404 fallback list, so reordering it to satisfy
+ * the dropdown would silently reorder three other things.
+ */
+const EP_SERVICES_DROPDOWN = [
+    'books-publishing',  'book-illustration',
+    'book-editing',      'audio-book-production',
+    'book-cover-design', 'book-marketing',
+    'blog-article-writing', 'creative-content-writing',
+    'ghostwriting',      'proofreading',
+];
+
+/**
+ * Canonical, extensionless URL for each content page.
+ *
+ * The ten service pages already used pretty URLs while these six were published
+ * as `.php`, which left the scheme half-migrated and baked `.php` into every
+ * canonical tag and sitemap entry. `about-our-company` is the one path that is
+ * not derivable from its filename (SPEC §F.3) and has an explicit .htaccess
+ * rule; the rest resolve through the generic extensionless rewrite.
+ */
+const EP_PAGE_URLS = [
+    'index'             => '',
+    'our-books'         => 'our-books',
+    'about'             => 'about-our-company',
+    'pricing'           => 'pricing',
+    'contact'           => 'contact',
+    'privacy-policy'    => 'privacy-policy',
+    'terms-conditions'  => 'terms-conditions',
+];
+
+/** Canonical path for a page, by its file basename. */
+function ep_page_url(string $page): string
+{
+    return EP_PAGE_URLS[$page] ?? $page;
+}
+
 function ep_nav(): array
 {
     $serviceChildren = [];
-    foreach (EP_SERVICES as $slug => $label) {
-        $serviceChildren[] = ['key' => 'service:' . $slug, 'label' => $label, 'href' => 'services/' . $slug];
+    foreach (EP_SERVICES_DROPDOWN as $slug) {
+        if (!isset(EP_SERVICES[$slug])) {
+            continue;   // guards against a typo silently dropping an item
+        }
+        $serviceChildren[] = [
+            'key'   => 'service:' . $slug,
+            'label' => EP_SERVICES[$slug],
+            'href'  => 'services/' . $slug,
+        ];
     }
 
     return [
         ['key' => 'home',     'label' => 'Home',      'href' => ''],
         ['key' => 'services', 'label' => 'Services',  'href' => null, 'children' => $serviceChildren],
-        ['key' => 'books',    'label' => 'Our Books', 'href' => 'our-books.php'],
-        ['key' => 'about',    'label' => 'Company',   'href' => 'about.php'],
-        ['key' => 'pricing',  'label' => 'Pricing',   'href' => 'pricing.php'],
-        ['key' => 'contact',  'label' => 'Contact',   'href' => 'contact.php'],
+        ['key' => 'books',    'label' => 'Our Books', 'href' => ep_page_url('our-books')],
+        ['key' => 'about',    'label' => 'Company',   'href' => ep_page_url('about')],
+        ['key' => 'pricing',  'label' => 'Pricing',   'href' => ep_page_url('pricing')],
+        ['key' => 'contact',  'label' => 'Contact',   'href' => ep_page_url('contact')],
     ];
 }
 
@@ -111,12 +159,12 @@ function ep_footer_nav(): array
         [
             ['label' => 'Home',     'href' => ''],
             ['label' => 'Services', 'href' => 'services/books-publishing'],
-            ['label' => 'Company',  'href' => 'about.php'],
+            ['label' => 'Company',  'href' => ep_page_url('about')],
         ],
         [
-            ['label' => 'Portfolio', 'href' => 'our-books.php'],
-            ['label' => 'Pricing',   'href' => 'pricing.php'],
-            ['label' => 'Contact',   'href' => 'contact.php'],
+            ['label' => 'Portfolio', 'href' => ep_page_url('our-books')],
+            ['label' => 'Pricing',   'href' => ep_page_url('pricing')],
+            ['label' => 'Contact',   'href' => ep_page_url('contact')],
         ],
         [
             ['label' => 'Books Publishing',  'href' => 'services/books-publishing'],

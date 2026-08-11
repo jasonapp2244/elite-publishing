@@ -51,9 +51,18 @@ $nav = ep_nav();
           </div>
         <?php endif; ?>
       <?php endforeach; ?>
+
+      <?php /* The header CTA is hidden below 1200px, which left the site's only
+               primary conversion control absent on every tablet and phone. This
+               copy lives inside the drawer and is display:none on desktop, so
+               only one of the two is ever in the accessibility tree. */ ?>
+      <a class="ep-btn ep-btn--primary ep-nav__cta" href="<?= esc(url(ep_page_url('contact'))) ?>">
+        Publish Your Book
+        <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
+      </a>
     </nav>
 
-    <a class="ep-btn ep-btn--primary ep-header__cta" href="<?= esc(url('contact.php')) ?>">
+    <a class="ep-btn ep-btn--primary ep-header__cta" href="<?= esc(url(ep_page_url('contact'))) ?>">
       Publish Your Book
       <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
     </a>

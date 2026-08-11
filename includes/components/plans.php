@@ -58,7 +58,7 @@ if (empty($plans['tiers'])) {
             </ul>
 
             <a class="ep-btn plan__cta ep-btn--<?= $featured ? 'green' : 'green-outline' ?>"
-               href="<?= esc(url('contact.php')) ?>">
+               href="<?= esc(url(ep_page_url('contact'))) ?>">
               <?= esc($tier['cta'] ?? 'Get Started') ?>
               <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
               <span class="visually-hidden">with the <?= esc($tier['name'] ?? '') ?></span>

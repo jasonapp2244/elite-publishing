@@ -69,6 +69,7 @@ $pageKey         = 'service:' . $slug;                 // highlights the nav dro
 $pageTitle       = $svc['title'] ?? EP_SERVICES[$slug];
 $pageDescription = $svc['meta_desc'] ?? EP_TAGLINE;
 $pageCss         = ['css/p-service.css'];
+$pageCanonical   = 'services/' . $slug;                // not derivable from the filename
 $ogImage         = ($hero['image'] ?? 'img/og-default') . '-1280.jpg';
 
 // Drives the dark navbar variant (SPEC §B.1) from CSS — see p-service.css.
@@ -117,10 +118,10 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
       <?php endif; ?>
 
       <p class="svc-hero__actions">
-        <a class="ep-btn ep-btn--white" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Publish Your Book <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
-        <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Free Consultation <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
       </p>
@@ -229,10 +230,10 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
       </div>
 
       <p class="svc-actions">
-        <a class="ep-btn ep-btn--green" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Get Started <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
-        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Book a Free Consultation <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
       </p>
@@ -314,10 +315,10 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
       <?php endif; ?>
 
       <p class="svc-actions">
-        <a class="ep-btn ep-btn--green" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Get Started <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
-        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--green-outline" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Book a Free Consultation <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
       </p>

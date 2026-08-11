@@ -77,11 +77,11 @@ require __DIR__ . '/includes/components/cta-wizard.php';
         professionally published success.
       </p>
       <p class="cta-green__actions">
-        <a class="ep-btn ep-btn--white" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Publish Your Book
           <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
-        <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url('contact.php')) ?>">
+        <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url(ep_page_url('contact'))) ?>">
           Free Consultation
           <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>

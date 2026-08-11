@@ -16,6 +16,10 @@
     var scrim  = document.querySelector('[data-nav-scrim]');
     if (!toggle || !nav) return;
 
+    // Everything behind the drawer. Made inert while it is open so Tab cannot
+    // walk out of the menu into a page the visitor cannot see or scroll to.
+    var behind = [document.getElementById('main'), document.querySelector('.ep-footer')];
+
     function setOpen(open) {
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
@@ -25,6 +29,15 @@
         scrim.hidden = !open;
       }
       document.body.style.overflow = open ? 'hidden' : '';
+
+      behind.forEach(function (el) {
+        if (!el) return;
+        if (open) {
+          el.setAttribute('inert', '');
+        } else {
+          el.removeAttribute('inert');
+        }
+      });
     }
 
     toggle.addEventListener('click', function () {
@@ -77,6 +90,16 @@
       // Close when focus leaves the whole item (keyboard users).
       item.addEventListener('focusout', function (e) {
         if (!item.contains(e.relatedTarget)) open(false);
+      });
+
+      // Escape closes it and returns focus to the trigger — the expected
+      // behaviour for any expandable, and previously only wired to the burger.
+      item.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if (!item.classList.contains('is-open')) return;
+        e.stopPropagation();
+        open(false);
+        btn.focus();
       });
 
       document.addEventListener('click', function (e) {
@@ -240,8 +263,78 @@
         }
       });
 
-      show(0, false);
+      /* If the server rejected this submission, open the step that owns the
+         first invalid field rather than resetting to step 1 — otherwise the
+         flagged inputs sit two steps away behind display:none and the visitor
+         sees no reason why nothing happened. */
+      var firstBad = form.querySelector('[aria-invalid="true"]');
+      var badStep  = firstBad && firstBad.closest('.wizard__step');
+      var startAt  = 0;
+
+      if (badStep) {
+        startAt = Array.prototype.indexOf.call(steps, badStep);
+        if (startAt < 0) startAt = 0;
+      }
+
+      show(startAt, false);
+
+      if (badStep) {
+        // Put the banner in front of the visitor, then focus it so screen
+        // readers announce the failure too.
+        var banner = form.parentNode.querySelector('.ep-alert');
+        var anchor = banner || badStep;
+        anchor.scrollIntoView({ block: 'center' });
+        if (banner) banner.focus({ preventScroll: true });
+        if (firstBad) firstBad.setAttribute('data-first-error', 'true');
+      }
     });
+  }
+
+  /* --- Marquee pause (WCAG 2.2.2) ---------------------------------------- */
+  function initMarquees() {
+    var toggles = document.querySelectorAll('[data-marquee-toggle]');
+
+    Array.prototype.forEach.call(toggles, function (btn) {
+      var marquee = btn.closest('.marquee');
+      if (!marquee) return;
+
+      btn.addEventListener('click', function () {
+        var paused = marquee.classList.toggle('is-paused');
+        btn.setAttribute('aria-pressed', String(paused));
+      });
+    });
+  }
+
+  /* --- Keyboard-reachable carousels (WCAG 2.1.1) ------------------------- */
+  /* Below 768px the prev/next buttons are hidden and the cover rails hold no
+     focusable children, so there was no keyboard path past the first slide.
+     Making a scrollable region focusable lets it be scrolled with the arrow
+     keys — but only when it actually overflows, so we don't add pointless tab
+     stops on desktop. */
+  function initScrollerA11y() {
+    var rails = document.querySelectorAll('.ep-scroller, [data-rail]');
+
+    function sync() {
+      Array.prototype.forEach.call(rails, function (rail) {
+        var overflows = rail.scrollWidth > rail.clientWidth + 1;
+        var reachable = rail.querySelector('a, button, [tabindex]:not([tabindex="-1"])');
+
+        if (overflows && !reachable) {
+          // tabindex + a label is all a scrollable region needs. Do NOT set
+          // role="group" here: these rails are <ul>s, and overriding the
+          // implicit list role orphans every <li> inside them.
+          rail.setAttribute('tabindex', '0');
+          if (!rail.hasAttribute('aria-label')) {
+            rail.setAttribute('aria-label', 'Scrollable list — use the arrow keys to move through it');
+          }
+        } else {
+          rail.removeAttribute('tabindex');
+        }
+      });
+    }
+
+    sync();
+    window.addEventListener('resize', sync, { passive: true });
   }
 
   /* --- Boot -------------------------------------------------------------- */
@@ -252,6 +345,8 @@
     initAccordions();
     initScrollers();
     initWizards();
+    initMarquees();
+    initScrollerA11y();
   }
 
   if (document.readyState === 'loading') {

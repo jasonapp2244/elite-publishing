@@ -61,7 +61,7 @@ function ep_return_url(): string
         }
     }
 
-    return url('contact.php');
+    return url(ep_page_url('contact'));
 }
 
 /** Store the flash, redirect, stop. Never returns. */
@@ -201,22 +201,34 @@ function ep_log_submission(array $entry): bool
 // 1. Method
 // ---------------------------------------------------------------------------
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
-    header('Location: ' . url('contact.php'), true, 303);
+    header('Location: ' . url(ep_page_url('contact')), true, 303);
     exit;
 }
 
 $isWizard = ($_POST['_form'] ?? '') === 'wizard';
-$fragment = $isWizard ? '#form-result' : '';
+
+// Both forms now render an alert carrying id="form-result", so both get the
+// fragment — previously only the wizard did, and only the hero form had the id.
+$fragment = '#form-result';
 
 // ---------------------------------------------------------------------------
 // 2. CSRF — before anything is read, and before the rate limit is spent
 // ---------------------------------------------------------------------------
 if (!ep_csrf_valid(isset($_POST['_token']) ? (string) $_POST['_token'] : null)) {
+    // Hand back what was typed. An expired session is not the visitor's fault,
+    // and making them retype a long enquiry to satisfy a token they never saw
+    // is how a genuine lead gets abandoned. Values still go through ep_field(),
+    // so nothing unsanitised is echoed back.
     ep_form_finish(
         'error',
         'Your session expired before the form was sent. Please try again.',
         [],
-        [],
+        [
+            'full_name' => ep_field('full_name', EP_FORM_MAX_NAME) ?: ep_field('name', EP_FORM_MAX_NAME),
+            'email'     => ep_field('email', EP_FORM_MAX_EMAIL),
+            'phone'     => ep_field('phone', EP_FORM_MAX_PHONE),
+            'message'   => ep_field('message', EP_FORM_MAX_MESSAGE),
+        ],
         $fragment
     );
 }

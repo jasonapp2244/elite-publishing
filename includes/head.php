@@ -32,7 +32,20 @@ $ogImage         = $ogImage         ?? 'img/og-default.jpg';
 ep_session_start();
 
 $fullTitle  = $pageKey === 'home' ? $pageTitle : $pageTitle . ' | ' . EP_NAME;
-$canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), '?');
+/**
+ * Canonical URL.
+ *
+ * Derived from the page, not from REQUEST_URI: five of the content pages
+ * resolve at both `/pricing` and `/pricing.php`, and echoing the requested URI
+ * would publish whichever one the visitor happened to arrive on. Pages with a
+ * URL that is not derivable from their filename (service.php) set
+ * $pageCanonical themselves.
+ */
+if (!isset($pageCanonical)) {
+    $script        = basename((string) ($_SERVER['SCRIPT_NAME'] ?? 'index.php'), '.php');
+    $pageCanonical = ep_page_url($script);
+}
+$canonical = EP_ORIGIN . url($pageCanonical);
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,7 +55,13 @@ $canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= esc($fullTitle) ?></title>
 <meta name="description" content="<?= esc($pageDescription) ?>">
+<?php /* No canonical on an error page — it is noise for crawlers and would
+         point them at a URL that legitimately returns 404. */ ?>
+<?php if (($pageNoIndex ?? false) === false): ?>
 <link rel="canonical" href="<?= esc($canonical) ?>">
+<?php else: ?>
+<meta name="robots" content="noindex, follow">
+<?php endif; ?>
 <meta name="theme-color" content="#60C489">
 
 <!-- Open Graph / Twitter -->
@@ -93,4 +112,6 @@ $canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), 
 <body<?= $bodyClass !== '' ? ' class="' . esc($bodyClass) . '"' : '' ?>>
 <a class="skip-link" href="#main">Skip to main content</a>
 <?php require __DIR__ . '/header.php'; ?>
-<main id="main">
+<?php /* tabindex="-1" so the skip link moves focus, not just the scroll
+         position — without it a screen-reader cursor stays in the header. */ ?>
+<main id="main" tabindex="-1">

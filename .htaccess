@@ -15,6 +15,11 @@ DirectoryIndex index.php
   # Generated sitemap, served at the conventional path
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+  # The one page whose spec'd URL differs from its filename (SPEC §F.3).
+  # The generic extensionless rule below only finds same-named files, so
+  # without this /about-our-company 404s.
+  RewriteRule ^about-our-company/?$ about.php [L,QSA]
+
   # Allow extensionless page URLs (/about -> about.php)
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}\.php -f

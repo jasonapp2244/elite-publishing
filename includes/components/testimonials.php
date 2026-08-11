@@ -45,6 +45,17 @@ $renderCard = static function (array $c, bool $clone): void {
 };
 ?>
 <section class="section marquee" aria-label="What authors say about us">
+  <?php /* WCAG 2.2.2: anything that moves for more than five seconds needs a
+           way to stop it. CSS pauses on hover and :focus-within, but the track
+           holds no focusable elements so :focus-within could never fire — a
+           keyboard or touch user had no way to stop a 64-second loop. */ ?>
+  <div class="marquee__bar container-ep">
+    <button class="marquee__toggle" type="button" data-marquee-toggle aria-pressed="false">
+      <span class="marquee__toggle-on">Pause</span>
+      <span class="marquee__toggle-off">Play</span>
+      <span class="visually-hidden">the scrolling reviews</span>
+    </button>
+  </div>
   <div class="marquee__viewport">
     <ul class="marquee__track list-plain">
       <?php foreach ($cards as $c) { $renderCard($c, false); } ?>

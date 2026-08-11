@@ -49,8 +49,14 @@ $idBase = 'faq' . $GLOBALS['epFaqInstance'];
               </span>
             </button>
           </h3>
+          <?php /* No `hidden` in the markup: without JavaScript the buttons are
+                   inert, so shipping panels 2-6 hidden lost five of six answers
+                   outright. They render open by default and CSS collapses them
+                   only once the `.js` class is on <html> (set inline in head.php
+                   before paint, so there is no flash). main.js then manages
+                   `hidden` from there. */ ?>
           <div class="ep-faq__panel" id="<?= esc($panelId) ?>" role="region"
-               aria-labelledby="<?= esc($btnId) ?>"<?= $open ? '' : ' hidden' ?>>
+               aria-labelledby="<?= esc($btnId) ?>">
             <p><?= esc($item['a'] ?? '') ?></p>
           </div>
         </div>

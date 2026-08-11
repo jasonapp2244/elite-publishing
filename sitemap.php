@@ -12,14 +12,15 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 
 /** @var array<string, array{loc: string, priority: string, freq: string}> */
+/* Canonical extensionless paths — see EP_PAGE_URLS in includes/config.php. */
 $urls = [
-    ['loc' => '',                      'priority' => '1.0', 'freq' => 'weekly'],
-    ['loc' => 'our-books.php',         'priority' => '0.8', 'freq' => 'weekly'],
-    ['loc' => 'about.php',             'priority' => '0.7', 'freq' => 'monthly'],
-    ['loc' => 'pricing.php',           'priority' => '0.9', 'freq' => 'monthly'],
-    ['loc' => 'contact.php',           'priority' => '0.8', 'freq' => 'monthly'],
-    ['loc' => 'privacy-policy.php',    'priority' => '0.2', 'freq' => 'yearly'],
-    ['loc' => 'terms-conditions.php',  'priority' => '0.2', 'freq' => 'yearly'],
+    ['loc' => ep_page_url('index'),            'priority' => '1.0', 'freq' => 'weekly'],
+    ['loc' => ep_page_url('our-books'),        'priority' => '0.8', 'freq' => 'weekly'],
+    ['loc' => ep_page_url('about'),            'priority' => '0.7', 'freq' => 'monthly'],
+    ['loc' => ep_page_url('pricing'),          'priority' => '0.9', 'freq' => 'monthly'],
+    ['loc' => ep_page_url('contact'),          'priority' => '0.8', 'freq' => 'monthly'],
+    ['loc' => ep_page_url('privacy-policy'),   'priority' => '0.2', 'freq' => 'yearly'],
+    ['loc' => ep_page_url('terms-conditions'), 'priority' => '0.2', 'freq' => 'yearly'],
 ];
 
 foreach (array_keys(EP_SERVICES) as $slug) {

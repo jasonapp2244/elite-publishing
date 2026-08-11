@@ -79,7 +79,7 @@ require __DIR__ . '/includes/head.php';
     </p>
 
     <p class="home-hero__actions">
-      <a class="ep-btn ep-btn--primary" href="<?= esc(url('contact.php')) ?>">
+      <a class="ep-btn ep-btn--primary" href="<?= esc(url(ep_page_url('contact'))) ?>">
         Submit Manuscript <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
       </a>
       <a class="ep-btn ep-btn--outline" href="<?= esc(url('services/books-publishing')) ?>">
@@ -122,10 +122,10 @@ require __DIR__ . '/includes/components/services-carousel.php';
           control and traditional editorial perfection.
         </p>
         <p class="home-why__actions">
-          <a class="ep-btn ep-btn--white" href="<?= esc(url('contact.php')) ?>">
+          <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>">
             I want to Publish my Book! Start Now! <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
           </a>
-          <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url('contact.php')) ?>">
+          <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url(ep_page_url('contact'))) ?>">
             Schedule a Call <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
           </a>
         </p>
@@ -262,7 +262,7 @@ require __DIR__ . '/includes/components/services-carousel.php';
         <h2 id="portfolio-title">Recently Published Titles</h2>
       </div>
 
-      <a class="ep-btn ep-btn--primary" href="<?= esc(url('our-books.php')) ?>">
+      <a class="ep-btn ep-btn--primary" href="<?= esc(url(ep_page_url('our-books'))) ?>">
         View All <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
       </a>
     </div>

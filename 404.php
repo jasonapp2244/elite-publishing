@@ -19,6 +19,7 @@ $pageTitle       = 'Page Not Found';
 $pageDescription = 'The page you were looking for could not be found. Browse our publishing '
                  . 'services or head back to the home page.';
 $pageCss         = ['css/p-core.css'];
+$pageNoIndex     = true;   // no canonical on a 404; emit noindex instead
 
 require __DIR__ . '/includes/head.php';
 ?>

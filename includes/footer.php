@@ -48,9 +48,9 @@ $footerCols = ep_footer_nav();
     <div class="ep-footer__legal">
       <p class="m-0">&copy; Copyright <?= esc(date('Y')) ?> All Rights Reserved.</p>
       <p class="m-0 ep-footer__legal-links">
-        <a href="<?= esc(url('terms-conditions.php')) ?>">Terms &amp; Conditions</a>
+        <a href="<?= esc(url(ep_page_url('terms-conditions'))) ?>">Terms &amp; Conditions</a>
         <span aria-hidden="true">|</span>
-        <a href="<?= esc(url('privacy-policy.php')) ?>">Privacy Policy</a>
+        <a href="<?= esc(url(ep_page_url('privacy-policy'))) ?>">Privacy Policy</a>
       </p>
     </div>
 

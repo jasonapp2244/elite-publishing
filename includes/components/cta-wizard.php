@@ -73,7 +73,14 @@ if (empty($cta) && empty($steps)) {
         $flash = ep_form_flash();
         if (ep_form_is('wizard') && ($wizardBanner ?? true)):
         ?>
+          <?php /* id="form-result" is the fragment the handler redirects to, and
+                   tabindex="-1" lets main.js move focus here. Without both, a
+                   rejected submission scrolls nowhere and says nothing — the
+                   banner sits thousands of pixels below the fold. Only one of
+                   this and the hero form's alert renders per request (they test
+                   ep_form_is()), so the id stays unique. */ ?>
           <p class="ep-alert ep-alert--<?= $flash['status'] === 'ok' ? 'ok' : 'err' ?>"
+             id="form-result" tabindex="-1"
              role="<?= $flash['status'] === 'ok' ? 'status' : 'alert' ?>">
             <?= esc($flash['message']) ?>
           </p>
@@ -157,12 +164,19 @@ if (empty($cta) && empty($steps)) {
                 <ul class="wizard__options list-plain<?= (int) ($step['cols'] ?? 1) === 2 ? ' wizard__options--2' : '' ?>">
                   <?php foreach (($step['options'] ?? []) as $j => $opt): ?>
                     <?php $optId = 'wz-' . esc($step['name'] ?? 'q' . $i) . '-' . $j; ?>
+                    <?php /* $opt['selected'] is NOT applied. The design draws a
+                             chosen chip on each step to show the selected state,
+                             but shipping it pre-answered means a visitor who
+                             clicks Continue three times submits a genre, a stage
+                             and a "$10,000 — $20,000" budget they never picked —
+                             and sales cannot tell a real answer from a default.
+                             It also made main.js's "choose something" guard
+                             unreachable. Steps 1-3 ship unanswered. */ ?>
                     <li>
                       <input class="wizard__radio visually-hidden" type="radio"
                              id="<?= esc($optId) ?>"
                              name="<?= esc($step['name'] ?? 'q' . $i) ?>"
-                             value="<?= esc($opt['label'] ?? '') ?>"
-                             <?= !empty($opt['selected']) ? 'checked' : '' ?>>
+                             value="<?= esc($opt['label'] ?? '') ?>">
                       <label class="wizard__chip" for="<?= esc($optId) ?>">
                         <?php if (!empty($opt['emoji'])): ?>
                           <span class="wizard__emoji" aria-hidden="true"><?= esc($opt['emoji']) ?></span>
@@ -175,15 +189,20 @@ if (empty($cta) && empty($steps)) {
 
               <?php endif; ?>
 
+              <?php /* The stepping controls only work with JS, so they are
+                       hidden until `.js` proves it is there. Otherwise the
+                       degraded form showed seven buttons of which one worked. */ ?>
               <div class="wizard__foot">
                 <?php if ($i > 0): ?>
-                  <button class="wizard__back" type="button" data-wizard-back aria-label="Previous step">
+                  <button class="wizard__back wizard__step-ctrl" type="button"
+                          data-wizard-back aria-label="Previous step">
                     <?= ep_icon('arrow-left', ['size' => 18]) ?>
                   </button>
                 <?php endif; ?>
 
                 <?php if ($i < count($steps) - 1): ?>
-                  <button class="ep-btn ep-btn--primary wizard__next" type="button" data-wizard-next>
+                  <button class="ep-btn ep-btn--primary wizard__next wizard__step-ctrl"
+                          type="button" data-wizard-next>
                     <?= esc($step['cta'] ?? 'Continue') ?>
                     <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
                   </button>

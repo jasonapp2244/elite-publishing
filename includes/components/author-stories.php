@@ -42,7 +42,7 @@ if (empty($stories['cards'])) {
           <p class="text-muted-ep stories__intro"><?= esc($stories['intro']) ?></p>
         <?php endif; ?>
         <?php if (!empty($stories['cta'])): ?>
-          <a class="ep-btn ep-btn--primary" href="<?= esc(url('our-books.php')) ?>">
+          <a class="ep-btn ep-btn--primary" href="<?= esc(url(ep_page_url('our-books'))) ?>">
             <?= esc($stories['cta']) ?>
             <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
           </a>
@@ -52,22 +52,35 @@ if (empty($stories['cards'])) {
 
     <ul class="stories__grid list-plain">
       <?php foreach ($stories['cards'] as $card): ?>
+        <?php
+        /* A card is only a control if there is something to play. With no video
+           the card renders as a plain figure: three focusable buttons that do
+           nothing are worse than none, and for a screen-reader user they were
+           three identically-named dead ends. Add a 'video' URL to a card in
+           data/shared.php and it becomes a real link to that video. */
+        $video = $card['video'] ?? '';
+        $label = sprintf(
+            'Play the author story of %s — %s',
+            $card['name'] ?? 'this author',
+            $card['title'] ?? ''
+        );
+        $media = ep_srcset(
+            $card['img'] ?? 'img/story-1',
+            [480, 960],
+            '',
+            960,
+            544,
+            ['class' => 'story-card__img', 'sizes' => '(max-width: 767px) 100vw, 33vw']
+        );
+        ?>
         <li>
-          <button class="story-card" type="button"
-                  aria-label="<?= esc(sprintf(
-                      'Play the author story of %s — %s',
-                      $card['name'] ?? 'this author',
-                      $card['title'] ?? ''
-                  )) ?>">
-            <?= ep_srcset(
-                  $card['img'] ?? 'img/story-1',
-                  [480, 960],
-                  '',
-                  960,
-                  544,
-                  ['class' => 'story-card__img', 'sizes' => '(max-width: 767px) 100vw, 33vw']
-                ) ?>
-          </button>
+          <?php if ($video !== ''): ?>
+            <a class="story-card" href="<?= esc($video) ?>"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="<?= esc($label) ?>"><?= $media ?></a>
+          <?php else: ?>
+            <figure class="story-card story-card--static"><?= $media ?></figure>
+          <?php endif; ?>
         </li>
       <?php endforeach; ?>
     </ul>

@@ -7,10 +7,24 @@
 /* --- Base ---------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* The header is sticky, so an anchor jump would otherwise land its target
+     underneath it — including the skip link's own destination. */
+  scroll-padding-top: calc(var(--ep-nav-h) + 16px);
+}
+@media (max-width: 1199.98px) {
+  html { scroll-padding-top: calc(var(--ep-nav-h-sm) + 16px); }
+}
 
 body {
   margin: 0;
+  /* `clip`, not `hidden`: hidden would make body a scroll container and break
+     the sticky header. Guards against the off-canvas drawer and the honeypot
+     inflating scrollWidth, which trips automated overflow checks even though
+     nothing actually scrolls. */
+  overflow-x: clip;
   font-family: var(--ep-font);
   font-size: var(--fs-base);
   line-height: var(--lh-base);
@@ -270,6 +284,9 @@ p:last-child { margin-bottom: 0; }
   font-size: var(--fs-base); line-height: var(--lh-base);
   color: var(--ep-muted);
 }
+/* Collapse closed panels only when JS is present to reopen them. With JS off
+   every answer stays readable instead of being locked behind a dead button. */
+.js .ep-faq__btn[aria-expanded="false"] + .ep-faq__panel { display: none; }
 /* Open state */
 .ep-faq__item:has(.ep-faq__btn[aria-expanded="true"]) {
   background: var(--ep-green);
@@ -394,6 +411,8 @@ p:last-child { margin-bottom: 0; }
 .ep-dropdown a:hover { background: var(--ep-green-tint); color: var(--ep-ink); }
 
 .ep-burger { display: none; }
+/* The in-drawer CTA exists only below the burger breakpoint (see below). */
+.ep-nav__cta { display: none; }
 
 @media (max-width: 1199.98px) {
   .ep-header__inner { min-height: var(--ep-nav-h-sm); }
@@ -412,9 +431,23 @@ p:last-child { margin-bottom: 0; }
     border-left: 1px solid var(--ep-border);
     overflow-y: auto;
     transform: translateX(100%);
-    transition: transform var(--dur) var(--ease);
+    /* A transform alone moves the drawer off-screen but leaves all six links in
+       the tab order and the accessibility tree, so every keyboard user on a
+       phone tabbed through invisible controls. visibility:hidden removes them;
+       it still animates because it is transitioned discretely alongside
+       transform. */
+    visibility: hidden;
+    /* visibility is a discrete property: giving it a duration would flip it at
+       the halfway point, leaving the drawer unfocusable for the first 100ms
+       after opening. Delay it by the full duration when closing (so the slide
+       out is still visible) and apply it instantly when opening. */
+    transition: transform var(--dur) var(--ease), visibility 0s linear var(--dur);
   }
-  .ep-nav.is-open { transform: translateX(0); }
+  .ep-nav.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform var(--dur) var(--ease), visibility 0s;
+  }
   .ep-nav__link { padding: 14px 0; width: 100%; justify-content: space-between; }
   .ep-nav__link::after { display: none; }
   .ep-dropdown {
@@ -425,6 +458,7 @@ p:last-child { margin-bottom: 0; }
   }
   .ep-nav__item.is-open .ep-dropdown { display: grid; transform: none; }
   .ep-header__cta { display: none; }
+  .ep-nav__cta { display: inline-flex; margin-top: 20px; }
   .nav-scrim {
     position: fixed; inset: 0; z-index: 999;
     background: rgba(0,0,0,.4);
@@ -437,8 +471,13 @@ p:last-child { margin-bottom: 0; }
 /* --- Footer -------------------------------------------------------------- */
 /* Green field, oversized mailto heading, five link columns, then the
    full-bleed book-cover band. Matches the Figma FOOTER export. */
+/* SPEC §B.2: mint band #EAF5EF with a 3px brand-green rule along the top.
+   This was rendering in full brand green — the spec explicitly warns that the
+   saturated green in footer__01.jpg is Figma canvas bleeding through a
+   transparent frame, not the design. */
 .ep-footer {
-  background: var(--ep-green);
+  background: var(--ep-green-tint);
+  border-top: 3px solid var(--ep-green);
   color: var(--ep-ink);
   padding-top: clamp(40px, 4vw, 64px);
 }
@@ -477,7 +516,14 @@ p:last-child { margin-bottom: 0; }
   padding-bottom: clamp(28px, 3vw, 44px);
 }
 .ep-footer__links ul { display: grid; gap: 12px; align-content: start; }
-.ep-footer__links a { font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.ep-footer__links a {
+  font-size: var(--fs-sm); font-weight: var(--fw-medium);
+  /* WCAG 2.5.8: these were 17px tall and tight to tap on a phone. Padding the
+     link itself grows the hit area without moving the visual rhythm much. */
+  display: inline-block;
+  padding-block: 4px;
+  min-height: 24px;
+}
 
 .ep-footer__legal {
   display: flex; flex-wrap: wrap; gap: 12px 32px;
@@ -559,6 +605,16 @@ p:last-child { margin-bottom: 0; }
 }
 .section-head__text { min-width: 0; }
 
+/* `align-items: end` works while the two columns are a similar height. Once the
+   viewport narrows, the right cell (paragraph + two buttons) grows and
+   bottom-alignment drops the h2 below its own paragraph — 103px at 1024, 145px
+   at 768, leaving the heading reading *after* the text it introduces. Align to
+   the top before that happens. */
+@media (max-width: 1199.98px) {
+  .section-head--split { align-items: start; }
+  .section-head--split > * { align-self: start; }
+}
+
 @media (max-width: 767.98px) {
   .section-head--split,
   .section-head:has(.ep-scroller-nav) { grid-template-columns: 1fr; }
@@ -575,7 +631,7 @@ p:last-child { margin-bottom: 0; }
 .ep-btn--green-outline {
   background: transparent; color: var(--ep-green-text); border-color: var(--ep-green);
 }
-.ep-btn--green-outline:hover { background: var(--ep-green); color: var(--ep-white); }
+.ep-btn--green-outline:hover { background: var(--ep-green); color: var(--ep-on-green); }
 
 /* --- Press band (SPEC §B.12) --------------------------------------------- */
 .press-band {
@@ -678,6 +734,10 @@ p:last-child { margin-bottom: 0; }
   transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .story-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+/* No video wired up: render it as artwork, not as something that invites a
+   click it cannot honour. */
+.story-card--static { cursor: default; }
+.story-card--static:hover { transform: none; box-shadow: none; }
 .story-card__img,
 .story-card picture { width: 100%; height: 100%; }
 .story-card__img { object-fit: cover; }
@@ -719,7 +779,25 @@ p:last-child { margin-bottom: 0; }
   animation: marquee 64s linear infinite;
 }
 .marquee:hover .marquee__track,
-.marquee:focus-within .marquee__track { animation-play-state: paused; }
+.marquee:focus-within .marquee__track,
+.marquee.is-paused .marquee__track { animation-play-state: paused; }
+
+.marquee__bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.marquee__toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 36px; padding: 8px 16px;
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm); font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.marquee__toggle:hover { border-color: var(--ep-green); }
+.marquee__toggle-off { display: none; }
+.marquee__toggle[aria-pressed="true"] .marquee__toggle-on { display: none; }
+.marquee__toggle[aria-pressed="true"] .marquee__toggle-off { display: inline; }
+/* Nothing is moving under reduced motion, so a pause control is noise. */
+@media (prefers-reduced-motion: reduce) { .marquee__bar { display: none; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* With motion reduced the track must not sit half-scrolled — reset it and let
@@ -765,6 +843,17 @@ p:last-child { margin-bottom: 0; }
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--ep-gutter);
   align-items: center;   /* lets the featured card overhang its siblings */
+}
+
+/* Between the 3-up breakpoint and ~1200px the columns get narrow enough that
+   Premium's feature list wraps to two lines. Centre-alignment then made
+   Premium taller than the "Most Popular" card and offset from Basic, so the
+   featured card stopped reading as the raised one. Equal heights below 1200px:
+   the outer pair stays symmetrical and Standard is distinguished by its border,
+   halo and badge instead of by overhang. */
+@media (max-width: 1199.98px) and (min-width: 992px) {
+  .plans__grid { align-items: stretch; }
+  .plan--featured { padding-block: 32px; }
 }
 .plan {
   background: var(--ep-white);
@@ -891,6 +980,10 @@ p:last-child { margin-bottom: 0; }
 }
 .wizard__back:hover { border-color: var(--ep-green); }
 .wizard__next { flex: 1 1 auto; }
+
+/* Continue / back only exist as concepts when JS is stepping the form. */
+.wizard__step-ctrl { display: none; }
+.js .wizard__step-ctrl { display: inline-flex; }
 
 /* Nudge shown when Continue is pressed with nothing selected. */
 .wizard__chip.is-shake { animation: shake 380ms var(--ease); border-color: var(--ep-green); }
