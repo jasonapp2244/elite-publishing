@@ -158,23 +158,35 @@ p:last-child { margin-bottom: 0; }
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
               border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
-.ep-btn:hover { transform: translateY(-1px); }
+@media (hover: hover) {
+  .ep-btn:hover { transform: translateY(-1px); }
+}
 .ep-btn:active { transform: translateY(0); }
 
 .ep-btn--primary { background: var(--ep-black); color: var(--ep-white); }
-.ep-btn--primary:hover { background: #1a1a1a; color: var(--ep-white); }
+@media (hover: hover) {
+  .ep-btn--primary:hover { background: #1a1a1a; color: var(--ep-white); }
+}
 
 .ep-btn--outline { background: transparent; color: var(--ep-ink); border-color: var(--ep-ink); }
-.ep-btn--outline:hover { background: var(--ep-ink); color: var(--ep-white); }
+@media (hover: hover) {
+  .ep-btn--outline:hover { background: var(--ep-ink); color: var(--ep-white); }
+}
 
 .ep-btn--green { background: var(--ep-green); color: var(--ep-on-green); }
-.ep-btn--green:hover { background: var(--ep-green-hover); color: var(--ep-on-green); }
+@media (hover: hover) {
+  .ep-btn--green:hover { background: var(--ep-green-hover); color: var(--ep-on-green); }
+}
 
 .ep-btn--white { background: var(--ep-white); color: var(--ep-ink); }
-.ep-btn--white:hover { background: #f1f1f1; }
+@media (hover: hover) {
+  .ep-btn--white:hover { background: #f1f1f1; }
+}
 
 .ep-btn--ghost-white { background: transparent; color: var(--ep-white); border-color: var(--ep-white); }
-.ep-btn--ghost-white:hover { background: var(--ep-white); color: var(--ep-ink); }
+@media (hover: hover) {
+  .ep-btn--ghost-white:hover { background: var(--ep-white); color: var(--ep-ink); }
+}
 /* Outlined-white reads fine on a dark photo but not on brand green (2.15:1).
    Both green surfaces on the site are listed here — .panel-green (Why Us) and
    .cta-green (the Contact page band) — so the accessible treatment lives in one
@@ -182,8 +194,10 @@ p:last-child { margin-bottom: 0; }
 :is(.panel-green, .cta-green) .ep-btn--ghost-white {
   color: var(--ep-on-green); border-color: var(--ep-on-green);
 }
-:is(.panel-green, .cta-green) .ep-btn--ghost-white:hover {
-  background: var(--ep-on-green); color: var(--ep-white); border-color: var(--ep-on-green);
+@media (hover: hover) {
+  :is(.panel-green, .cta-green) .ep-btn--ghost-white:hover {
+    background: var(--ep-on-green); color: var(--ep-white); border-color: var(--ep-on-green);
+  }
 }
 
 /* The ↗ glyph that sits inside most CTAs in the design. */
@@ -196,11 +210,17 @@ p:last-child { margin-bottom: 0; }
   font-weight: var(--fw-medium);
   font-size: var(--fs-sm);
 }
-.link-arrow:hover { color: var(--ep-green); text-decoration: underline; }
-/* On a green or dark surface the link inverts to white, which passes there. */
+@media (hover: hover) {
+  .link-arrow:hover { color: var(--ep-green); text-decoration: underline; }
+}
+/* On a green or dark surface the link inverts to white,
+which passes there. */
 .panel-green .link-arrow,
-.bg-dark-ep .link-arrow,
-.svc-card:hover .link-arrow { color: var(--ep-white); }
+.bg-dark-ep .link-arrow { color: var(--ep-white); }
+
+@media (hover: hover) {
+  .svc-card:hover .link-arrow { color: var(--ep-white); }
+}
 .link-arrow .arrow { width: 12px; height: 12px; }
 
 /* --- Cards --------------------------------------------------------------- */
@@ -212,7 +232,9 @@ p:last-child { margin-bottom: 0; }
   height: 100%;
   transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
-.ep-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-3px); }
+@media (hover: hover) {
+  .ep-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-3px); }
+}
 
 /* 68px rounded tile @1920, per SPEC §A. Dark by default (home page service
    cards); use --light for the pale #F2F2F2 variant. */
@@ -378,9 +400,12 @@ p:last-child { margin-bottom: 0; }
   transform: scaleX(0); transform-origin: left;
   transition: transform var(--dur) var(--ease);
 }
-.ep-nav__link:hover::after,
 .ep-nav__link[aria-current="page"]::after,
 .ep-nav__item.is-active > .ep-nav__link::after { transform: scaleX(1); }
+
+@media (hover: hover) {
+  .ep-nav__link:hover::after { transform: scaleX(1); }
+}
 
 .ep-nav__item { position: relative; }
 .ep-nav__caret { width: 10px; height: 10px; transition: transform var(--dur) var(--ease); }
@@ -408,7 +433,9 @@ p:last-child { margin-bottom: 0; }
   font-size: var(--fs-sm); font-weight: var(--fw-medium);
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.ep-dropdown a:hover { background: var(--ep-green-tint); color: var(--ep-ink); }
+@media (hover: hover) {
+  .ep-dropdown a:hover { background: var(--ep-green-tint); color: var(--ep-ink); }
+}
 
 .ep-burger { display: none; }
 /* The in-drawer CTA exists only below the burger breakpoint (see below). */
@@ -482,7 +509,9 @@ p:last-child { margin-bottom: 0; }
   padding-top: clamp(40px, 4vw, 64px);
 }
 .ep-footer a { color: var(--ep-ink); transition: opacity var(--dur) var(--ease); }
-.ep-footer a:hover { opacity: .7; }
+@media (hover: hover) {
+  .ep-footer a:hover { opacity: .7; }
+}
 
 .ep-footer__top {
   display: flex; flex-wrap: wrap; align-items: center; gap: 24px;
@@ -507,7 +536,9 @@ p:last-child { margin-bottom: 0; }
   border-radius: 50%;
   transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
 }
-.ep-social a:hover { transform: translateY(-2px); opacity: 1; background: #000; }
+@media (hover: hover) {
+  .ep-social a:hover { transform: translateY(-2px); opacity: 1; background: #000; }
+}
 
 .ep-footer__links {
   display: grid;
@@ -592,12 +623,17 @@ p:last-child { margin-bottom: 0; }
 .link-arrow .arrow {
   transition: transform var(--dur) var(--ease);
 }
-.ep-btn:hover .arrow,
-.link-arrow:hover .arrow { transform: translate(2px, -2px); }
+@media (hover: hover) {
+  .ep-btn:hover .arrow,
+  .link-arrow:hover .arrow { transform: translate(2px, -2px); }
+}
 
 /* Book covers lift very slightly under the pointer. */
 .book-cell img, .books-track img { transition: transform var(--dur) var(--ease); }
-.book-cell:hover img, .books-track li:hover img { transform: translateY(-4px) scale(1.02); }
+@media (hover: hover) {
+  .book-cell:hover img,
+  .books-track li:hover img { transform: translateY(-4px) scale(1.02); }
+}
 
 /* --- Utility ------------------------------------------------------------- */
 .stack-8  > * + * { margin-top: 8px; }
@@ -625,7 +661,9 @@ p:last-child { margin-bottom: 0; }
   border: 0; border-radius: 10px; cursor: pointer;
   transition: background var(--dur) var(--ease);
 }
-.ep-scroller-nav button:hover:not(:disabled) { background: var(--ep-green-hover); }
+@media (hover: hover) {
+  .ep-scroller-nav button:hover:not(:disabled) { background: var(--ep-green-hover); }
+}
 .ep-scroller-nav button:disabled { opacity: .4; cursor: default; }
 
 /* ==========================================================================
@@ -683,7 +721,9 @@ p:last-child { margin-bottom: 0; }
 .ep-btn--green-outline {
   background: transparent; color: var(--ep-green-text); border-color: var(--ep-green);
 }
-.ep-btn--green-outline:hover { background: var(--ep-green); color: var(--ep-on-green); }
+@media (hover: hover) {
+  .ep-btn--green-outline:hover { background: var(--ep-green); color: var(--ep-on-green); }
+}
 
 /* --- Press band (SPEC §B.12) --------------------------------------------- */
 .press-band {
@@ -722,13 +762,17 @@ p:last-child { margin-bottom: 0; }
   overflow: hidden;
 }
 
-/* Whole-card green hover — component-159 slides 2-3 */
-.svc-card:hover { background: var(--ep-green); border-color: var(--ep-green); }
-.svc-card:hover .ep-card__title,
-.svc-card:hover .ep-card__text,
-.svc-card:hover .link-arrow { color: var(--ep-on-green); }
-.svc-card:hover .ep-card__icon--light {
-  background: rgba(255, 255, 255, .22); color: var(--ep-on-green);
+/* Whole-card green hover — component-159 slides 2-3.
+   Gated on a hover-capable pointer: on a touchscreen a tap would otherwise
+   leave the card stuck green until the visitor tapped somewhere else. */
+@media (hover: hover) {
+  .svc-card:hover { background: var(--ep-green); border-color: var(--ep-green); }
+  .svc-card:hover .ep-card__title,
+  .svc-card:hover .ep-card__text,
+  .svc-card:hover .link-arrow { color: var(--ep-on-green); }
+  .svc-card:hover .ep-card__icon--light {
+    background: rgba(255, 255, 255, .22); color: var(--ep-on-green);
+  }
 }
 
 /* --- Your Publishing Journey --------------------------------------------- */
@@ -785,11 +829,15 @@ p:last-child { margin-bottom: 0; }
   cursor: pointer;
   transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.story-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+@media (hover: hover) {
+  .story-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+}
 /* No video wired up: render it as artwork, not as something that invites a
    click it cannot honour. */
 .story-card--static { cursor: default; }
-.story-card--static:hover { transform: none; box-shadow: none; }
+@media (hover: hover) {
+  .story-card--static:hover { transform: none; box-shadow: none; }
+}
 .story-card__img,
 .story-card picture { width: 100%; height: 100%; }
 .story-card__img { object-fit: cover; }
@@ -802,7 +850,9 @@ p:last-child { margin-bottom: 0; }
   cursor: pointer;
   transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
 }
-.story-card__play:hover { transform: scale(1.08); background: var(--ep-white); }
+@media (hover: hover) {
+  .story-card__play:hover { transform: scale(1.08); background: var(--ep-white); }
+}
 .story-card__play svg { margin-left: 2px; }   /* optical centring of the triangle */
 .story-card__cap {
   position: absolute; left: 16px; right: 16px; bottom: 14px;
@@ -830,9 +880,12 @@ p:last-child { margin-bottom: 0; }
   display: flex; gap: 22px; width: max-content;
   animation: marquee 64s linear infinite;
 }
-.marquee:hover .marquee__track,
 .marquee:focus-within .marquee__track,
 .marquee.is-paused .marquee__track { animation-play-state: paused; }
+
+@media (hover: hover) {
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+}
 
 .marquee__bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
 .marquee__toggle {
@@ -844,7 +897,9 @@ p:last-child { margin-bottom: 0; }
   font-size: var(--fs-sm); font-weight: var(--fw-medium);
   cursor: pointer;
 }
-.marquee__toggle:hover { border-color: var(--ep-green); }
+@media (hover: hover) {
+  .marquee__toggle:hover { border-color: var(--ep-green); }
+}
 .marquee__toggle-off { display: none; }
 .marquee__toggle[aria-pressed="true"] .marquee__toggle-on { display: none; }
 .marquee__toggle[aria-pressed="true"] .marquee__toggle-off { display: inline; }
@@ -972,7 +1027,9 @@ p:last-child { margin-bottom: 0; }
 .cta-block__contacts { display: grid; gap: 12px; margin: 28px 0; }
 .cta-block__contacts li { display: flex; align-items: center; gap: 12px; }
 .cta-block__ico { color: var(--ep-green); display: inline-flex; }
-.cta-block__contacts a:hover { color: var(--ep-green-text); }
+@media (hover: hover) {
+  .cta-block__contacts a:hover { color: var(--ep-green-text); }
+}
 .cta-block__actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 0; }
 
 .wizard-card {
@@ -1009,7 +1066,9 @@ p:last-child { margin-bottom: 0; }
   cursor: pointer;
   transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.wizard__chip:hover { border-color: var(--ep-green-line); }
+@media (hover: hover) {
+  .wizard__chip:hover { border-color: var(--ep-green-line); }
+}
 .wizard__radio:checked + .wizard__chip {
   background: var(--ep-white);
   border-color: var(--ep-green);
@@ -1030,7 +1089,9 @@ p:last-child { margin-bottom: 0; }
   cursor: pointer;
   transition: border-color var(--dur) var(--ease);
 }
-.wizard__back:hover { border-color: var(--ep-green); }
+@media (hover: hover) {
+  .wizard__back:hover { border-color: var(--ep-green); }
+}
 .wizard__next { flex: 1 1 auto; }
 
 /* Continue / back only exist as concepts when JS is stepping the form. */

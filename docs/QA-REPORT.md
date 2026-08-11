@@ -393,3 +393,32 @@ than look at it. In order:
 
 After those five, §1.6 (keyboard carousels on mobile), §2.3 (the missing mobile CTA), §2.5 (pricing
 at 1024) and §3.5 (the pre-answered wizard) are the ones I would not let go to a client.
+
+---
+
+## Addendum — responsive sweep
+
+Re-checked at 320, 360, 414, 479, 576, 768, 834, 991, 1024, 1199, 1440, 1920
+and 2560, plus landscape phone (844 × 390), on every page template. Checks per
+size: sideways panning, elements escaping the viewport or their parent,
+overlapping siblings, controls under 24 × 24, distorted images, text under 12px.
+
+**One real defect found and fixed: ungated `:hover`.** All 38 hover rules
+applied on touch devices, which report `hover: none`. A tap leaves the hover
+state applied until the visitor taps elsewhere, so tapping a service card left
+it inverted to brand green. Every hover rule is now inside
+`@media (hover: hover)`; verified as 33/33 guards active on a mouse pointer and
+0/33 on touch, with the desktop appearance measured unchanged
+(`.svc-card:hover` still resolves to `#60C489` with `--ep-on-green` text).
+
+Everything else came back clean. Three results that look like defects and are
+not — the off-canvas drawer inflating `documentElement.scrollWidth`, carousel
+arrows overhanging their rail by design, and the deliberate three-line clamp on
+service card text — are documented in the README's Responsive section so the
+next audit does not re-open them.
+
+Confirmed working rather than assumed: the landscape drawer scrolls and its
+last link is reachable and unobstructed; the skip link lands `#main` clear of
+the sticky header (`scroll-padding-top` is set); all four text inputs are 16px,
+so iOS does not zoom on focus; and no content is hover-only, so touch users
+lose nothing when hover is gated.

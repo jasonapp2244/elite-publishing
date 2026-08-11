@@ -123,6 +123,40 @@ paint removed **114 ms** of forced reflow and took home-page LCP from 308 ms to
 To change the feel, `--dur-reveal` and `--ease-out` are in `tokens.css`. To turn
 it off completely, delete the `initReveal()` call in `assets/js/main.js`.
 
+### Responsive
+
+Breakpoints are at 480 / 576 / 768 / 992 / 1200 / 1520. Content sits in a
+1420px measure (1700px for the navbar); below that everything is fluid, and
+type scales with `clamp()` rather than stepping at breakpoints.
+
+Verified with geometry probes — not screenshots — at 320, 360, 414, 479, 576,
+768, 834, 991, 1024, 1199, 1440, 1920 and 2560, plus landscape phone
+(844 × 390), across every page template. At each size the checks were: does the
+page pan sideways, does any element escape the viewport or its own parent, do
+any two siblings overlap, is any control under 24 × 24, is any image distorted,
+is any text under 12px.
+
+Three things that look wrong in a measurement but are not:
+
+- **`documentElement.scrollWidth` reads ~2050px on a 390px phone.** That is the
+  off-canvas nav drawer, which is `visibility: hidden` when closed. `body`
+  stays at viewport width, the page cannot pan sideways, and the drawer's 16
+  links are not focusable while closed — all verified.
+- **Carousel arrows overhang their rail by 20px.** They are absolutely
+  positioned and centred on the rail's edge by design, and stay inside the
+  viewport.
+- **Service card descriptions are cut off.** A deliberate
+  `-webkit-line-clamp: 3` so cards in a carousel share a height; the full text
+  is on the service page.
+
+**Hover is gated on `@media (hover: hover)`.** All 38 hover rules sit inside
+that guard. Without it, a touchscreen tap leaves the hover state stuck — most
+visibly on the service cards, where the whole card inverts to green and would
+stay green until the visitor tapped somewhere else. Touch devices report
+`hover: none`, so none of the 33 guards apply there; on a mouse pointer all 33
+apply and the styling is unchanged. If you add a hover style, put it inside a
+guard.
+
 ### Two things that look like bugs but are not
 
 1. **The design's copy bugs are reproduced on purpose** — `romance , christian ,`

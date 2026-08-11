@@ -66,9 +66,11 @@ body.page-service { overflow-x: clip; }
   background: var(--ep-white);
   color: var(--ep-ink);
 }
-.page-service .ep-header__cta:hover {
-  background: var(--ep-green-tint);
-  color: var(--ep-ink);
+@media (hover: hover) {
+  .page-service .ep-header__cta:hover {
+    background: var(--ep-green-tint);
+    color: var(--ep-ink);
+  }
 }
 
 /* Only the desktop bar sits on the photo. Below 1200px the nav is a white

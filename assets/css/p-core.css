@@ -104,7 +104,9 @@
   cursor: pointer;
   transition: filter var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
-.books-nav:hover:not(:disabled) { filter: brightness(.9); }
+@media (hover: hover) {
+  .books-nav:hover:not(:disabled) { filter: brightness(.9); }
+}
 .books-nav:disabled { opacity: .4; cursor: default; }
 .books-nav--prev { inset-inline-start: -12px; }
 .books-nav--next { inset-inline-end: -12px; }

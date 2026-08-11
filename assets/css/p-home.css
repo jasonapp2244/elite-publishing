@@ -137,7 +137,9 @@
   width: var(--proc-gap); height: 1px;
   background: var(--ep-border);
 }
-.proc-tab:hover { border-color: var(--ep-ink); }
+@media (hover: hover) {
+  .proc-tab:hover { border-color: var(--ep-ink); }
+}
 .proc-tab[aria-selected="true"] {
   background: var(--ep-black);
   border-color: var(--ep-black);
@@ -178,7 +180,9 @@
   cursor: pointer;
   transition: opacity var(--dur) var(--ease);
 }
-.proc-nav__btn:hover { opacity: .85; }
+@media (hover: hover) {
+  .proc-nav__btn:hover { opacity: .85; }
+}
 
 /* --- 2x2 checklist -------------------------------------------------------- */
 .proc-checks {
@@ -245,7 +249,9 @@
   cursor: pointer;
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.genre-tab:hover { background: var(--ep-green-glass); }
+@media (hover: hover) {
+  .genre-tab:hover { background: var(--ep-green-glass); }
+}
 .genre-tab[aria-pressed="true"] { background: var(--ep-white); color: var(--ep-ink); }
 
 /* --- The rail ------------------------------------------------------------- */
@@ -286,7 +292,9 @@
   cursor: pointer;
   transition: background var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
-.rail-nav:hover:not(:disabled) { background: var(--ep-green-hover); }
+@media (hover: hover) {
+  .rail-nav:hover:not(:disabled) { background: var(--ep-green-hover); }
+}
 .rail-nav:disabled { opacity: .4; cursor: default; }
 .rail-nav--prev { left: calc(0px - var(--rail-out)); transform: translate(-50%, -50%); }
 .rail-nav--next { right: calc(0px - var(--rail-out)); transform: translate(50%, -50%); }
