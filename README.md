@@ -160,7 +160,7 @@ any two siblings overlap, is any control under 24 × 24, is any image distorted,
 is any text under 12px. The four landing pages were swept the same way, 12
 widths each, 48/48 clean.
 
-Three things that look wrong in a measurement but are not:
+Five things that look wrong in a measurement but are not:
 
 - **`documentElement.scrollWidth` reads ~2050px on a 390px phone.** That is the
   off-canvas nav drawer, which is `visibility: hidden` when closed. `body`
@@ -172,6 +172,14 @@ Three things that look wrong in a measurement but are not:
 - **Service card descriptions are cut off.** A deliberate
   `-webkit-line-clamp: 3` so cards in a carousel share a height; the full text
   is on the service page.
+- **Rail cells sit past the right edge of the viewport** — the home page's
+  `.svc-card-cell`s and the Our Books carousel, at every width. They live in an
+  `overflow-x: auto` scroller, where that is the whole mechanism. Only the
+  scroll container has to stay inside, and it does. A probe that flags these is
+  not walking for a scrolling ancestor.
+- **A 177 × 21 "tap target under 24px"** on every page with a form. That is the
+  honeypot input, inside a 1 × 1 `overflow:hidden` / `opacity:0` /
+  `pointer-events:none` wrapper.
 
 **Hover is gated on `@media (hover: hover)`.** All 38 hover rules sit inside
 that guard. Without it, a touchscreen tap leaves the hover state stuck — most

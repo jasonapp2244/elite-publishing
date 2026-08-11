@@ -606,3 +606,80 @@ which is ink on green at 7.4:1, passes.
   element paints immediately
 - the contact page's own `.cta-green` panel is byte-identical after the rule
   moved to `main.css` — same fill, radius, padding, alignment and ghost button
+
+---
+
+## Addendum — site-wide responsive re-sweep (all 21 pages, landing pages included)
+
+Geometry probes across every page template at 320, 360, 414, 576, 768, 992,
+1200 and 1920, plus 300, 1600 and 2560 on a representative subset and landscape
+phone (844 × 390) on five. At each combination: does the page pan sideways, does
+any element escape the viewport, does any child escape its parent's box, is any
+control under 24 × 24, is any text under 12px, is any image squashed, is any
+form control under 16px (which makes iOS zoom the page on focus).
+
+**Result: clean, after three fixes.**
+
+### 1. The footer email broke mid-address on every phone — all 17 site pages
+
+`.ep-footer__brand` has a 26px floor, which below 414px is wider than the space
+left beside the logo mark. `word-break: break-word` then split the address at
+its last dot, so the footer's most prominent line read
+**"Contact@Elitepublishing."** over a stranded **"Co"**. Measured at 2 lines at
+320, 360 and 390; 1 line only from 414 up.
+
+The address is a single token, so nothing but scaling keeps it whole. Below
+414px the type now continues down the same curve — `clamp(17px, 8.7vw - 9.4px,
+26px)` — which holds it to one line all the way to 320. Verified: 1 line at 320,
+360, 390, 414, 480, 768 and 1920, and unchanged at 414 and above.
+
+This was pre-existing, not introduced by the landing pages.
+
+### 2. The landing service cards orphaned their third card on tablet
+
+`grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr))` fitted
+two columns at 768–834 and left card three alone in a half-width slot with an
+empty half beside it; at 991 it squeezed all three to 284px.
+
+`auto-fit` is the wrong tool for exactly three items. Replaced with the same
+breakpoints `.plans__grid` — the site's other three-card row — already uses: one
+centred column capped at 520px below 992, three equal columns above. Measured
+520px × 3 stacked at 768/834/991 and 458px × 3 in a row at 1920.
+
+### 3. Four inline links sat exactly on the 24px tap-target minimum
+
+`Terms & Conditions` and `Privacy Policy` in the footer, and the two
+`.cta-block__contacts` links, measured **24.00px** tall — their line box and
+nothing more. That is WCAG 2.2 SC 2.5.8 to the pixel, so they crossed below it
+on sub-pixel rounding; a probe caught one at 23.99.
+
+Grown to 34px with an absolutely positioned `::after` overlay. Padding was tried
+first and rejected: `.ep-footer__legal-links` is an `inline-flex` row and
+padding on a flex item grows the container's cross size, which moved the footer
+legal line 10px. The overlay is out of flow and shifts nothing — confirmed by
+re-measuring the parents at 24px and 60px, unchanged.
+
+Verified by hit-testing rather than by measurement: a point 4px above and 4px
+below the text now resolves to the link, and 7px above correctly falls through
+to the parent. Lighthouse's `target-size` audit passes.
+
+### Two probe artifacts, not defects
+
+Both were flagged by a first-pass probe and are wrong:
+
+- **Rail cells "escape the viewport"** — `.svc-card-cell` on the home page and
+  the Our Books carousel cells, at every width. They sit inside an
+  `overflow-x: auto` scroller, where extending past the viewport edge is the
+  entire mechanism. Only the scroll container has to stay inside, and it does.
+  The probe now walks for a scrolling ancestor before reporting.
+- **A 177 × 21 "small tap target"** on every page with a form — the honeypot
+  `<input>`, inside a 1 × 1 `overflow:hidden`, `opacity:0`, `pointer-events:none`
+  wrapper.
+
+### Re-verified after the fixes
+
+21/21 pages return 200 with zero PHP diagnostics. Lighthouse on contact, mobile:
+**96 / 100 / 100 / 100**, `target-size` passing, and `color-contrast` the only
+failing audit — 7 nodes, all the `--ep-on-green` decision from DECISIONS §14.
+Landscape phone (844 × 390): the sticky header is 76px, 19% of the screen; the
+landing header is not sticky.

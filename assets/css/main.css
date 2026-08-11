@@ -562,6 +562,20 @@ which passes there. */
 }
 .ep-footer__brand img { width: clamp(38px, 3.9vw, 62px); height: auto; }
 
+/* Below 414px the 26px floor above is wider than the space left beside the
+   logo mark, and `word-break` splits the address at its last dot — leaving the
+   footer's most prominent line reading "Contact@Elitepublishing." over a
+   stranded "Co". The address is one token; the only fix that keeps it whole is
+   to let the type keep scaling below the floor.
+
+   The slope holds it to a single line down to 320px: the span needs
+   26 x (available / 298) px, and available is the viewport less ~107px of
+   container padding, logo and gap. The 17px floor is a backstop that never
+   engages above 300px, not a target. */
+@media (max-width: 413.98px) {
+  .ep-footer__brand { font-size: clamp(17px, 8.7vw - 9.4px, 26px); }
+}
+
 .ep-social { display: flex; gap: 12px; }
 /* Pale grey circle, dark glyph — SPEC §B.2 and the footer in every page
    export. These were an ink circle with a green glyph, which is not what the
@@ -606,6 +620,24 @@ which passes there. */
   font-weight: var(--fw-medium);
 }
 .ep-footer__legal-links { display: inline-flex; gap: 16px; align-items: center; }
+/* These two links, and the contact pair in .cta-block__contacts, measured
+   exactly 24.0px tall — their line box and nothing more. That is the WCAG 2.2
+   2.5.8 minimum to the pixel, so they flipped either side of it on sub-pixel
+   rounding and a probe caught them at 23.99.
+
+   The hit area is grown with an overlay pseudo-element rather than with
+   padding. Padding was tried first: .ep-footer__legal-links is an inline-flex
+   row, and padding on a flex ITEM grows the container's cross size, which moved
+   the footer's legal line 10px. An absolutely positioned ::after is outside
+   flow and cannot shift anything. */
+.ep-footer__legal-links a,
+.cta-block__contacts a { position: relative; }
+.ep-footer__legal-links a::after,
+.cta-block__contacts a::after {
+  content: "";
+  position: absolute;
+  inset: -5px 0;
+}
 
 @media (max-width: 991.98px) {
   .ep-footer__links { grid-template-columns: repeat(3, minmax(0, 1fr)); }

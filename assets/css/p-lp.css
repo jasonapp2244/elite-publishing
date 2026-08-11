@@ -247,14 +247,21 @@ body.lp {
   margin: 0;
 }
 
+/* 3 x 459 + 2 x 23 = 1423, the drawn row.
+
+   Below 992px this is a single centred column capped at 520px, which is what
+   .plans__grid — the site's other three-card row — already does. `auto-fit`
+   was tried first and is wrong here: at 768 it fits two columns and strands
+   the third card alone in a half-width slot, and at 991 it squeezes all three
+   to 284px. A fixed set of breakpoints beats a clever one for exactly three
+   items. */
 .lp-cards {
   display: grid;
   gap: var(--ep-gutter);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-/* 3 x 459 + 2 x 23 = 1423, the drawn row. */
-@media (min-width: 992px) {
-  .lp-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 991.98px) {
+  .lp-cards { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
 }
 
 .lp-card {
