@@ -888,7 +888,16 @@ corner radius except the full-bleed hero backgrounds.
 | A2 | Woman holding *Curse of Stolen Flame* over her face, plain grey backdrop | `about-our-company__02` y ~1330 → `__03` y ~410 (left column) |
 
 ### Service pages — 3 photos each (30 total)
-| Page | Hero background (full-bleed, y 0–866) | Intro photo (left, `__02` y ~110–700) | End-to-End photo (right, `__03` y ~0–545) |
+
+> ⚠️ **The "Hero background" column below no longer describes the built site.**
+> Those crops contain the flattened page design — navbar, `<h1>`, buttons and the
+> form card are baked into the pixels, so a hero built from them renders beneath
+> a picture of itself. Heroes are now cut from the **End-to-End** photograph of
+> the same service (DECISIONS §15). The hero descriptions are kept here as a
+> record of what the design draws, and as the shopping list if bare image fills
+> are ever exported from Figma. The Intro and End-to-End columns *are* accurate.
+
+| Page | Hero background *(design only — not built, see above)* | Intro photo (left, `__02` y ~110–700) | End-to-End photo (right, `__03` y ~0–545) |
 |---|---|---|---|
 | ghostwriting | Woman reading a book while lying on a tartan blanket, dark warm interior | Dark-haired woman resting her chin on a stack of books (*Alte Sorten* visible) | Woman in a black blazer writing in a notebook in a café, plant + window behind |
 | book-editing | Woman in a beige knit on a sofa reading; mug + notebook foreground | Woman from behind in a wooden rocking chair, floor-to-ceiling library wall | Smiling woman in an ivory sweater, chin on hand, open book, amber dome lamp |

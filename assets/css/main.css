@@ -83,11 +83,15 @@ p:last-child { margin-bottom: 0; }
 .text-sm { font-size: var(--fs-sm); line-height: var(--lh-sm); }
 
 /* --- Layout -------------------------------------------------------------- */
+/* --ep-container is the width of the CONTENT (artboard x 250 -> 1670), so the
+   gutter has to sit outside it. Setting max-width to the content width alone
+   made every page 96px narrower than the design at 1920. */
 .container-ep {
+  --pad: clamp(20px, 4vw, 48px);
   width: 100%;
-  max-width: var(--ep-container);
+  max-width: calc(var(--ep-container) + var(--pad) * 2);
   margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 48px);
+  padding-inline: var(--pad);
 }
 
 .section { padding-block: clamp(56px, 5.2vw, var(--space-section)); }
@@ -123,7 +127,8 @@ p:last-child { margin-bottom: 0; }
   border: 3px solid currentColor;
   flex: 0 0 auto;
 }
-.bg-dark-ep .eyebrow, .panel-green .eyebrow { color: var(--ep-white); }
+.bg-dark-ep .eyebrow { color: var(--ep-white); }
+.panel-green .eyebrow { color: var(--ep-on-green); }
 
 /* --- Buttons ------------------------------------------------------------- */
 .ep-btn {
@@ -148,14 +153,24 @@ p:last-child { margin-bottom: 0; }
 .ep-btn--outline { background: transparent; color: var(--ep-ink); border-color: var(--ep-ink); }
 .ep-btn--outline:hover { background: var(--ep-ink); color: var(--ep-white); }
 
-.ep-btn--green { background: var(--ep-green); color: var(--ep-white); }
-.ep-btn--green:hover { background: var(--ep-green-hover); color: var(--ep-white); }
+.ep-btn--green { background: var(--ep-green); color: var(--ep-on-green); }
+.ep-btn--green:hover { background: var(--ep-green-hover); color: var(--ep-on-green); }
 
 .ep-btn--white { background: var(--ep-white); color: var(--ep-ink); }
 .ep-btn--white:hover { background: #f1f1f1; }
 
 .ep-btn--ghost-white { background: transparent; color: var(--ep-white); border-color: var(--ep-white); }
 .ep-btn--ghost-white:hover { background: var(--ep-white); color: var(--ep-ink); }
+/* Outlined-white reads fine on a dark photo but not on brand green (2.15:1).
+   Both green surfaces on the site are listed here — .panel-green (Why Us) and
+   .cta-green (the Contact page band) — so the accessible treatment lives in one
+   place rather than being re-derived per page. */
+:is(.panel-green, .cta-green) .ep-btn--ghost-white {
+  color: var(--ep-on-green); border-color: var(--ep-on-green);
+}
+:is(.panel-green, .cta-green) .ep-btn--ghost-white:hover {
+  background: var(--ep-on-green); color: var(--ep-white); border-color: var(--ep-on-green);
+}
 
 /* The ↗ glyph that sits inside most CTAs in the design. */
 .ep-btn .arrow { width: 14px; height: 14px; flex: 0 0 auto; }
@@ -163,11 +178,15 @@ p:last-child { margin-bottom: 0; }
 /* Inline "Learn More ↗" link */
 .link-arrow {
   display: inline-flex; align-items: center; gap: 6px;
-  color: var(--ep-green);
+  color: var(--ep-green-text);
   font-weight: var(--fw-medium);
   font-size: var(--fs-sm);
 }
-.link-arrow:hover { color: var(--ep-green-hover); text-decoration: underline; }
+.link-arrow:hover { color: var(--ep-green); text-decoration: underline; }
+/* On a green or dark surface the link inverts to white, which passes there. */
+.panel-green .link-arrow,
+.bg-dark-ep .link-arrow,
+.svc-card:hover .link-arrow { color: var(--ep-white); }
 .link-arrow .arrow { width: 12px; height: 12px; }
 
 /* --- Cards --------------------------------------------------------------- */
@@ -199,11 +218,11 @@ p:last-child { margin-bottom: 0; }
 /* --- Green feature panel ------------------------------------------------- */
 .panel-green {
   background: var(--ep-green);
-  color: var(--ep-white);
+  color: var(--ep-on-green);
   border-radius: var(--radius-panel);
   padding: clamp(32px, 3.4vw, 56px);
 }
-.panel-green h2, .panel-green h3 { color: var(--ep-white); }
+.panel-green :is(h2, h3, h4, .h2, .h3, .h4) { color: var(--ep-on-green); }
 
 /* Translucent stat/feature tile used inside the green panel */
 .tile-glass {
@@ -211,24 +230,62 @@ p:last-child { margin-bottom: 0; }
   border-radius: var(--radius-card);
   padding: 20px 24px;
 }
-.tile-glass h4 { color: var(--ep-white); margin-bottom: 6px; }
-.tile-glass p { color: rgba(255, 255, 255, .92); font-size: var(--fs-sm); line-height: var(--lh-sm); }
+.tile-glass :is(h3, h4, .h3, .h4) { color: var(--ep-on-green); margin-bottom: 6px; }
+.tile-glass p { color: var(--ep-on-green); font-size: var(--fs-sm); line-height: var(--lh-sm); }
 
 /* --- FAQ accordion ------------------------------------------------------- */
-.ep-faq__item { border-bottom: 1px solid var(--ep-border); }
+/* SPEC §B.10: discrete white cards with a 13px gap — NOT a bordered list.
+   The open item fills green and its icon becomes a minus. */
+.ep-faq {
+  max-width: 1084px;      /* narrower than the content container, per SPEC */
+  margin-inline: auto;
+  display: grid; gap: 13px;
+}
+.ep-faq__q { margin: 0; font: inherit; }
+.ep-faq__item {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
 .ep-faq__btn {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 24px 0;
+  padding: 19px 24px;
   background: none; border: 0;
   text-align: left;
   font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
   cursor: pointer;
 }
-.ep-faq__icon { flex: 0 0 auto; transition: transform var(--dur) var(--ease); }
-.ep-faq__btn[aria-expanded="true"] .ep-faq__icon { transform: rotate(45deg); }
-.ep-faq__panel { padding-bottom: 24px; color: var(--ep-muted); max-width: 900px; }
+.ep-faq__icon {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  transition: transform var(--dur) var(--ease);
+}
+.ep-faq__panel {
+  padding: 0 24px 20px;
+  font-size: var(--fs-base); line-height: var(--lh-base);
+  color: var(--ep-muted);
+}
+/* Open state */
+.ep-faq__item:has(.ep-faq__btn[aria-expanded="true"]) {
+  background: var(--ep-green);
+  border-color: var(--ep-green);
+}
+.ep-faq__btn[aria-expanded="true"] { color: var(--ep-on-green); }
+.ep-faq__btn[aria-expanded="true"] + .ep-faq__panel,
+.ep-faq__item:has([aria-expanded="true"]) .ep-faq__panel { color: var(--ep-on-green); }
+.ep-faq__btn[aria-expanded="true"] .ep-faq__icon { transform: rotate(135deg); }
+
+/* :has() is unsupported on older engines — fall back to a neutral open item
+   rather than an unreadable one. */
+@supports not selector(:has(*)) {
+  .ep-faq__btn[aria-expanded="true"] { color: var(--ep-ink); }
+  .ep-faq__item { background: var(--ep-white); }
+}
 
 /* --- Forms --------------------------------------------------------------- */
 .ep-field { margin-bottom: 20px; }
@@ -260,8 +317,19 @@ p:last-child { margin-bottom: 0; }
 .ep-alert--ok  { background: var(--ep-green-tint); border: 1px solid var(--ep-green); }
 .ep-alert--err { background: #FDECEA; border: 1px solid #E5A9A2; color: #8C2A1E; }
 
-/* Honeypot — must stay visually hidden but not display:none (bots skip those) */
-.hp-field { position: absolute !important; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+/* Honeypot — must stay visually hidden but not display:none (bots skip those).
+   Do NOT park it at left:-9999px: that extends the document's scrollable area
+   and reports as a phantom 2670px page width to any overflow audit. Pinning it
+   at 0,0 with zero size hides it just as well and takes up no space. */
+.hp-field {
+  position: absolute !important;
+  left: 0; top: 0;
+  width: 1px; height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
 
 /* --- Header / nav -------------------------------------------------------- */
 .ep-header {
@@ -272,8 +340,8 @@ p:last-child { margin-bottom: 0; }
 .ep-header.is-stuck { box-shadow: 0 1px 0 var(--ep-border), 0 6px 24px rgba(0,0,0,.05); }
 /* The navbar sits in a wider container than page content (SPEC §A.6). */
 .ep-header__inner {
-  display: flex; align-items: center; gap: 32px; min-height: 96px;
-  max-width: var(--ep-container-nav);
+  display: flex; align-items: center; gap: 32px; min-height: var(--ep-nav-h);
+  max-width: calc(var(--ep-container-nav) + var(--pad) * 2);
 }
 .ep-logo { flex: 0 0 auto; display: inline-flex; align-items: center; }
 .ep-logo img { height: clamp(46px, 4.4vw, 78px); width: auto; }
@@ -328,7 +396,7 @@ p:last-child { margin-bottom: 0; }
 .ep-burger { display: none; }
 
 @media (max-width: 1199.98px) {
-  .ep-header__inner { min-height: 76px; }
+  .ep-header__inner { min-height: var(--ep-nav-h-sm); }
   .ep-burger {
     display: inline-grid; place-items: center;
     width: 44px; height: 44px; margin-left: auto;
@@ -336,7 +404,7 @@ p:last-child { margin-bottom: 0; }
     cursor: pointer;
   }
   .ep-nav {
-    position: fixed; inset: 76px 0 0 auto;
+    position: fixed; inset: var(--ep-nav-h-sm) 0 0 auto;
     width: min(380px, 88vw);
     flex-direction: column; align-items: stretch; gap: 0;
     margin: 0; padding: 24px;
@@ -438,6 +506,7 @@ p:last-child { margin-bottom: 0; }
 .stack-16 > * + * { margin-top: 16px; }
 .stack-24 > * + * { margin-top: 24px; }
 .list-plain { list-style: none; margin: 0; padding: 0; }
+.m-0 { margin: 0 !important; }   /* was Bootstrap's; kept so dropping it is safe */
 
 /* Horizontal scroller used by the service/testimonial carousels. */
 .ep-scroller {
@@ -454,9 +523,385 @@ p:last-child { margin-bottom: 0; }
 .ep-scroller-nav button {
   width: 44px; height: 44px;
   display: grid; place-items: center;
-  background: var(--ep-green); color: var(--ep-white);
+  background: var(--ep-green); color: var(--ep-on-green);
   border: 0; border-radius: 10px; cursor: pointer;
   transition: background var(--dur) var(--ease);
 }
 .ep-scroller-nav button:hover:not(:disabled) { background: var(--ep-green-hover); }
 .ep-scroller-nav button:disabled { opacity: .4; cursor: default; }
+
+/* ==========================================================================
+   Shared section components — includes/components/*.php
+   Built once by the Lead; every page composes these rather than re-styling
+   them. See docs/CONTRACT.md §3.
+   ========================================================================== */
+
+/* --- Section headers ----------------------------------------------------- */
+.section-head { margin-bottom: clamp(36px, 4vw, 72px); }
+.section-head h2 { margin-bottom: 0; }
+.section-head .eyebrow { margin-bottom: 16px; }
+.section-head__intro { margin-top: 24px; max-width: 72ch; }
+
+.section-head--center { text-align: center; }
+.section-head--center .eyebrow { justify-content: center; }
+.section-head--center .lead { max-width: 68ch; margin-inline: auto; margin-top: 24px; }
+
+/* h2 left, supporting copy + action right — Author Stories, Why Authors Choose Us */
+.section-head--split {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 64px); align-items: end;
+}
+
+/* Header text left, carousel arrows right — Our Services, Genres, Portfolio */
+.section-head:has(.ep-scroller-nav) {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px; align-items: end;
+}
+.section-head__text { min-width: 0; }
+
+@media (max-width: 767.98px) {
+  .section-head--split,
+  .section-head:has(.ep-scroller-nav) { grid-template-columns: 1fr; }
+  .section-head .ep-scroller-nav { display: none; }  /* swipe instead */
+}
+
+/* Green eyebrow variant — wizard "STEP n OF 4".
+   Text on a light surface, so it takes the accessible green (see tokens.css). */
+.eyebrow--green { color: var(--ep-green-text); }
+
+/* Green outline button — Basic/Premium plan CTAs, "Book a Free Consultation".
+   Label uses the accessible green; the border keeps the brand green, where
+   contrast is not a text requirement. */
+.ep-btn--green-outline {
+  background: transparent; color: var(--ep-green-text); border-color: var(--ep-green);
+}
+.ep-btn--green-outline:hover { background: var(--ep-green); color: var(--ep-white); }
+
+/* --- Press band (SPEC §B.12) --------------------------------------------- */
+.press-band {
+  background: var(--ep-black); color: var(--ep-white);
+  padding-block: clamp(40px, 4.4vw, 74px);
+  text-align: center;
+}
+.press-band__eyebrow { color: var(--ep-white); justify-content: center; margin-bottom: 34px; }
+.press-band__row {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: clamp(20px, 3vw, 44px);
+}
+.press-band__logo {
+  color: rgba(255, 255, 255, .55);
+  font-size: clamp(14px, 1.1vw, 19px);
+  font-weight: var(--fw-semibold);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+/* --- Service card carousel (SPEC §B.5) ----------------------------------- */
+/* 4-up at 1920 with a tighter 18px gutter than the 3-up grids. */
+.ep-scroller--4up { gap: var(--ep-gutter-tight); padding-bottom: 8px; }
+.svc-card-cell { width: clamp(268px, 24%, 342px); }
+.svc-card { display: flex; flex-direction: column; height: 100%; }
+.svc-card .link-arrow { margin-top: auto; }
+
+/* The 3-line truncation with a trailing ellipsis is in the design; the full
+   sentence stays in the DOM for search engines and screen readers. */
+.svc-card__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Whole-card green hover — component-159 slides 2-3 */
+.svc-card:hover { background: var(--ep-green); border-color: var(--ep-green); }
+.svc-card:hover .ep-card__title,
+.svc-card:hover .ep-card__text,
+.svc-card:hover .link-arrow { color: var(--ep-on-green); }
+.svc-card:hover .ep-card__icon--light {
+  background: rgba(255, 255, 255, .22); color: var(--ep-on-green);
+}
+
+/* --- Your Publishing Journey --------------------------------------------- */
+.journey {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 40px);
+  counter-reset: journey;
+}
+.journey__step { position: relative; }
+
+/* Dashed connector between steps — drawn on the gap, so it vanishes on wrap. */
+.journey__step + .journey__step::before {
+  content: "";
+  position: absolute; top: 28px; right: calc(100% + 8px);
+  width: clamp(12px, 2.4vw, 32px);
+  border-top: 2px dashed var(--ep-green);
+}
+.journey__tile {
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border-radius: var(--radius-btn);
+  margin-bottom: 20px;
+}
+.journey__tile svg { width: 26px; height: 26px; }
+.journey__tile--green { background: var(--ep-green); color: var(--ep-white); }
+.journey__tile--pale  { background: var(--ep-green-tint-soft); color: var(--ep-green); }
+.journey__title { margin-bottom: 10px; }
+.journey__text { font-size: var(--fs-base); line-height: var(--lh-base); }
+
+@media (max-width: 991.98px) {
+  .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .journey__step + .journey__step::before { display: none; }
+}
+@media (max-width: 575.98px) { .journey { grid-template-columns: 1fr; } }
+
+/* --- Author stories (SPEC §B.8a) ----------------------------------------- */
+.stories { margin-inline: clamp(0px, 3vw, 48px); }
+.stories__aside { text-align: right; }
+.stories__intro { margin-bottom: 24px; }
+.stories__grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ep-gutter);
+}
+/* The card IS the play control — the designed play button and caption are
+   baked into the thumbnail. See includes/components/author-stories.php. */
+.story-card {
+  position: relative; margin: 0; padding: 0;
+  width: 100%;
+  display: block;
+  border: 0;
+  border-radius: var(--radius-card); overflow: hidden;
+  aspect-ratio: 460 / 260;
+  background: var(--ep-border);
+  cursor: pointer;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.story-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card-hover); }
+.story-card__img,
+.story-card picture { width: 100%; height: 100%; }
+.story-card__img { object-fit: cover; }
+.story-card__play {
+  position: absolute; inset: 0; margin: auto;
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, .82); color: var(--ep-ink);
+  border: 0; border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.story-card__play:hover { transform: scale(1.08); background: var(--ep-white); }
+.story-card__play svg { margin-left: 2px; }   /* optical centring of the triangle */
+.story-card__cap {
+  position: absolute; left: 16px; right: 16px; bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--ep-white);
+  font-size: var(--fs-base);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+}
+.story-card__avatar {
+  width: 32px; height: 32px; flex: 0 0 auto;
+  border-radius: 50%; background: rgba(255, 255, 255, .75);
+}
+.story-card__title { display: block; font-size: var(--fs-sm); opacity: .8; }
+
+@media (max-width: 767.98px) {
+  .stories__grid { grid-template-columns: 1fr; }
+  .stories__aside { text-align: left; }
+}
+
+/* --- Testimonial marquee (SPEC §B.8b) ------------------------------------ */
+.marquee { overflow: hidden; }
+.marquee__viewport { overflow-x: auto; scrollbar-width: none; }
+.marquee__viewport::-webkit-scrollbar { display: none; }
+.marquee__track {
+  display: flex; gap: 22px; width: max-content;
+  animation: marquee 64s linear infinite;
+}
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* With motion reduced the track must not sit half-scrolled — reset it and let
+   the viewport scroll normally instead. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; transform: none; }
+}
+
+.review-card {
+  width: 447px; max-width: 84vw; flex: 0 0 auto;
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.review-card__top { display: flex; align-items: center; justify-content: space-between; }
+.review-card__stars { display: inline-flex; gap: 2px; color: var(--ep-star); }
+.review-card__badge {
+  width: 28px; height: 28px; border-radius: 8px; flex: 0 0 auto;
+  background: var(--ep-border);
+}
+.review-card__badge--trustpilot { background: var(--ep-trustpilot); }
+.review-card__badge--google     { background: #EA4335; }
+.review-card__badge--mark       { background: var(--ep-ink); }
+.review-card__quote {
+  margin: 0; flex: 1 1 auto;
+  font-size: var(--fs-base); line-height: var(--lh-base);
+}
+.review-card__by { display: flex; align-items: center; gap: 10px; }
+.review-card__avatar {
+  width: 32px; height: 32px; flex: 0 0 auto;
+  border-radius: 50%; background: var(--ep-green-tint);
+}
+.review-card__role {
+  display: block;
+  font-size: var(--fs-sm); line-height: var(--lh-sm);
+  color: var(--ep-muted);
+}
+
+/* --- Pricing plans (SPEC §B.7) ------------------------------------------- */
+.plans__grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ep-gutter);
+  align-items: center;   /* lets the featured card overhang its siblings */
+}
+.plan {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-green-line);
+  border-radius: var(--radius-card);
+  padding: 32px 28px;
+  height: 100%;
+  display: flex; flex-direction: column;
+}
+/* Standard: 2px green border, an offset outer halo, and ~30px taller. */
+.plan--featured {
+  border: 2px solid var(--ep-green);
+  box-shadow: 0 0 0 4px var(--ep-bg), 0 0 0 5px var(--ep-green);
+  padding-block: 47px;
+}
+.plan__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.plan__icon {
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border: 1px solid var(--ep-green); border-radius: 50%;
+  color: var(--ep-green);
+}
+.plan--featured .plan__icon {
+  background: var(--ep-green); border-color: var(--ep-green); color: var(--ep-white);
+}
+.plan__icon svg { width: 24px; height: 24px; }
+.plan__badge {
+  background: var(--ep-ink); color: var(--ep-white);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-size: var(--fs-base); font-weight: var(--fw-medium); line-height: 1;
+}
+.plan__name { margin-bottom: 12px; }
+.plan__price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 24px; }
+.plan__currency { font-size: var(--fs-h5); font-weight: var(--fw-medium); align-self: flex-start; }
+.plan__figure {
+  font-size: clamp(40px, 3.4vw, var(--fs-price));
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+.plan__period { font-size: var(--fs-lg); color: var(--ep-muted); }
+.plan__features { display: grid; gap: 11px; margin-bottom: 28px; flex: 1 1 auto; }
+.plan__features li { display: flex; align-items: flex-start; gap: 12px; }
+.plan__check {
+  width: 20px; height: 20px; flex: 0 0 auto; margin-top: 2px;
+  display: grid; place-items: center;
+  background: var(--ep-green); color: var(--ep-white);
+  border-radius: 50%;
+}
+.plan__cta { width: 100%; }
+
+@media (max-width: 991.98px) {
+  .plans__grid { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+  .plan--featured { padding-block: 32px; }
+}
+
+/* --- CTA block + wizard (SPEC §B.11 form 1, §B.13) ----------------------- */
+.cta-block__grid {
+  display: grid; grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+  gap: clamp(32px, 4vw, 80px); align-items: center;
+}
+.cta-block__copy .lead { margin-top: 24px; }
+.cta-block__contacts { display: grid; gap: 12px; margin: 28px 0; }
+.cta-block__contacts li { display: flex; align-items: center; gap: 12px; }
+.cta-block__ico { color: var(--ep-green); display: inline-flex; }
+.cta-block__contacts a:hover { color: var(--ep-green-text); }
+.cta-block__actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 0; }
+
+.wizard-card {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(24px, 2.4vw, 36px);
+}
+.wizard__progress {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 8px; margin-bottom: 24px;
+}
+.wizard__seg { height: 4px; border-radius: 2px; background: var(--ep-border); }
+.wizard__seg.is-done { background: var(--ep-green); }
+
+.wizard__step { border: 0; margin: 0; padding: 0; min-width: 0; }
+/* Only hide inactive steps once JS is confirmed present — otherwise the form
+   degrades to every step visible with one working submit. */
+.js .wizard__step:not(.is-active) { display: none; }
+
+.wizard__eyebrow { margin-bottom: 12px; }
+.wizard__q { font-size: var(--fs-h3); margin-bottom: 24px; }
+.wizard__options { display: grid; gap: 10px; margin-bottom: 28px; }
+.wizard__options--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.wizard__chip {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 42px; padding: 10px 14px;
+  background: var(--ep-green-tint-soft);
+  border: 1px solid transparent;
+  border-radius: var(--radius-input);
+  font-size: var(--fs-base);
+  color: var(--ep-green-text);   /* #4E8E6C on the pale chip was only 3.6:1 */
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.wizard__chip:hover { border-color: var(--ep-green-line); }
+.wizard__radio:checked + .wizard__chip {
+  background: var(--ep-white);
+  border-color: var(--ep-green);
+  color: var(--ep-green-text);
+  font-weight: var(--fw-medium);
+}
+/* The radio is visually hidden, so its focus ring has to land on the label. */
+.wizard__radio:focus-visible + .wizard__chip {
+  outline: 3px solid var(--ep-green); outline-offset: 2px;
+}
+.wizard__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.wizard__foot { display: flex; align-items: center; gap: 12px; }
+.wizard__back {
+  width: 48px; height: 48px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  background: var(--ep-white); color: var(--ep-green);
+  border: 1px solid var(--ep-border); border-radius: var(--radius-input);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+}
+.wizard__back:hover { border-color: var(--ep-green); }
+.wizard__next { flex: 1 1 auto; }
+
+/* Nudge shown when Continue is pressed with nothing selected. */
+.wizard__chip.is-shake { animation: shake 380ms var(--ease); border-color: var(--ep-green); }
+@keyframes shake {
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@media (max-width: 991.98px) {
+  .cta-block__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 575.98px) {
+  .wizard__options--2, .wizard__row { grid-template-columns: 1fr; }
+}

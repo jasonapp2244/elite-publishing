@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Elite Publishing — pricing.php (/pricing)
+   Owner: Dev 2. The only page-specific markup is the hero; Plans, FAQ and the
+   CTA + wizard are shared components styled in main.css.
+   ========================================================================== */
+
+.page-pricing {
+  /* Matches .ep-header__inner's min-height in main.css. */
+  --pricing-nav-h: var(--ep-nav-h);   /* was hardcoded 96px — see tokens.css */
+}
+
+@media (max-width: 1199.98px) {
+  .page-pricing { --pricing-nav-h: var(--ep-nav-h-sm); }
+}
+
+/* TEMPORARY guard, same as p-service.css: main.css's off-canvas nav sits at
+   translateX(100%) and gives every page a horizontal scrollbar (reproduces on
+   tools/_smoke.php). `clip`, not `hidden`, so no scroll container is created
+   and the sticky header keeps working. Remove once main.css fixes it. */
+body.page-pricing { overflow-x: clip; }
+
+/* --- 1 · Navbar, light variant over the mint wash (SPEC §B.1) -------------
+   header.php paints itself --ep-bg, which would cut the hero gradient off at
+   the navbar. The design runs the wash behind it, so the bar goes transparent
+   and the page is pulled up underneath it. A $navVariant input on
+   includes/header.php would make this unnecessary — see the report.        */
+.page-pricing > main { margin-top: calc(-1 * var(--pricing-nav-h)); }
+
+.page-pricing .ep-header { background: transparent; }
+.page-pricing .ep-header.is-stuck { background: var(--ep-bg); }
+
+/* --- 2 · Page hero -------------------------------------------------------
+   Named .pricing-hero, not .page-hero: p-core.css owns .page-hero for the
+   other page heroes and all p-*.css files are concatenated into one bundle at
+   build time, so a shared name would cross-contaminate. The right answer is
+   one .page-hero in main.css — see the report. */
+.pricing-hero {
+  padding-top: calc(var(--pricing-nav-h) + clamp(40px, 9.4vw, 180px));
+  padding-bottom: clamp(48px, 7.9vw, 152px);
+}
+
+.pricing-hero__text {
+  max-width: 660px;
+  margin: clamp(16px, 1.4vw, 26px) 0 0;
+}
+
+/* The wash is a top-anchored radial; pin it to the hero box so it does not
+   tile or stretch oddly on short viewports. */
+.pricing-hero.hero-wash { background-repeat: no-repeat; background-size: 100% 100%; }

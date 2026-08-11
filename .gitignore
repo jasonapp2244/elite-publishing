@@ -1,0 +1,18 @@
+# Runtime data written by forms/contact-handler.php — contains submitted
+# personal details and must never reach the repository.
+data/submissions.log
+data/rate-limit.json
+
+# Local environment
+*.local.php
+.env
+
+# Scratch output from browser-automation tooling used during QA
+.playwright-mcp/
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/

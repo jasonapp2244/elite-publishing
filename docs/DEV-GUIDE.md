@@ -4,6 +4,13 @@ Read this before writing a line of code. The foundation is already built and
 verified against the design; your job is to build pages **on top of it**, not
 to reinvent it.
 
+> **Also read `docs/CONTRACT.md`.** It is the Phase 3 interface between the five
+> agents working in parallel: file ownership, the exact shape of every `data/`
+> array, the signature of every shared section component, and every image
+> filename. This guide tells you *how* to build; the contract tells you *what
+> already exists so you don't rebuild it*. `docs/DECISIONS.md` records how the
+> spec's 13 open questions were settled — read that before flagging one again.
+
 Local URL: `http://localhost/Elite%20Publishing/`
 Design reference slices: `_figma-ref/<page-slug>__NN.jpg` (read in NN order, top to bottom)
 Original exports: `Elite Publishing -fgma-images/*.png` (1920px wide artboards)
@@ -109,6 +116,30 @@ From `main.css`:
   — horizontal carousels, JS already wired
 - `.stack-8/16/24`, `.list-plain`, `.visually-hidden`
 
+### Whole sections that are already built — never re-author these
+
+Eight sections repeat across the 17 pages and exist as partials in
+`includes/components/`. They pull their own copy from `data/` and take no
+content parameters. Include them; do not rewrite them.
+
+```php
+<?php require __DIR__ . '/includes/components/press-band.php'; ?>
+<?php require __DIR__ . '/includes/components/services-carousel.php'; ?>
+<?php require __DIR__ . '/includes/components/journey.php'; ?>
+<?php require __DIR__ . '/includes/components/author-stories.php'; ?>
+<?php require __DIR__ . '/includes/components/testimonials.php'; ?>
+<?php require __DIR__ . '/includes/components/plans.php'; ?>
+<?php require __DIR__ . '/includes/components/faq.php'; ?>
+<?php require __DIR__ . '/includes/components/cta-wizard.php'; ?>
+```
+
+Section classes they rely on, available to you too: `.section-head`,
+`.section-head--center`, `.section-head--split`, `.eyebrow--green`,
+`.ep-btn--green-outline`.
+
+If a page needs one of these sections with different copy, that is a spec
+question — report it, do not fork the partial.
+
 Bootstrap 5.3 is loaded — use its **grid and utilities** (`row`, `col-*`, `g-4`,
 `d-flex`, spacing helpers). Bootstrap's **JavaScript bundle is deliberately not
 loaded**, so do not use `data-bs-*` components (modal, collapse, carousel,
@@ -120,8 +151,17 @@ esc($string)                    // ALWAYS escape output
 url('about.php')                // site-relative URL
 asset('css/p-core.css')         // asset URL, auto cache-busted
 ep_icon('arrow-up-right')       // inline SVG, see functions.php for the full list
-ep_picture('img/x.jpg', 'alt', 800, 600, ['eager' => true])
+ep_picture('img/x.jpg', 'alt', 800, 600, ['eager' => true])   // single width
 ep_csrf_field()                 // hidden CSRF input for forms
+
+// Phase 3 additions
+ep_data('shared')               // cached require of data/shared.php
+ep_data_get('shared', 'faq')    // one key, with a safe default
+ep_lines("A\nB")                // designed line break -> "A<br>B", escaped
+ep_srcset('img/svc/x-hero', [1280, 1920], 'alt', 1920, 866, [
+  'sizes' => '100vw', 'eager' => true,
+])                              // multi-width <picture>; path carries NO
+                                // extension and NO width — see CONTRACT §5
 ```
 
 Available icons: `arrow-up-right, arrow-right, arrow-left, chevron-down, plus,

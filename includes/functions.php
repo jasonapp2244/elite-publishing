@@ -140,6 +140,26 @@ function ep_icon(string $name, array $attrs = []): string
         'shield'         => '<path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5Z"/><path d="m9 12 2 2 4-4"/>',
         'users'          => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/>',
 
+        // --- Phase 3 additions (SPEC §E.2) ----------------------------------
+        'minus'          => '<path d="M5 12h14"/>',
+        'chevron-left'   => '<path d="m15 6-6 6 6 6"/>',
+        'chevron-right'  => '<path d="m9 6 6 6-6 6"/>',
+        'lightbulb'      => '<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/>',
+        'paper-plane'    => '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/>',
+        'crown'          => '<path d="m3 7 4.5 4L12 4l4.5 7L21 7l-1.8 12H4.8Z"/>',
+        'badge-check'    => '<path d="M12 2l2.5 2.6L18 4l.6 3.5L22 9l-1.7 3L22 15l-3.4 1.5L18 20l-3.5-.6L12 22l-2.5-2.6L6 20l-.6-3.5L2 15l1.7-3L2 9l3.4-1.5L6 4l3.5.6Z"/><path d="m9 12 2 2 4-4"/>',
+        'eye'            => '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+        'browser'        => '<rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M2.5 9h19M6 6.5h.01M8.5 6.5h.01"/>',
+        'quill'          => '<path d="M4 20c6-1 9-4 11-8s3-7 3-9c-3 .5-6 1.5-9 4S5 14 4 20Z"/><path d="M4 20l5.5-5.5"/>',
+        'hand-pen'       => '<path d="M12 19H5a2 2 0 0 1-2-2v-4"/><path d="m8.5 13.5 8.5-8.5a2.1 2.1 0 0 1 3 3l-8.5 8.5-4 1Z"/>',
+        'magnifier'      => '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m21 21-5.6-5.6"/>',
+
+        // Solid glyphs — registered in $filled below.
+        'play'           => '<path d="M8 5.2v13.6a.6.6 0 0 0 .93.5l10.4-6.8a.6.6 0 0 0 0-1L8.93 4.7a.6.6 0 0 0-.93.5Z" fill="currentColor" stroke="none"/>',
+        'sparkle'        => '<path d="M12 2c.5 5 2.5 7.5 8 8-5.5.5-7.5 3-8 8-.5-5-2.5-7.5-8-8 5.5-.5 7.5-3 8-8Z" fill="currentColor" stroke="none"/>',
+        'dot'            => '<circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/>',
+        'caret-down'     => '<path d="m6 9.5 6 6 6-6Z" fill="currentColor" stroke="none"/>',
+
         // Social marks are solid glyphs, not strokes — see $filled below.
         'facebook'  => '<path d="M14 8.5V7c0-.8.2-1.2 1.3-1.2H17V3h-2.6C11.6 3 10.6 4.4 10.6 6.8v1.7H9V11h1.6v10H14V11h2.3l.4-2.5H14Z" fill="currentColor" stroke="none"/>',
         'linkedin'  => '<path d="M6.9 21H3.5V9h3.4v12ZM5.2 7.5A2 2 0 1 1 5.2 3.5a2 2 0 0 1 0 4ZM21 21h-3.4v-5.8c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.9V9h3.3v1.6h.1a3.6 3.6 0 0 1 3.2-1.8c3.5 0 4.1 2.3 4.1 5.2V21Z" fill="currentColor" stroke="none"/>',
@@ -152,7 +172,11 @@ function ep_icon(string $name, array $attrs = []): string
 
     $class  = $attrs['class'] ?? '';
     $size   = $attrs['size']  ?? null;
-    $filled = in_array($name, ['star', 'facebook', 'linkedin', 'instagram'], true);
+    $filled = in_array(
+        $name,
+        ['star', 'facebook', 'linkedin', 'instagram', 'play', 'sparkle', 'dot', 'caret-down'],
+        true
+    );
 
     return sprintf(
         '<svg viewBox="0 0 24 24"%s%s fill="none" stroke="currentColor" stroke-width="%s" '
@@ -161,6 +185,126 @@ function ep_icon(string $name, array $attrs = []): string
         $size ? ' width="' . (int) $size . '" height="' . (int) $size . '"' : '',
         $filled ? '0' : '1.8',
         $paths[$name]
+    );
+}
+
+// --- Content data -----------------------------------------------------------
+
+/**
+ * Load a file from data/ once and cache it for the rest of the request.
+ *
+ * Every shared component pulls its own content through this, so a page never
+ * passes copy into a partial. Returns [] rather than fatalling if the file is
+ * missing — a half-built section is easier to spot and fix than a white screen.
+ */
+function ep_data(string $name): array
+{
+    static $cache = [];
+
+    if (!array_key_exists($name, $cache)) {
+        $path = EP_ROOT . '/data/' . basename($name) . '.php';
+        $data = is_file($path) ? require $path : null;
+
+        if (!is_array($data)) {
+            if (EP_DEBUG) {
+                trigger_error("ep_data(): data/{$name}.php is missing or does not return an array", E_USER_WARNING);
+            }
+            $data = [];
+        }
+        $cache[$name] = $data;
+    }
+
+    return $cache[$name];
+}
+
+/** Fetch one key out of a data file, with a fallback. */
+function ep_data_get(string $name, string $key, mixed $default = []): mixed
+{
+    return ep_data($name)[$key] ?? $default;
+}
+
+// --- Text -------------------------------------------------------------------
+
+/**
+ * Render a string that carries the design's deliberate line breaks.
+ *
+ * Headlines in the exports break at specific words; that break is content, so
+ * data files store it as "\n" and this turns it into <br>. The text itself is
+ * escaped — only the break is markup.
+ */
+function ep_lines(?string $text): string
+{
+    return str_replace("\n", '<br>', esc($text));
+}
+
+// --- Images -----------------------------------------------------------------
+
+/**
+ * Responsive <picture> across several widths.
+ *
+ * Pass the path with no extension and no width: 'img/svc/ghostwriting-hero'
+ * plus [1280, 1920] resolves to ghostwriting-hero-1280.avif and -1920.avif for
+ * each of avif/webp/jpg. A format is only emitted if its files are on disk, so
+ * a missing AVIF degrades instead of shipping a broken <source>.
+ *
+ * $w/$h are the intrinsic dimensions of the LARGEST width — required, because
+ * they are what holds layout while the image loads.
+ */
+function ep_srcset(string $base, array $widths, string $alt, int $w, int $h, array $opts = []): string
+{
+    sort($widths);
+
+    // The path is meant to carry neither extension nor width, but a trailing
+    // extension is the obvious mistake to make and produces the baffling
+    // "story-1.jpg-960.jpg". Normalise instead of 404ing.
+    $base = preg_replace('/\.(jpe?g|png|webp|avif)$/i', '', $base);
+
+    $class = $opts['class'] ?? '';
+    $sizes = $opts['sizes'] ?? '100vw';
+    $eager = $opts['eager'] ?? false;
+    $fetch = $opts['priority'] ?? $eager;
+    $largest = (int) end($widths);
+
+    $set = static function (string $ext) use ($base, $widths): string {
+        $parts = [];
+        foreach ($widths as $width) {
+            $file = "{$base}-{$width}.{$ext}";
+            if (is_file(EP_ROOT . '/assets/' . ltrim($file, '/'))) {
+                $parts[] = asset($file) . ' ' . $width . 'w';
+            }
+        }
+        return implode(', ', $parts);
+    };
+
+    $sources = '';
+    foreach (['avif' => 'image/avif', 'webp' => 'image/webp'] as $ext => $type) {
+        $srcset = $set($ext);
+        if ($srcset !== '') {
+            $sources .= sprintf(
+                '<source type="%s" srcset="%s" sizes="%s">',
+                $type,
+                esc($srcset),
+                esc($sizes)
+            );
+        }
+    }
+
+    $jpg = $set('jpg');
+
+    return sprintf(
+        '<picture>%s<img src="%s"%s sizes="%s" alt="%s" width="%d" height="%d"%s '
+        . 'loading="%s" decoding="%s"%s></picture>',
+        $sources,
+        esc(asset("{$base}-{$largest}.jpg")),
+        $jpg !== '' ? ' srcset="' . esc($jpg) . '"' : '',
+        esc($sizes),
+        esc($alt),
+        $w,
+        $h,
+        $class !== '' ? ' class="' . esc($class) . '"' : '',
+        $eager ? 'eager' : 'lazy',
+        $eager ? 'sync' : 'async',
+        $fetch ? ' fetchpriority="high"' : ''
     );
 }
 
@@ -196,6 +340,73 @@ function ep_csrf_valid(?string $token): bool
         && is_string($token)
         && hash_equals($_SESSION['ep_csrf'], $token);
 }
+
+// --- Form flash -------------------------------------------------------------
+
+/**
+ * Read (and consume) the flash that forms/contact-handler.php left behind.
+ *
+ * The handler is POST-redirect-GET, so the outcome, the field errors and the
+ * user's own input all travel in the session. This is read once per request and
+ * cached, so a page can render a banner AND the form can repopulate itself from
+ * the same data — whichever calls first does not starve the other.
+ *
+ * @return array{status:string,message:string,errors:array<string,string>,old:array<string,string>}
+ */
+function ep_form_flash(): array
+{
+    static $flash = null;
+
+    if ($flash === null) {
+        ep_session_start();
+        $raw = $_SESSION['ep_form'] ?? [];
+        unset($_SESSION['ep_form']);
+
+        $flash = [
+            'status'  => (string) ($raw['status'] ?? ''),
+            'message' => (string) ($raw['message'] ?? ''),
+            'errors'  => (array) ($raw['errors'] ?? []),
+            'old'     => (array) ($raw['old'] ?? []),
+            'time'    => (int) ($raw['time'] ?? 0),
+            'form'    => (string) ($raw['form'] ?? 'contact'),
+        ];
+    }
+
+    return $flash;
+}
+
+/**
+ * True when the flash belongs to $form ('wizard' | 'contact').
+ *
+ * A service page renders both forms, so each one asks this before showing a
+ * banner or repopulating — otherwise a failed wizard submission reports itself
+ * inside the hero contact form.
+ */
+function ep_form_is(string $form): bool
+{
+    $flash = ep_form_flash();
+    return $flash['status'] !== '' && $flash['form'] === $form;
+}
+
+/** The value the user previously typed into $field, for repopulating a form. */
+function ep_old(string $field, string $form = '', string $default = ''): string
+{
+    if ($form !== '' && !ep_form_is($form)) {
+        return $default;
+    }
+    return (string) (ep_form_flash()['old'][$field] ?? $default);
+}
+
+/** The validation error for $field, or '' if it passed (or is another form's). */
+function ep_field_error(string $field, string $form = ''): string
+{
+    if ($form !== '' && !ep_form_is($form)) {
+        return '';
+    }
+    return (string) (ep_form_flash()['errors'][$field] ?? '');
+}
+
+// --- Security ---------------------------------------------------------------
 
 /** Hidden CSRF input, ready to drop into a form. */
 function ep_csrf_field(): string

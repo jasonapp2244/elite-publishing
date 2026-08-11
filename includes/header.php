@@ -9,8 +9,11 @@ $nav = ep_nav();
   <div class="container-ep ep-header__inner">
 
     <a class="ep-logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> — home">
+      <?php /* No fetchpriority here: the logo is small and would compete with
+               the page's real LCP element (the hero band / hero photo) for
+               early bandwidth. Eager + sync is enough to avoid a header pop. */ ?>
       <img src="<?= esc(asset('img/logo.png')) ?>" alt="<?= esc(EP_NAME) ?>"
-           width="452" height="360" fetchpriority="high" decoding="sync">
+           width="452" height="360" loading="eager" decoding="sync">
     </a>
 
     <button class="ep-burger" type="button"

@@ -1,0 +1,386 @@
+/* ==========================================================================
+   Elite Publishing — home page (index.php)
+   OWNED BY DEV 1. Only rules that are unique to the home page live here;
+   everything shared comes from tokens.css + main.css.
+   Sections: 2 hero · 6 why us · 7 publishing process · 8 genres ·
+             9 portfolio · 10 review platforms.   See docs/SPEC.md §C.1.
+   ========================================================================== */
+
+/* --- Page wash (SPEC §A.1 "Hero background") ------------------------------
+   The mint wash runs from the very top of the document, behind a transparent
+   navbar — see homepage__01. The header only takes a fill once it is stuck. */
+.page-home {
+  background-image: var(--ep-hero-wash);
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% clamp(520px, 45vw, 864px);
+}
+.page-home .ep-header { background: transparent; }
+.page-home .ep-header.is-stuck { background: var(--ep-bg); }
+
+/* ==========================================================================
+   2 — Hero
+   ========================================================================== */
+.home-hero { padding-block: clamp(36px, 6.2vw, 118px) clamp(56px, 7.8vw, 150px); }
+
+.home-hero__inner { max-width: 1220px; text-align: center; }
+
+/* The three line breaks are designed (SPEC §D.3); the box only has to be wide
+   enough that the longest of them does not wrap again. */
+.home-hero__title { margin-bottom: 30px; }
+
+/* The green highlight is a solid rectangle with the ink word on top — not a
+   rounded pill (SPEC §A.1). */
+.home-hero__hl {
+  background: var(--ep-green);
+  color: var(--ep-ink);
+  padding-inline: .06em;
+  border-radius: 0;
+}
+
+.home-hero__text { max-width: 900px; margin-inline: auto; margin-bottom: 32px; }
+
+.home-hero__actions {
+  display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+  margin-bottom: 40px;
+}
+
+.home-hero__rating {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px;
+  margin: 0;
+  font-size: var(--fs-base); line-height: var(--lh-base);
+  color: var(--ep-ink);
+}
+.home-hero__stars { display: inline-flex; gap: 6px; color: var(--ep-ink); }
+
+/* ==========================================================================
+   6 — Why Us  (green panel, 45/55, staggered glass tiles)
+   ========================================================================== */
+/* Sits directly under the services carousel, which already supplies the gap. */
+.home-why { padding-top: 0; }
+
+/* Measured off homepage__02: the two columns are near enough equal once the
+   panel padding is taken off, and the tiles only fill 82% of the right one. */
+.home-why__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+  gap: clamp(24px, 2.6vw, 48px);
+  align-items: center;
+}
+
+.home-why__copy h2 { margin-bottom: 20px; }
+.home-why__text {
+  color: var(--ep-on-green);   /* near-white on brand green was 2.02:1 */
+  margin-bottom: 32px;
+  max-width: 46ch;
+}
+.home-why__actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 0; }
+/* The first label is unusually long; the design still fits both on one row. */
+.home-why__actions .ep-btn { padding-inline: 24px; }
+
+/* Three tiles, each narrower than its column, with the middle one indented
+   further right — the stagger is in the design (homepage__02). */
+.home-why__tiles { display: grid; gap: clamp(12px, 1.2vw, 20px); }
+.home-why__tiles > li { width: 82%; }
+.home-why__tiles > li:nth-child(2) { margin-left: 18%; }
+.home-why__tiles .h4 { margin-bottom: 6px; }
+
+@media (max-width: 991.98px) {
+  .home-why__panel { grid-template-columns: 1fr; }
+  .home-why__tiles > li,
+  .home-why__tiles > li:nth-child(2) { width: 100%; margin-left: 0; }
+}
+
+/* ==========================================================================
+   7 — Our Publishing Process  (pale rounded band → white card → tabs)
+   ========================================================================== */
+.home-process {
+  margin-inline: clamp(0px, 3vw, 48px);
+  /* SPEC §A.5: ~70px above the content, the card almost touches the lower edge. */
+  padding-block: clamp(40px, 3.7vw, 70px) clamp(14px, 1.2vw, 20px);
+}
+.home-process .section-head { margin-bottom: clamp(28px, 2.8vw, 54px); }
+/* The heading breaks after "Published" in the design, so the block is held to
+   roughly half the container (homepage__03). */
+.home-process .section-head h2 { max-width: 660px; }
+
+.proc-card {
+  background: var(--ep-white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(20px, 2.4vw, 46px);
+}
+
+/* --- Tab row -------------------------------------------------------------- */
+/* Seven equal pills joined by hairlines drawn across the gaps. */
+.proc-tabs {
+  --proc-gap: clamp(6px, 2.7vw, 52px);
+  display: flex; align-items: center; gap: var(--proc-gap);
+  margin-bottom: clamp(24px, 2.6vw, 50px);
+}
+.proc-tab {
+  position: relative; flex: 1 1 0; min-width: 0;
+  padding: 11px 10px;
+  background: var(--ep-white);
+  color: var(--ep-ink);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-base); font-weight: var(--fw-medium); line-height: var(--lh-base);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.proc-tab + .proc-tab::before {
+  content: "";
+  position: absolute; top: 50%; right: 100%;
+  width: var(--proc-gap); height: 1px;
+  background: var(--ep-border);
+}
+.proc-tab:hover { border-color: var(--ep-ink); }
+.proc-tab[aria-selected="true"] {
+  background: var(--ep-black);
+  border-color: var(--ep-black);
+  color: var(--ep-white);
+}
+
+/* --- Step panel ----------------------------------------------------------- */
+.proc-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: clamp(20px, 2.7vw, 52px);
+  align-items: start;
+}
+.proc-panel[hidden] { display: none; }
+.proc-panel:focus { outline: none; }
+
+/* "STEP 01" — eyebrow type, but without the ◉ ring the section eyebrows carry. */
+.proc-panel__step {
+  margin-bottom: 14px;
+  color: var(--ep-green-text);
+  font-size: var(--fs-base); font-weight: var(--fw-semibold); line-height: 1.2;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.proc-panel__title { margin-bottom: 16px; }
+.proc-panel__text {
+  margin-bottom: 28px;
+  font-size: var(--fs-base); line-height: var(--lh-base);
+  max-width: 46ch;
+}
+
+.proc-nav { display: flex; gap: 10px; }
+.proc-nav__btn {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: var(--ep-black); color: var(--ep-white);
+  border: 0; border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: opacity var(--dur) var(--ease);
+}
+.proc-nav__btn:hover { opacity: .85; }
+
+/* --- 2x2 checklist -------------------------------------------------------- */
+.proc-checks {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 1vw, 18px);
+  padding: clamp(16px, 1.8vw, 34px);
+  background: var(--ep-green-tint-soft);
+  border-radius: var(--radius-card);
+}
+.proc-check {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--ep-white);
+  border-radius: var(--radius-input);
+  font-size: var(--fs-base); line-height: var(--lh-base);
+}
+.proc-check__mark {
+  width: 32px; height: 32px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  background: var(--ep-green); color: var(--ep-on-green);
+  border-radius: var(--radius-input);
+}
+
+@media (max-width: 991.98px) {
+  /* Seven pills stop fitting — the row becomes swipeable instead of squashed. */
+  .proc-tabs { --proc-gap: 8px; overflow-x: auto; scrollbar-width: none; }
+  .proc-tabs::-webkit-scrollbar { display: none; }
+  .proc-tab { flex: 0 0 auto; padding-inline: 18px; }
+  .proc-tab + .proc-tab::before { display: none; }
+}
+@media (max-width: 767.98px) {
+  .proc-panel { grid-template-columns: 1fr; }
+  .proc-checks { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   8 + 9 — Genres and Portfolio cover rails
+   ========================================================================== */
+.home-genres    { padding-block: clamp(48px, 7.3vw, 140px) 0; }
+.home-portfolio { padding-block: clamp(44px, 6vw, 115px) 0; }
+
+.home-rail__head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px; align-items: end;
+  margin-bottom: clamp(24px, 3vw, 58px);
+}
+/* "View All" must stay its own width once the header stacks. */
+.home-rail__head > .ep-btn { justify-self: start; }
+
+/* --- Genre filter pills --------------------------------------------------- */
+.genre-tabs {
+  display: inline-flex; flex-wrap: wrap; gap: 4px;
+  padding: 5px;
+  background: var(--ep-green);
+  border-radius: var(--radius-pill);
+  justify-self: end;
+}
+.genre-tab {
+  padding: 9px 20px;
+  background: transparent;
+  color: var(--ep-on-green);   /* white on the green track is only 2.15:1 */
+  border: 0; border-radius: var(--radius-pill);
+  font-size: var(--fs-base); font-weight: var(--fw-medium); line-height: var(--lh-base);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.genre-tab:hover { background: var(--ep-green-glass); }
+.genre-tab[aria-pressed="true"] { background: var(--ep-white); color: var(--ep-ink); }
+
+/* --- The rail ------------------------------------------------------------- */
+.book-rail { --rail-out: 24px; position: relative; }
+.book-track { gap: clamp(12px, 1.6vw, 30px); }
+/* 240 of the 1420 container in the artboard — kept proportional. */
+.book-cell { width: clamp(150px, 17%, 240px); }
+
+.book-card { margin: 0; }
+.book-card__img {
+  width: 100%; height: auto;
+  aspect-ratio: 210 / 290;
+  object-fit: cover;
+  border-radius: var(--radius-btn);
+  background: var(--ep-icon-tile);
+}
+.book-card__cap { display: block; padding-top: 14px; }
+.book-card__author {
+  display: block;
+  font-size: var(--fs-sm); line-height: var(--lh-sm);
+  color: var(--ep-muted);
+}
+.book-card__title {
+  display: block;
+  font-size: var(--fs-base); line-height: var(--lh-base);
+  font-weight: var(--fw-medium);
+  color: var(--ep-ink);
+}
+
+/* Arrows are vertically centred on the covers and overhang both edges of the
+   track (SPEC §B.14). The caption sits below, hence the offset. */
+.rail-nav {
+  position: absolute; top: calc(50% - 26px); z-index: 2;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: var(--ep-green); color: var(--ep-on-green);
+  border: 0; border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+.rail-nav:hover:not(:disabled) { background: var(--ep-green-hover); }
+.rail-nav:disabled { opacity: .4; cursor: default; }
+.rail-nav--prev { left: calc(0px - var(--rail-out)); transform: translate(-50%, -50%); }
+.rail-nav--next { right: calc(0px - var(--rail-out)); transform: translate(50%, -50%); }
+
+/* --- Client-side genre filter --------------------------------------------
+   Driven by data-active on the track so the filter costs no JS at first paint,
+   and gated on `.js` so that without scripting every cover stays visible. */
+.js .book-track[data-active="fiction"]     .book-cell:not([data-genre="fiction"])     { display: none; }
+.js .book-track[data-active="non-fiction"] .book-cell:not([data-genre="non-fiction"]) { display: none; }
+.js .book-track[data-active="romance"]     .book-cell:not([data-genre="romance"])     { display: none; }
+.js .book-track[data-active="christian"]   .book-cell:not([data-genre="christian"])   { display: none; }
+.js .book-track[data-active="childrens"]   .book-cell:not([data-genre="childrens"])   { display: none; }
+
+@media (max-width: 1199.98px) {
+  /* The arrows tuck back to the track edge so they cannot leave the viewport. */
+  .book-rail { --rail-out: 0px; }
+  /* Five filter pills stop fitting beside the heading. */
+  .home-rail__head { grid-template-columns: 1fr; }
+  .genre-tabs { justify-self: start; }
+}
+@media (max-width: 767.98px) {
+  .rail-nav { display: none; }   /* swipe instead */
+}
+@media (max-width: 575.98px) {
+  /* Wrapped pills inside a 999px track read as a blob — scroll the track. */
+  .genre-tabs {
+    max-width: 100%;
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+  }
+  .genre-tabs::-webkit-scrollbar { display: none; }
+  .genre-tab { flex: 0 0 auto; }
+}
+
+/* ==========================================================================
+   10 — Review platforms (SPEC §B.9)
+   ========================================================================== */
+.home-platforms { padding-block: clamp(48px, 5.2vw, 100px); }
+
+.plat-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ep-gutter-tight);
+}
+.plat-card {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 24px;
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-card);
+}
+.plat-card__head {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0;
+  font-size: var(--fs-lg); font-weight: var(--fw-medium); line-height: 1.2;
+}
+/* Placeholder platform marks: the real Trustpilot / Google / Reviews.io /
+   Sitejabber logos are third-party brand assets and are not in the icon set. */
+.plat-badge {
+  width: 28px; height: 28px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  background: var(--ep-ink); color: var(--ep-white);
+  border-radius: var(--radius-input);
+  font-size: var(--fs-sm); font-weight: var(--fw-semibold); line-height: 1;
+}
+.plat-badge--trustpilot { background: var(--ep-trustpilot); }
+
+.plat-card__score { display: flex; align-items: baseline; gap: 2px; margin: 0; }
+.plat-card__figure {
+  font-size: clamp(30px, 2.1vw, 40px); line-height: 1;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-display);
+}
+.plat-card__outof { font-size: var(--fs-lg); color: var(--ep-muted); }
+
+.plat-card__reviews {
+  margin: 0;
+  font-size: var(--fs-sm); line-height: var(--lh-sm);
+  color: var(--ep-muted);
+}
+
+.plat-card__rating { display: flex; gap: 4px; margin: 0; color: var(--ep-star); }
+.plat-card__rating .plat-card__star { display: inline-flex; }
+/* Trustpilot rates in filled green squares with a white star inside. */
+.plat-card__rating--squares { color: var(--ep-white); }
+.plat-card__rating--squares .plat-card__star {
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  background: var(--ep-trustpilot);
+  border-radius: 3px;   /* no token this small; SPEC §B.9 shows near-square */
+}
+.plat-card .link-arrow { margin-top: auto; }
+
+@media (max-width: 1199.98px) {
+  .plat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575.98px) {
+  .plat-grid { grid-template-columns: 1fr; }
+}

@@ -25,7 +25,20 @@ $epRootFs  = str_replace('\\', '/', EP_ROOT);
 $epBase    = ($epDocRoot !== '' && str_starts_with($epRootFs, $epDocRoot))
     ? substr($epRootFs, strlen($epDocRoot))
     : '';
-define('EP_BASE', rtrim($epBase, '/') . '/');
+
+/**
+ * Percent-encode each path segment.
+ *
+ * The development folder is literally named "Elite Publishing", so the base
+ * path contains a space. In an href a raw space is merely sloppy, but in a
+ * `srcset` the space IS the delimiter between a URL and its width descriptor —
+ * "/Elite Publishing/x-960.avif 960w" parses as the candidate "/Elite" with an
+ * unknown descriptor, and the browser drops every candidate. That silently
+ * breaks every responsive image on the site. Encode once, here, so url() and
+ * asset() are safe in every context.
+ */
+$epBase = implode('/', array_map('rawurlencode', explode('/', trim($epBase, '/'))));
+define('EP_BASE', '/' . ($epBase !== '' ? $epBase . '/' : ''));
 
 $epScheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 define('EP_ORIGIN', $epScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));

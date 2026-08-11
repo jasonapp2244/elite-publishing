@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Build internals — no crawl value, and the exports are unlicensed source art.
+Disallow: /tools/
+Disallow: /_figma-ref/
+Disallow: /forms/
+
+Sitemap: /sitemap.xml

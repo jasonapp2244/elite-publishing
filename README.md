@@ -1,1 +1,116 @@
-﻿# elite-publishing
+# Elite Publishing
+
+Marketing site for a book publishing company — 17 pages built to a Figma design.
+
+**Stack:** PHP 8.2 · HTML5 · CSS3 (Grid/Flexbox, no framework) · vanilla JS
+**No build step.** Clone it, point Apache at it, and it runs.
+
+---
+
+## Running it locally
+
+Requires XAMPP (or any Apache + PHP 8.2 with the GD extension).
+
+1. Place the folder in your web root, e.g. `F:\xampp\htdocs\Elite Publishing`.
+2. Start Apache.
+3. Open <http://localhost/Elite%20Publishing/>.
+
+`mod_rewrite`, `mod_deflate`, `mod_expires` and `mod_headers` should be enabled —
+`.htaccess` degrades gracefully without them, but you lose pretty URLs,
+compression and cache headers.
+
+No database. No `composer install`. No `npm install`.
+
+---
+
+## Layout
+
+```
+index.php                  Home
+about.php  our-books.php  pricing.php  contact.php
+privacy-policy.php  terms-conditions.php  404.php
+service.php                one template -> all 10 /services/<slug> pages
+sitemap.php                generated XML, served at /sitemap.xml
+
+includes/
+  config.php               site constants, nav model, service registry
+  head.php  header.php  footer.php
+  functions.php            esc() url() asset() ep_icon() ep_data() ep_srcset() …
+  components/              8 shared page sections — see below
+data/                      all copy and content, as plain PHP arrays
+forms/contact-handler.php  CSRF + honeypot + validation + rate limit + mail
+assets/  css/ js/ img/ fonts/
+tools/                     CLI image builders (not web-facing)
+docs/                      spec, decisions, contract, QA and perf reports
+```
+
+### The eight shared sections
+
+Nearly every page is assembled from these rather than hand-written. They read
+their own copy from `data/` and take no content parameters:
+
+`press-band` · `services-carousel` · `journey` · `author-stories` ·
+`testimonials` · `plans` · `faq` · `cta-wizard` · (+ `book-band`)
+
+They cover 8 of the home page's 16 sections and 9 of each service page's 15. If
+you are about to write markup for one of these, don't — include the partial.
+
+```php
+<?php require __DIR__ . '/includes/components/faq.php'; ?>
+```
+
+### Content lives in `data/`, not in pages
+
+`data/shared.php`, `services.php`, `books.php`, `pricing.php`. Editing copy means
+editing a data file, not hunting through templates. Anything marked
+`'draft' => true` is copy the build wrote because the design did not contain it —
+`grep "'draft' => true" data/` finds all of it.
+
+---
+
+## Documentation
+
+Read in this order:
+
+| File | What it is |
+|---|---|
+| `docs/SPEC.md` | The design spec: tokens, per-page breakdown, all copy, asset manifest |
+| `docs/DECISIONS.md` | The 14 judgement calls and why — **read before changing anything that looks wrong** |
+| `docs/CONTRACT.md` | Data shapes, component signatures, image filenames, file ownership |
+| `docs/DEV-GUIDE.md` | How to build a page here |
+| `docs/QA-REPORT.md` | Audit findings |
+| `docs/PERF-REPORT.md` | Lighthouse results and payload, with honest caveats |
+| `docs/CLIENT-QUESTIONS.md` | **Open items needing client answers before launch** |
+
+### Two things that look like bugs but are not
+
+1. **The design's copy bugs are reproduced on purpose** — `romance , christian ,`
+   with spaces before the commas, `Elite Publishing , The`, the About paragraph
+   that ends mid-sentence on a comma. All twelve are listed in `DECISIONS.md`
+   §11 with pre-written corrections. Do not "fix" them casually.
+2. **Text on green panels is dark ink, not white as drawn.** White on `#60C489`
+   measures 2.15:1 and fails WCAG AA at every text size. `DECISIONS.md` §14 has
+   the measurements and a one-line revert.
+
+---
+
+## Status
+
+- 17/17 pages render with zero PHP notices and zero console errors
+- Lighthouse **100 / 100 / 100** (Accessibility, Best Practices, SEO) on every
+  page template, desktop and mobile
+- CLS **0.00**; home page ships ~241 KB over 13 requests
+
+**Before production launch** — see `docs/CLIENT-QUESTIONS.md`:
+
+- **Rights clearance** for the real book covers and press mastheads used in the
+  design. This is a legal decision, not a build one.
+- **SMTP credentials.** The contact handler is complete and header-injection
+  safe, but XAMPP has no mailer, so delivery is untested. In development it
+  appends to `data/submissions.log`; in production it calls `mail()`.
+- Placeholder content: the book catalogue, author-story names and reviewer
+  avatars are all placeholders in the design itself.
+
+`data/submissions.log` and `data/rate-limit.json` hold submitted personal data
+and are gitignored. `.htaccess` also blocks `data/`, `includes/`, `docs/` and
+`_figma-ref/` over HTTP — verified returning 403.

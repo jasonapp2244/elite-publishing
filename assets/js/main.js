@@ -167,6 +167,83 @@
     });
   }
 
+  /* --- Consultation wizard ----------------------------------------------- */
+  /* Progressive enhancement: the markup ships every step visible with one
+     working submit. CSS hides the inactive steps only once `.js` is on <html>,
+     and this wires the stepping. With JS off the form still posts. */
+  function initWizards() {
+    var forms = document.querySelectorAll('[data-wizard]');
+
+    Array.prototype.forEach.call(forms, function (form) {
+      var steps = form.querySelectorAll('.wizard__step');
+      var segs  = form.querySelectorAll('.wizard__seg');
+      if (steps.length < 2) return;
+
+      var index = 0;
+
+      function show(next, moveFocus) {
+        index = Math.max(0, Math.min(steps.length - 1, next));
+
+        Array.prototype.forEach.call(steps, function (step, i) {
+          step.classList.toggle('is-active', i === index);
+        });
+        Array.prototype.forEach.call(segs, function (seg, i) {
+          seg.classList.toggle('is-done', i <= index);
+        });
+
+        // Move focus to the new question so keyboard and screen-reader users
+        // land where the visual change happened. Only on a user-driven step
+        // change — doing it during setup would yank focus (and scroll) to a
+        // form halfway down a 9,000px page on every load.
+        if (!moveFocus) return;
+        var heading = steps[index].querySelector('.wizard__q');
+        if (heading) {
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+        }
+      }
+
+      /* A step with radios needs one chosen before Continue does anything. */
+      function valid(step) {
+        var radios = step.querySelectorAll('input[type="radio"]');
+        if (!radios.length) return true;
+
+        var chosen = Array.prototype.some.call(radios, function (r) { return r.checked; });
+        if (!chosen) {
+          var first = step.querySelector('.wizard__chip');
+          if (first) {
+            first.classList.add('is-shake');
+            setTimeout(function () { first.classList.remove('is-shake'); }, 400);
+          }
+          radios[0].focus();
+        }
+        return chosen;
+      }
+
+      form.addEventListener('click', function (e) {
+        var next = e.target.closest('[data-wizard-next]');
+        var back = e.target.closest('[data-wizard-back]');
+
+        if (next) {
+          if (valid(steps[index])) show(index + 1, true);
+        } else if (back) {
+          show(index - 1, true);
+        }
+      });
+
+      // Enter inside a field should advance, not submit early.
+      form.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || e.target.tagName === 'TEXTAREA') return;
+        if (index < steps.length - 1) {
+          e.preventDefault();
+          if (valid(steps[index])) show(index + 1, true);
+        }
+      });
+
+      show(0, false);
+    });
+  }
+
   /* --- Boot -------------------------------------------------------------- */
   function boot() {
     initNav();
@@ -174,6 +251,7 @@
     initStickyHeader();
     initAccordions();
     initScrollers();
+    initWizards();
   }
 
   if (document.readyState === 'loading') {

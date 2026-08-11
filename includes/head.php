@@ -21,12 +21,23 @@ $pageCss         = $pageCss         ?? [];
 $bodyClass       = $bodyClass       ?? '';
 $ogImage         = $ogImage         ?? 'img/og-default.jpg';
 
+/**
+ * Start the session here, before a single byte of output.
+ *
+ * The consultation wizard sits near the bottom of almost every page and calls
+ * ep_csrf_field(); by that point headers are long gone and session_start()
+ * fails with a warning, leaving the form with no CSRF token. Opening it at the
+ * top of the document is the only place that works for every page.
+ */
+ep_session_start();
+
 $fullTitle  = $pageKey === 'home' ? $pageTitle : $pageTitle . ' | ' . EP_NAME;
 $canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), '?');
 ?>
 <!doctype html>
 <html lang="en">
 <head>
+<script>document.documentElement.className+=" js"</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= esc($fullTitle) ?></title>
@@ -43,12 +54,18 @@ $canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), 
 <meta property="og:image" content="<?= esc(EP_ORIGIN . asset($ogImage)) ?>">
 <meta name="twitter:card" content="summary_large_image">
 
-<!-- Fonts: preload the two weights used above the fold -->
-<link rel="preload" href="<?= esc(asset('fonts/urbanist-600.woff2')) ?>" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="<?= esc(asset('fonts/urbanist-400.woff2')) ?>" as="font" type="font/woff2" crossorigin>
+<!-- Fonts: preload the two weights used above the fold.
+     No ?v= cache-buster here: tokens.css resolves its @font-face src relative
+     to itself, giving an unversioned URL. If the preload href does not match
+     that URL byte-for-byte the browser treats them as two resources, warns
+     "preloaded but not used", and downloads each font twice. -->
+<link rel="preload" href="<?= esc(url('assets/fonts/urbanist-600.woff2')) ?>" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= esc(url('assets/fonts/urbanist-400.woff2')) ?>" as="font" type="font/woff2" crossorigin>
 
+<!-- Bootstrap was removed in Phase 4: a grep of all 17 pages found zero uses of
+     its grid or utilities (no row/col-*/g-*/d-flex/container), so it was 227KB
+     of render-blocking CSS for nothing. Everything here is CSS Grid/Flexbox. -->
 <link rel="stylesheet" href="<?= esc(asset('css/tokens.css')) ?>">
-<link rel="stylesheet" href="<?= esc(asset('css/bootstrap.min.css')) ?>">
 <link rel="stylesheet" href="<?= esc(asset('css/main.css')) ?>">
 <?php foreach ($pageCss as $css): ?>
 <link rel="stylesheet" href="<?= esc(asset($css)) ?>">
@@ -63,7 +80,7 @@ $canonical  = EP_ORIGIN . strtok((string) ($_SERVER['REQUEST_URI'] ?? EP_BASE), 
     '@type'    => 'Organization',
     'name'     => EP_NAME,
     'url'      => EP_ORIGIN . EP_BASE,
-    'logo'     => EP_ORIGIN . asset('img/logo.svg'),
+    'logo'     => EP_ORIGIN . asset('img/logo.png'),
     'description' => EP_TAGLINE,
     'contactPoint' => [
         '@type'       => 'ContactPoint',

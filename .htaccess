@@ -12,6 +12,9 @@ DirectoryIndex index.php
   # /services/ghostwriting  ->  service.php?s=ghostwriting
   RewriteRule ^services/([a-z0-9-]+)/?$ service.php?s=$1 [L,QSA]
 
+  # Generated sitemap, served at the conventional path
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
   # Allow extensionless page URLs (/about -> about.php)
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}\.php -f
@@ -79,4 +82,18 @@ DirectoryIndex index.php
   RewriteRule ^(includes|data|docs|_figma-ref)/ - [F,L]
 </IfModule>
 
-ErrorDocument 404 /404.php
+# --- 404 ------------------------------------------------------------------
+# ErrorDocument takes a URL path, not a filesystem path, so it cannot be
+# written once for both a sub-directory install and a domain root. Routing the
+# miss through mod_rewrite instead keeps it correct in both.
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ 404.php [L]
+</IfModule>
+
+# Fallback for servers without mod_rewrite. Correct at a domain root; update
+# the path if the site is deployed into a sub-directory.
+<IfModule !mod_rewrite.c>
+  ErrorDocument 404 /404.php
+</IfModule>

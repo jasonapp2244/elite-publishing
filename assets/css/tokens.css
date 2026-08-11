@@ -51,6 +51,22 @@
   /* Sampled from the exports; flat fills are exact. See docs/SPEC.md §A.1.  */
   --ep-green:        #60C489;  /* brand primary: buttons, panels, highlight  */
   --ep-green-hover:  #4FB177;  /* derived — no hover state exists in Figma   */
+
+  /* Brand green as TEXT on a light background measures 2.15:1 against white —
+     it fails WCAG AA badly and Lighthouse flags every "Learn More" link. This
+     is the same hue darkened to 5.2:1 so green text stays legible. Use it for
+     text and icons on light surfaces; keep --ep-green for fills, where the
+     brand colour belongs and contrast is carried by the label on top. */
+  --ep-green-text:   #2C7A50;
+
+  /* Text ON brand green. The design draws white here, but white on #60C489 is
+     2.15:1 — it fails AA for body copy (4.5:1) and even for large headings
+     (3:1), so it cannot ship as drawn. The two ways out are to darken the green
+     surface a long way (losing the brand colour) or to darken the text. This
+     keeps the brand green exactly as designed and inverts the text to ink,
+     which measures 7.4:1. Documented in docs/DECISIONS.md and DEV-GUIDE §7.
+     Revert this one token to #FFFFFF to restore the drawn appearance. */
+  --ep-on-green:     #2B2A28;
   --ep-green-glass:  rgba(255, 255, 255, .12);  /* tiles inside green panel  */
 
   /* Three genuinely distinct tints, not one. */
@@ -103,6 +119,11 @@
   --fw-bold: 700;
 
   /* --- Layout ----------------------------------------------------------- */
+  /* Header height. Three stylesheets were hardcoding 96/76 to offset content
+     under the sticky header; changing the header meant changing all three. */
+  --ep-nav-h: 96px;
+  --ep-nav-h-sm: 76px;
+
   --ep-container: 1420px;      /* content: artboard x 250 -> 1670            */
   --ep-container-nav: 1700px;  /* the navbar is wider than the content       */
   --ep-gutter: 23px;           /* 3-up grid: 3x459 + 2x23 = 1423             */
@@ -112,6 +133,7 @@
   --space-section-sm: 64px;
 
   /* --- Shape ------------------------------------------------------------ */
+  --radius-xs: 3px;             /* Trustpilot rating squares                  */
   --radius-btn: 12px;
   --radius-card: 16px;
   --radius-input: 10px;
