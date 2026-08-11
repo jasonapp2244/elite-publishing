@@ -531,15 +531,22 @@ which passes there. */
 .ep-footer__brand img { width: clamp(38px, 3.9vw, 62px); height: auto; }
 
 .ep-social { display: flex; gap: 12px; }
+/* Pale grey circle, dark glyph — SPEC §B.2 and the footer in every page
+   export. These were an ink circle with a green glyph, which is not what the
+   design draws. */
 .ep-social a {
   width: 40px; height: 40px;
   display: grid; place-items: center;
-  background: var(--ep-ink); color: var(--ep-green);
+  background: var(--ep-social-tile); color: var(--ep-ink);
   border-radius: 50%;
-  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease),
+              color var(--dur) var(--ease);
 }
 @media (hover: hover) {
-  .ep-social a:hover { transform: translateY(-2px); opacity: 1; background: #000; }
+  .ep-social a:hover {
+    transform: translateY(-2px); opacity: 1;
+    background: var(--ep-ink); color: var(--ep-white);
+  }
 }
 
 .ep-footer__links {
@@ -1037,6 +1044,31 @@ which passes there. */
   border-radius: 50%;
 }
 .plan__cta { width: 100%; }
+
+/* Featured-card hover — component-140 slide 3. The whole card fills brand
+   green and every accent inverts to black: the sparkle circle, the feature
+   check circles and the CTA.
+   The text stays INK here rather than using --ep-on-green, because that is what
+   the design draws on this particular surface — the labels on the hovered green
+   card are the same dark as the labels on the white cards beside it. The white
+   that --ep-on-green now carries belongs to the flat green panels, not here. */
+@media (hover: hover) {
+  .plan--featured:hover {
+    background: var(--ep-green);
+    border-color: var(--ep-green);
+  }
+  .plan--featured:hover .plan__name,
+  .plan--featured:hover .plan__price,
+  .plan--featured:hover .plan__features li { color: var(--ep-ink); }
+  .plan--featured:hover .plan__period { color: var(--ep-ink); }
+  .plan--featured:hover .plan__icon,
+  .plan--featured:hover .plan__check {
+    background: var(--ep-ink); border-color: var(--ep-ink); color: var(--ep-white);
+  }
+  .plan--featured:hover .plan__cta {
+    background: var(--ep-ink); border-color: var(--ep-ink); color: var(--ep-white);
+  }
+}
 
 @media (max-width: 991.98px) {
   .plans__grid { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }

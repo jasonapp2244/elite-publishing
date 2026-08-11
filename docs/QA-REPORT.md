@@ -466,3 +466,49 @@ chips and 4-segment progress bar; 5-column footer.
 - **The Genres row is under-filled** on three tabs because the placeholder
   catalogue has one book in some genres. Padding it out would mean tagging books
   with genres they do not belong to. Logged as client question 45.
+
+---
+
+## Addendum — Figma parity, remaining pages
+
+Home was covered in the previous addendum. This pass covered Our Books,
+Pricing, About, Contact, the service template (one template, ten pages),
+Privacy/Terms and the shared footer, measuring the build in the browser against
+the reference exports.
+
+**Two differences found and fixed:**
+
+1. **The featured pricing card had no hover state.** `component-140` slide 3
+   shows the Standard card filling solid brand green with every accent
+   inverting to black — the sparkle circle, the five feature check circles and
+   the CTA. Nothing was implemented; hovering did nothing. Now built as drawn.
+   Note the text on that hovered green card stays **ink**, not `--ep-on-green`:
+   the design draws those labels the same dark as the labels on the white cards
+   beside it. White belongs to the flat green panels, not here.
+2. **Footer social icons were the wrong way round.** They rendered as ink
+   circles with green glyphs; SPEC §B.2 and every page export show pale grey
+   circles with dark glyphs. Now `--ep-social-tile: #E4EAE6` with ink glyphs,
+   measuring 11.75:1.
+
+**Verified as already matching** (measured, not eyeballed): Our Books — red
+`#C41230` arrows, 270×416 covers against 270×418 drawn, five visible, white
+overlay captions on a gradient, right-aligned section intro. Pricing — 458px
+cards against 459 drawn, the Standard card's double-stroke halo, 56px icon
+circles filled/outlined correctly, the `Most Popular` pill in `#2B2A28`,
+full-width CTAs, middle card raised. About — image left at 16px radius, and
+both button pairs correct (`Get Started` on the Championing section,
+`View Services` on Why Authors Choose Us — they differ in the design and the
+build has each right), including the paragraph that ends on a comma. Contact —
+icon-led contact links, two-column emoji chips, four-segment progress with only
+the first green, black full-width Continue. Service template — the header CTA
+inverting to a white pill on the photo hero, white nav links, the enquiry card,
+intro image left with the right button pair, and the centred green panel with
+white dot-chips and a white `Learn Our Story` button. Privacy/Terms — no hero
+wash, 76px h1, 28px section headings, disc bullets, full-container measure.
+
+**A trap worth recording.** `footer__01.jpg` shows the footer on saturated
+brand green, which looks like a clear miss against the build's pale mint. It is
+not: that green is the Figma page canvas showing through a transparent
+component frame, `homepage__07.jpg` shows the footer in page context as
+`#EAF5EF`, and SPEC §B.2 carries an explicit warning about exactly this. The
+build is correct. Do not "fix" it.

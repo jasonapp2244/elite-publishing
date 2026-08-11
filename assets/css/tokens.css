@@ -96,6 +96,7 @@
 
   --ep-surface-input: #FBFBFB; /* form input fill                            */
   --ep-icon-tile:     #F2F2F2; /* pale icon tile variant                     */
+  --ep-social-tile:   #E4EAE6; /* footer social circles — SPEC §B.2          */
   --ep-border:        #E6E8E7; /* neutral hairline / card border             */
 
   /* Accents — third-party or decorative, not brand. */
