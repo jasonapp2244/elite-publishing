@@ -714,12 +714,12 @@ which passes there. */
 }
 
 /* Green eyebrow variant — wizard "STEP n OF 4".
-   Text on a light surface, so it takes the accessible green (see tokens.css). */
+   Green text on a light surface: takes --ep-green-text, which is the brand
+   green by decision (tokens.css) and therefore low contrast. */
 .eyebrow--green { color: var(--ep-green-text); }
 
 /* Green outline button — Basic/Premium plan CTAs, "Book a Free Consultation".
-   Label uses the accessible green; the border keeps the brand green, where
-   contrast is not a text requirement. */
+   Label and border are both brand green, as drawn. */
 .ep-btn--green-outline {
   background: transparent; color: var(--ep-green-text); border-color: var(--ep-green);
 }
@@ -1087,7 +1087,7 @@ which passes there. */
   border: 1px solid transparent;
   border-radius: var(--radius-input);
   font-size: var(--fs-base);
-  color: var(--ep-green-text);   /* #4E8E6C on the pale chip was only 3.6:1 */
+  color: var(--ep-green-text);   /* brand green on the pale chip — about 1.9:1 */
   cursor: pointer;
   transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }

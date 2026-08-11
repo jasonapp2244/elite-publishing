@@ -201,9 +201,31 @@ never examined. The 97 above comes from a snapshot audit taken after scrolling
 the whole page to reveal it. Anyone re-checking this should do the same, or
 they will measure the animation rather than the contrast.
 
-`--ep-green-text: #2C7A50` (green text on *light* surfaces — `Learn More`,
-`STEP 01`) was deliberately left alone: this decision was about text on green,
-not green as text. Reverting that too would add roughly a dozen more failures.
+### 14b. Reversed the other direction too — brand green as text
+
+The design owner then asked for the drawn green on light surfaces as well, so
+`--ep-green-text` went from `#2C7A50` (5.2:1) to `#60C489` — the brand green
+itself. That covers `Learn More`, `STEP 01`, `STEP n OF 4`, the wizard chips,
+the plan outline buttons, the numbered markers and the 404 code.
+
+All eleven of its uses were checked first for a green-on-green collision; there
+is none — every one sits on white or on the pale `--ep-green-tint-soft`.
+
+| | Result |
+|---|---|
+| Brand green on white | **2.15:1** |
+| Brand green on the pale `#EFFAF4` chips | **2.01:1** |
+| Failing nodes, both decisions together | **39** (27 at 2.15, 6 at 2.01, 6 at 1.95) |
+| Lighthouse Accessibility, everything visible | **97** — still only `color-contrast` |
+
+The score does not fall below 97 as more nodes fail, because `color-contrast` is
+a single binary audit: it is already failed. Do not read a steady 97 as "no
+further harm" — the node count is the honest measure, and it went 17 → 39.
+
+The token is kept distinct from `--ep-green` even though the two values are now
+identical. That is deliberate: it marks every place where green is carrying
+*text*, so legibility can be restored by editing one line without touching a
+single fill. Set it back to `#2C7A50` to do that.
 
 ---
 

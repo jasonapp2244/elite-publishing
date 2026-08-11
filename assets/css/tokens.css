@@ -52,12 +52,19 @@
   --ep-green:        #60C489;  /* brand primary: buttons, panels, highlight  */
   --ep-green-hover:  #4FB177;  /* derived — no hover state exists in Figma   */
 
-  /* Brand green as TEXT on a light background measures 2.15:1 against white —
-     it fails WCAG AA badly and Lighthouse flags every "Learn More" link. This
-     is the same hue darkened to 5.2:1 so green text stays legible. Use it for
-     text and icons on light surfaces; keep --ep-green for fills, where the
-     brand colour belongs and contrast is carried by the label on top. */
-  --ep-green-text:   #2C7A50;
+  /* Brand green as TEXT on a light background — "Learn More", "STEP 01", the
+     wizard chips, the plan outline buttons, the 404 code. The design uses the
+     brand green itself, and the design owner chose that over the contrast
+     score, so this is deliberately the same value as --ep-green.
+
+     It measures 2.15:1 on white and about 1.9:1 on the pale --ep-green-tint-soft
+     chips, against the 4.5:1 AA needs. It was #2C7A50 (5.2:1, the same hue
+     darkened) until that decision; see docs/DECISIONS.md §14a.
+
+     The token is kept separate from --ep-green rather than deleted, so text can
+     be made legible again by changing this one line without touching a single
+     fill. */
+  --ep-green-text:   #60C489;
 
   /* Text ON brand green. White, as the design draws it — set deliberately,
      with the trade-off known and accepted.

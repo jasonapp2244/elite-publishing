@@ -163,11 +163,14 @@ guard.
    with spaces before the commas, `Elite Publishing , The`, the About paragraph
    that ends mid-sentence on a comma. All twelve are listed in `DECISIONS.md`
    §11 with pre-written corrections. Do not "fix" them casually.
-2. **Text on green panels is white, as drawn, and it fails contrast.** White on
-   `#60C489` measures 2.15:1 where WCAG AA needs 4.5:1. This is not an
-   oversight: the build shipped dark ink (7.4:1) until the design owner chose
-   fidelity to the Figma instead. `DECISIONS.md` §14a has the measurements, and
-   `--ep-on-green` in `tokens.css` reverses it in one line.
+2. **Brand green is used as drawn in both directions, and it fails contrast.**
+   White on `#60C489` and `#60C489` as text both measure 2.15:1, where WCAG AA
+   needs 4.5:1. This is not an oversight: the build shipped accessible
+   substitutes (7.4:1 and 5.2:1) until the design owner chose fidelity to the
+   Figma instead. `DECISIONS.md` §14a and §14b have the measurements.
+   Two tokens in `tokens.css` reverse it — `--ep-on-green` back to `#2B2A28`
+   for text *on* green, `--ep-green-text` back to `#2C7A50` for green *as*
+   text. Neither touches a fill, so the brand colour is unaffected either way.
 
 ---
 
@@ -177,8 +180,12 @@ guard.
 - Lighthouse **100** for Best Practices, SEO and Agentic Browsing on every page
   template, desktop and mobile
 - Lighthouse **Accessibility 97** — the only failing audit is `color-contrast`,
-  entirely from the white-on-green decision above (17 nodes at 2.15:1 and
-  1.95:1). Everything else passes.
+  entirely from the two brand-colour decisions below: **39 nodes**, at 2.15:1
+  (white on green, and brand green as text on white), 2.01:1 (green text on the
+  pale wizard chips) and 1.95:1 (white on the glass tiles). Everything else
+  passes. The score will not drop further as more nodes fail — `color-contrast`
+  is one binary audit and is already failed — so judge this by the node count,
+  not the 97.
   A navigation-mode audit still prints 100, and **that number is misleading**:
   axe skips elements at `opacity: 0`, and the scroll-reveal leaves the green
   sections hidden while the audit runs. The 97 is a snapshot audit taken after
