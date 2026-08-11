@@ -349,3 +349,51 @@ We did **not** pad this out by tagging books with genres they do not belong to �
 calling *Project Hail Mary* a Christian title would fix the picture and mislead
 the reader. It needs about six real titles per genre. Send the real catalogue
 with genres and we will fill the row as designed.
+
+---
+
+## F. Campaign landing pages (lp1–lp4)
+
+Four landing pages were built from the designs added to the project root on
+11 Aug 2026 — `Children's Book Publishing.png`, `Christian Book.png`,
+`Marketing.png` and `Audiobook Production.png` — and published as `/lp1`, `/lp2`,
+`/lp3` and `/lp4`.
+
+All the copy on them is drawn in the designs and is transcribed verbatim; none of
+it is drafted. The open questions are about destinations and claims.
+
+**46. Should these pages be indexed by Google, or are they paid-traffic only?**
+They are currently in `sitemap.xml` at priority 0.6 — lower than the service
+pages, but indexable. That is a deliberate default, not a recommendation:
+
+- If they are **ad landing pages**, they should almost certainly be `noindex`.
+  Three of the four overlap heavily with an existing service page —
+  `/lp1` with Books Publishing, `/lp3` with Book Marketing, `/lp4` with Audio
+  Book Production — and letting both compete for the same query splits the
+  ranking signal between them.
+- If they are meant to **rank organically** for "children's book publishing
+  services" and similar, they should stay indexed, and the overlapping service
+  pages need their own distinct angle.
+
+One line in `sitemap.php` and one flag in each page file switches this. Tell us
+which and we will set it.
+
+**47. The stats band makes four claims we cannot verify.**
+`2,500+ Authors Published`, `500+ Top Rankings Achieved`, `15+ Years of
+Experience`, `98% Client Satisfaction`. They are drawn in all four designs and
+are live on the pages as-is. Please confirm each is accurate and defensible —
+these are the kind of figures an advertising regulator asks about, and we have
+no source for them.
+
+**48. "Listen to Narrator Voice Samples" (lp4) has nothing to link to.**
+It is the primary button on the audiobook page's closing panel, and it promises
+audio. There are no narrator samples anywhere on the site. It currently scrolls
+to the enquiry form, which does not do what the button says. Either send us the
+samples and we will build a player, or approve a different label.
+
+**49. None of the eleven buttons on a landing page has a destination in the
+design.** Every one now scrolls to the hero enquiry form, which is the normal
+choice for a landing page — a visitor who arrived from an ad should convert on
+the page rather than be handed off to the main site. Confirm that is what you
+want, particularly for "Free Consultation", which on the rest of the site goes
+to `/contact`.

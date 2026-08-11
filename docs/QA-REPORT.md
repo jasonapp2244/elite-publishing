@@ -512,3 +512,97 @@ not: that green is the Figma page canvas showing through a transparent
 component frame, `homepage__07.jpg` shows the footer in page context as
 `#EAF5EF`, and SPEC §B.2 carries an explicit warning about exactly this. The
 build is correct. Do not "fix" it.
+
+---
+
+## Addendum — campaign landing pages (lp1–lp4)
+
+Built from the four design PNGs added to the project root on 11 Aug 2026, and
+tested to the same standard as the rest of the site.
+
+### Parity against the designs
+
+Measured at the 1920 artboard, build against export. The build was measured in a
+1905px viewport (1920 less the scrollbar), so a ~0.8% horizontal difference is
+expected and is not counted as a deviation.
+
+| | design | build | |
+|---|---|---|---|
+| content column | 1420 | 1420 | ✓ |
+| header band | 158 | 157 | ✓ |
+| hero form card | 594 × 546 | 594 × 553 | ✓ |
+| h1 | 70 / 75, 3 lines | 70 / 75, 3 lines | ✓ |
+| hero body | 20 / 27 | 20 / 27 | ✓ |
+| cover strip | 1920 × 235 | cropped to 235 | ✓ |
+| stats band | 237 tall | 224 | ✓ |
+| service card | 459 × 358 | 458 × 356 | ✓ |
+| card copy | 16 / 24 | 16 / 24 | ✓ |
+| card hairline | 2px `#60C489` | 2px `#60C489` | ✓ |
+| h2 | 60 / 70, 2 lines | 60 / 70, 2 lines | ✓ |
+| CTA panel | 1420 × 412 | 1420 × 406 | ✓ |
+| footer band | 209, `#60C489`, ink | 209, `#60C489`, ink | ✓ |
+| **page height** | **2833** | **2796** | **−1.3%** |
+
+Every band lands within 36px of its drawn position across a 2833px page.
+
+Three things were wrong on the first build and were fixed: the h1 was set at the
+site's 76px and took four lines instead of three; the mint wash started below
+the header instead of behind it; and the services and CTA sections both carried
+`.section`, stacking their padding to 200px in a gap the design draws at 101.
+
+### One deliberate deviation
+
+**The stats band columns are evenly spaced; the design's are not.** The drawn
+columns are 391px apart starting 45px left of the container, which puts the
+row's right edge 99px *past* the container — invisible only because the fourth
+label is short. Matching it would mean deliberate horizontal overflow. Equal
+columns put the dividers within 63px of the drawn positions. See DECISIONS §16e.
+
+### Responsive
+
+Geometry probes, not screenshots — 4 pages × 12 widths (320, 360, 414, 480, 576,
+768, 834, 992, 1024, 1200, 1440, 1920). At each: does the page pan sideways, does
+any element escape the viewport, is any control under 24×24, is any text under
+12px. **48/48 clean.**
+
+One real defect was found and fixed: at 320px the logo and the header CTA came to
+355px against a 320px viewport and the page panned. The CTA now shrinks below
+420px, and the header row can wrap as a backstop.
+
+The honeypot `<input>` reports as a 177×21 "small tap target" in a naive probe.
+It is not one — `.hp-field` is a 1×1 `overflow:hidden`, `opacity:0`,
+`pointer-events:none` wrapper. Same false positive as on the service pages.
+
+### Lighthouse
+
+| | A11y | BP | SEO | Agentic |
+|---|---|---|---|---|
+| lp1 desktop, navigation | 96 | 100 | 100 | 100 |
+| lp1 desktop, snapshot (all revealed) | 96 | 100 | 100 | 100 |
+| lp2 desktop | 96 | 100 | 100 | 100 |
+| lp3 **mobile** | 96 | 100 | 100 | 100 |
+| lp4 desktop | 96 | 100 | 100 | 100 |
+
+The single failing audit on every page is `color-contrast`. The snapshot audit —
+taken after scrolling the page so the reveal animation cannot hide anything from
+axe, per the caveat in §Verdict — reports **5 nodes on lp1, all of them white on
+`#60C489` at 2.15:1**. Every one traces to the `--ep-on-green` decision in
+DECISIONS §14/§14a. No new failure class was introduced, and the landing footer,
+which is ink on green at 7.4:1, passes.
+
+### Also verified
+
+- 21/21 pages return 200 with zero PHP notices, warnings or fatals
+- zero console errors or warnings on all four landing pages
+- `includes/lp-*.php`, `data/landing.php` and `tools/assets-lp.php` all return
+  **403** over HTTP; `/lp9` still 404s
+- form end-to-end: valid submit → 303 → `?form=ok#form-result` on the same
+  landing page with the success banner; invalid submit → 303 → `?form=error`
+  with all three field errors listed, `aria-invalid` set on the right inputs and
+  the typed values handed back. Test data written to `data/submissions.log` and
+  `data/rate-limit.json` was deleted afterwards.
+- scroll reveal: 6 targets per page, all reach `opacity: 1` with no residual
+  transform after a normal scroll; nothing in the hero is tagged, so the LCP
+  element paints immediately
+- the contact page's own `.cta-green` panel is byte-identical after the rule
+  moved to `main.css` — same fill, radius, padding, alignment and ghost button

@@ -1,6 +1,7 @@
 # Elite Publishing
 
-Marketing site for a book publishing company — 17 pages built to a Figma design.
+Marketing site for a book publishing company — 17 pages built to a Figma design,
+plus 4 campaign landing pages.
 
 **Stack:** PHP 8.2 · HTML5 · CSS3 (Grid/Flexbox, no framework) · vanilla JS
 **No build step.** Clone it, point Apache at it, and it runs.
@@ -30,11 +31,13 @@ index.php                  Home
 about.php  our-books.php  pricing.php  contact.php
 privacy-policy.php  terms-conditions.php  404.php
 service.php                one template -> all 10 /services/<slug> pages
+lp1.php … lp4.php          one template -> all 4 campaign landing pages
 sitemap.php                generated XML, served at /sitemap.xml
 
 includes/
   config.php               site constants, nav model, service registry
   head.php  header.php  footer.php
+  lp-header.php  lp-footer.php  lp-page.php     the landing-page chrome + layout
   functions.php            esc() url() asset() ep_icon() ep_data() ep_srcset() …
   components/              8 shared page sections — see below
 data/                      all copy and content, as plain PHP arrays
@@ -43,6 +46,26 @@ assets/  css/ js/ img/ fonts/
 tools/                     CLI image builders (not web-facing)
 docs/                      spec, decisions, contract, QA and perf reports
 ```
+
+### The four landing pages
+
+`/lp1`–`/lp4` are campaign pages built from four designs in the project root.
+They share one layout (`includes/lp-page.php`), one stylesheet
+(`assets/css/p-lp.css`) and one content file (`data/landing.php`); the page files
+themselves hold no markup. They deliberately have **no navigation** — a logo, a
+CTA, and a lead-capture form in the hero.
+
+Two things about them will look like mistakes and are not:
+
+- **The landing footer uses ink on green while the CTA panel above it uses
+  white.** Both match their designs. Ink on `#60C489` is 7.4:1 and is the only
+  green surface on the site that passes AA — pointing it at `--ep-on-green` to
+  "harmonise" the two would break it. See `DECISIONS.md` §16d.
+- **Their h1 is 70px, not the 76px in `tokens.css`.** Measured, not guessed: at
+  76px the drawn three-line headline takes four lines. `DECISIONS.md` §16f has
+  the working.
+
+Adding a fifth is three steps and no CSS — `CONTRACT.md` §7.3.
 
 ### The eight shared sections
 
@@ -134,7 +157,8 @@ Verified with geometry probes — not screenshots — at 320, 360, 414, 479, 576
 (844 × 390), across every page template. At each size the checks were: does the
 page pan sideways, does any element escape the viewport or its own parent, do
 any two siblings overlap, is any control under 24 × 24, is any image distorted,
-is any text under 12px.
+is any text under 12px. The four landing pages were swept the same way, 12
+widths each, 48/48 clean.
 
 Three things that look wrong in a measurement but are not:
 
@@ -176,10 +200,11 @@ guard.
 
 ## Status
 
-- 17/17 pages render with zero PHP notices and zero console errors
+- 21/21 pages render with zero PHP notices and zero console errors
 - Lighthouse **100** for Best Practices, SEO and Agentic Browsing on every page
   template, desktop and mobile
-- Lighthouse **Accessibility 97** — the only failing audit is `color-contrast`,
+- Lighthouse **Accessibility 97** on the site pages and **96** on the four
+  landing pages — the only failing audit is `color-contrast`,
   entirely from the two brand-colour decisions below: **39 nodes**, at 2.15:1
   (white on green, and brand green as text on white), 2.01:1 (green text on the
   pale wizard chips) and 1.95:1 (white on the glass tiles). Everything else
@@ -190,7 +215,8 @@ guard.
   axe skips elements at `opacity: 0`, and the scroll-reveal leaves the green
   sections hidden while the audit runs. The 97 is a snapshot audit taken after
   scrolling the page to reveal everything — measure it that way, or you are
-  measuring the animation.
+  measuring the animation. A landing page adds 5 more nodes of the same kind and
+  no new failure class; its footer, ink on green at 7.4:1, passes.
 - CLS **0.00**; home page ships ~241 KB over 13 requests
 
 **Before production launch** — see `docs/CLIENT-QUESTIONS.md`:

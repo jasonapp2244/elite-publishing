@@ -160,8 +160,29 @@ function ep_icon(string $name, array $attrs = []): string
         'dot'            => '<circle cx="12" cy="12" r="5" fill="currentColor" stroke="none"/>',
         'caret-down'     => '<path d="m6 9.5 6 6 6-6Z" fill="currentColor" stroke="none"/>',
 
+        // --- Landing-page card glyphs (lp1–lp4) -----------------------------
+        // The four landing designs draw their card icons SOLID, not stroked, so
+        // these are separate entries rather than reuses of 'palette', 'mic',
+        // 'megaphone', 'magnifier' and 'book-open' above — at 30px inside a
+        // 68px tile the stroked versions read noticeably lighter than drawn.
+        'palette-solid'   => '<path d="M12 2a10 10 0 0 0 0 20c1.4 0 2.2-.9 2.2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1 .8-1.7 1.8-1.7H16c3.3 0 6-2.7 6-6 0-4.4-4.5-8-10-8Zm-4.6 12a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Zm.9-4.9a1.6 1.6 0 1 1 1.6-1.6 1.6 1.6 0 0 1-1.6 1.6Zm4.6-1.3a1.6 1.6 0 1 1 1.6-1.6 1.6 1.6 0 0 1-1.6 1.6Zm4.4 2.6a1.6 1.6 0 1 1 1.6-1.6 1.6 1.6 0 0 1-1.6 1.6Z" fill="currentColor" stroke="none"/>',
+        'printer'         => '<path d="M7 3h10a1 1 0 0 1 1 1v3H6V4a1 1 0 0 1 1-1Z" fill="currentColor" stroke="none"/><path d="M4 8h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v-4H6v4H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Zm14.6 2.6a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z" fill="currentColor" stroke="none"/><path d="M8 16h8a0 0 0 0 1 0 0v4a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-4Zm1.8 1.4h4.4v1.2H9.8Z" fill="currentColor" stroke="none"/>',
+        'search-solid'    => '<path d="M10.5 3a7.5 7.5 0 1 0 4.55 13.46l4.24 4.25a1.2 1.2 0 0 0 1.7-1.7l-4.25-4.24A7.5 7.5 0 0 0 10.5 3Zm0 2.4a5.1 5.1 0 1 1 0 10.2 5.1 5.1 0 0 1 0-10.2Z" fill="currentColor" stroke="none"/>',
+        'search-sparkle'  => '<path d="M9.8 4a6.8 6.8 0 1 0 4.1 12.22l3.9 3.9a1.15 1.15 0 0 0 1.63-1.63l-3.9-3.9A6.8 6.8 0 0 0 9.8 4Z" fill="currentColor" stroke="none"/><path d="M18.4 2c.3 2.5 1.1 3.3 3.6 3.6-2.5.3-3.3 1.1-3.6 3.6-.3-2.5-1.1-3.3-3.6-3.6 2.5-.3 3.3-1.1 3.6-3.6Z" fill="currentColor" stroke="none"/>',
+        'megaphone-solid' => '<path d="M17.5 4.2v15.6a1 1 0 0 1-1.6.8L10 16.4V7.6l5.9-4.2a1 1 0 0 1 1.6.8Z" fill="currentColor" stroke="none"/><path d="M8.4 8H5a2.4 2.4 0 0 0 0 4.8v4.4a1 1 0 0 0 1 1h1.4a1 1 0 0 0 1-1v-4.4h.1V8Z" fill="currentColor" stroke="none"/><path d="M19.6 9.2a1 1 0 0 1 1.2.8 6.4 6.4 0 0 1 0 4 1 1 0 1 1-2-.4 4.4 4.4 0 0 0 0-3.2 1 1 0 0 1 .8-1.2Z" fill="currentColor" stroke="none"/>',
+        'calendar-check'  => '<path d="M6 2.5a1 1 0 0 1 1 1V4h10v-.5a1 1 0 1 1 2 0V4a3 3 0 0 1 3 3v1H2V7a3 3 0 0 1 3-3v-.5a1 1 0 0 1 1-1Z" fill="currentColor" stroke="none"/><path d="M2 10h20v9a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-9Zm14.3 3.3-4.5 4.5-2.6-2.6a1 1 0 1 0-1.4 1.4l3.3 3.3a1 1 0 0 0 1.4 0l5.2-5.2a1 1 0 0 0-1.4-1.4Z" fill="currentColor" stroke="none"/>',
+        'leaf'            => '<path d="M20.5 3.2C13 2.6 8 4.4 5.4 8.2a7.6 7.6 0 0 0-.5 7.6l-1.6 1.6a1.1 1.1 0 0 0 1.6 1.6l1.6-1.6c3.4 1.7 7.1.7 9.4-2.3 2.8-3.6 4.4-8.3 4.6-11.9Zm-4 4.2-6.6 6.6a1 1 0 1 1-1.4-1.4l6.6-6.6a1 1 0 0 1 1.4 1.4Z" fill="currentColor" stroke="none"/>',
+        'book-ribbon'     => '<path d="M4 4.6h14a2 2 0 0 1 2 2v1.9a2 2 0 0 1-2 2H6.6l1 1.4-1 1.4H4a1 1 0 0 1-1-1V5.6a1 1 0 0 1 1-1Z" fill="currentColor" stroke="none"/><path d="M6 13.1h14a1 1 0 0 1 1 1v4.3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2v-1.9a2 2 0 0 1 2-2Z" fill="currentColor" stroke="none"/>',
+        'mic-solid'       => '<path d="M12 2a3.2 3.2 0 0 0-3.2 3.2v6.4a3.2 3.2 0 0 0 6.4 0V5.2A3.2 3.2 0 0 0 12 2Zm-1.9 3.4h3.8v1.4h-3.8Zm0 2.8h3.8v1.4h-3.8Z" fill="currentColor" stroke="none"/><path d="M5.6 10.6a1.1 1.1 0 0 1 1.1 1.1 5.3 5.3 0 0 0 10.6 0 1.1 1.1 0 1 1 2.2 0 7.5 7.5 0 0 1-6.4 7.4v1.7h2.3a1.1 1.1 0 1 1 0 2.2H8.6a1.1 1.1 0 0 1 0-2.2h2.3v-1.7a7.5 7.5 0 0 1-6.4-7.4 1.1 1.1 0 0 1 1.1-1.1Z" fill="currentColor" stroke="none"/>',
+        // The sprocket holes and the note are subpaths CUT OUT of the card, so
+        // this one needs fill-rule="evenodd" — with the default nonzero rule
+        // they fill in the same direction as the card and the glyph renders as
+        // a solid block.
+        'audio-track'     => '<path fill-rule="evenodd" d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm.4 2.6v2h2v-2Zm0 3.4v2h2V9Zm0 3.4v2h2v-2Zm0 3.4v2h2v-2ZM17.4 6.6l-6.6 1.5v6.2a1.9 1.9 0 1 0 1.5 1.85V10.5l3.6-.8v3.2a1.9 1.9 0 1 0 1.5 1.85Z" fill="currentColor" stroke="none"/>',
+        'book-open-solid' => '<path d="M11.1 5.9v14.4a.7.7 0 0 1-1 .6 12 12 0 0 0-7.4-1.1.9.9 0 0 1-1-.9V5.4a.9.9 0 0 1 .7-.9 12.4 12.4 0 0 1 8.4 1 .7.7 0 0 1 .3.4Z" fill="currentColor" stroke="none"/><path d="M12.9 5.9v14.4a.7.7 0 0 0 1 .6 12 12 0 0 1 7.4-1.1.9.9 0 0 0 1-.9V5.4a.9.9 0 0 0-.7-.9 12.4 12.4 0 0 0-8.4 1 .7.7 0 0 0-.3.4Z" fill="currentColor" stroke="none"/>',
+
         // Social marks are solid glyphs, not strokes — see $filled below.
-        'facebook'  => '<path d="M14 8.5V7c0-.8.2-1.2 1.3-1.2H17V3h-2.6C11.6 3 10.6 4.4 10.6 6.8v1.7H9V11h1.6v10H14V11h2.3l.4-2.5H14Z" fill="currentColor" stroke="none"/>',
+        'facebook'  =>'<path d="M14 8.5V7c0-.8.2-1.2 1.3-1.2H17V3h-2.6C11.6 3 10.6 4.4 10.6 6.8v1.7H9V11h1.6v10H14V11h2.3l.4-2.5H14Z" fill="currentColor" stroke="none"/>',
         'linkedin'  => '<path d="M6.9 21H3.5V9h3.4v12ZM5.2 7.5A2 2 0 1 1 5.2 3.5a2 2 0 0 1 0 4ZM21 21h-3.4v-5.8c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.9V9h3.3v1.6h.1a3.6 3.6 0 0 1 3.2-1.8c3.5 0 4.1 2.3 4.1 5.2V21Z" fill="currentColor" stroke="none"/>',
         'instagram' => '<path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2 0 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4a3.9 3.9 0 0 1-1.4-.9 3.9 3.9 0 0 1-.9-1.4c-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 3.8a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm0 9.9a3.9 3.9 0 1 1 0-7.8 3.9 3.9 0 0 1 0 7.8Zm7.6-10.1a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0Z" fill="currentColor" stroke="none"/>',
     ];
@@ -174,7 +195,13 @@ function ep_icon(string $name, array $attrs = []): string
     $size   = $attrs['size']  ?? null;
     $filled = in_array(
         $name,
-        ['star', 'facebook', 'linkedin', 'instagram', 'play', 'sparkle', 'dot', 'caret-down'],
+        [
+            'star', 'facebook', 'linkedin', 'instagram', 'play', 'sparkle', 'dot', 'caret-down',
+            // Landing-page card glyphs — all drawn solid.
+            'palette-solid', 'printer', 'search-solid', 'search-sparkle', 'megaphone-solid',
+            'calendar-check', 'leaf', 'book-ribbon', 'mic-solid', 'audio-track',
+            'book-open-solid',
+        ],
         true
     );
 

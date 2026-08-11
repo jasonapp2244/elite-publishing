@@ -430,6 +430,11 @@
       '.why-list__item',
       /* our books */
       '.books-carousel',
+      /* landing pages — the hero and its form are above the fold and are
+         filtered out by the fold test, not listed here */
+      '.lp-stats__grid',
+      '.lp-services__head',
+      '.lp-cards > li',
       /* the services rail animates as one block, its cards do not */
       '.ep-scroller--4up',
       /* policy pages */

@@ -15,26 +15,8 @@
   line-height: var(--lh-sm);
 }
 
-/* --- Green CTA band ------------------------------------------------------ */
-.cta-green {
-  background: var(--ep-green);
-  border-radius: var(--radius-card);
-  padding: clamp(40px, 4.6vw, 88px) clamp(24px, 3vw, 56px);
-  text-align: center;
-  /* White on brand green is 2.15:1 and fails AA. See --ep-on-green. */
-  color: var(--ep-on-green);
-}
-.cta-green h2 { color: var(--ep-on-green); }
-.cta-green__intro {
-  margin-inline: auto;
-  margin-top: 20px;
-  max-width: 58ch;
-  color: var(--ep-on-green);
-}
-.cta-green__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 32px;
-}
+/* The green CTA band that used to live here moved to main.css when the four
+   campaign landing pages picked it up — it was never really page-scoped
+   (main.css already styled its ghost button and main.js already revealed it),
+   and a landing page loading "p-contact.css" to get a shared component would
+   have been misleading. */

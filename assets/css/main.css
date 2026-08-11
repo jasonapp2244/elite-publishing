@@ -249,6 +249,10 @@ which passes there. */
   margin-bottom: 20px;
 }
 .ep-card__icon--light { background: var(--ep-icon-tile); color: var(--ep-ink); }
+/* Pale mint tile with a brand-green glyph — the landing-page service cards.
+   Decorative: the glyph is never the only thing carrying meaning, so the
+   2.15:1 it measures against the tile is not a text-contrast failure. */
+.ep-card__icon--mint { background: var(--ep-green-tint-soft); color: var(--ep-green); }
 .ep-card__icon svg { width: 45%; height: 45%; }
 .ep-card__title { margin-bottom: 10px; font-size: var(--fs-h4); line-height: 1.22; }
 .ep-card__text { color: var(--ep-muted); font-size: var(--fs-sm); line-height: var(--lh-sm); margin-bottom: 16px; }
@@ -261,6 +265,34 @@ which passes there. */
   padding: clamp(32px, 3.4vw, 56px);
 }
 .panel-green :is(h2, h3, h4, .h2, .h3, .h4) { color: var(--ep-on-green); }
+
+/* --- Green CTA band ------------------------------------------------------
+   The rounded green block that closes the Contact page and all four campaign
+   landing pages. It lived in p-contact.css until the landing pages picked it
+   up; it belongs here, alongside the .ep-btn--ghost-white rule above that has
+   always styled its outlined button. */
+.cta-green {
+  background: var(--ep-green);
+  border-radius: var(--radius-card);
+  padding: clamp(40px, 4.6vw, 88px) clamp(24px, 3vw, 56px);
+  text-align: center;
+  /* White on brand green is 2.15:1 and fails AA. See --ep-on-green. */
+  color: var(--ep-on-green);
+}
+.cta-green h2 { color: var(--ep-on-green); }
+.cta-green__intro {
+  margin-inline: auto;
+  margin-top: 20px;
+  max-width: 58ch;
+  color: var(--ep-on-green);
+}
+.cta-green__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 32px;
+}
 
 /* Translucent stat/feature tile used inside the green panel */
 .tile-glass {

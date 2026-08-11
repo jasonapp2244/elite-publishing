@@ -1,0 +1,346 @@
+/* ==========================================================================
+   Elite Publishing — p-lp.css
+   The four campaign landing pages (lp1-lp4). One layout, four sets of copy.
+
+   Every value here was sampled from the design PNGs in the project root at
+   their native 1920 artboard. The measurements that drove it:
+
+     content column   x 250 -> 1670          = 1420  (--ep-container, unchanged)
+     header band      158 tall, logo 112x89, CTA pill 231x55 ending at x=1669
+     hero grid        copy 250-1010, form card 1076-1669 (594 wide, 546 tall)
+     book strip       y  881-1115
+     stats band       y 1116-1352  (237 tall, #000, 1px white dividers)
+     service cards    459 wide, 23 apart, 358 tall, 28 padding, 70px icon tile
+     card hairline    2px #60C489, 28 above the card's bottom edge
+     CTA panel        1420 x 412, #60C489, y 2112-2523
+     footer band      209 tall, solid #60C489, ink text, 60 padding
+
+   Anything not listed above is a shared component and is NOT restyled here.
+   ========================================================================== */
+
+/* --- The mint wash -------------------------------------------------------
+   It has to start at y=0, BEHIND the header — sampled #B5E2C8 at the very top
+   centre of the export — so it cannot live on .lp-hero, which begins below the
+   header. It goes on the body instead.
+
+   Deeper and greener than the site's --ep-hero-wash (#D8EEE2 at its strongest),
+   and it is an ellipse anchored to the top edge rather than a linear fade: at
+   y=2 the colour is already back to #F3F8F5 at both the left and right edges,
+   and it has reached the page background by roughly y=600.
+
+   The last stop is --ep-bg, not `transparent`. Fading to transparent
+   interpolates through rgba(0,0,0,0) in sRGB and leaves a grey cast over the
+   bottom half of the gradient. */
+body.lp {
+  background-color: var(--ep-bg);
+  background-image:
+    radial-gradient(72% 620px at 50% 0%,
+      #B5E2C8 0%,
+      #D4EDDE 32%,
+      #E9F5EE 58%,
+      var(--ep-bg) 100%);
+  background-repeat: no-repeat;
+}
+
+/* --- Header --------------------------------------------------------------
+   No nav, no burger, no dropdown — see includes/lp-header.php. Not sticky:
+   the designs do not draw it that way, and the hero form is the conversion
+   target anyway. */
+.lp-header {
+  background: transparent;   /* the wash runs up behind it */
+  position: relative;
+  z-index: 2;
+}
+.lp-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Wrapping is the safety net, not the plan. The logo and the CTA fit on one
+     row at every width once the CTA shrinks below 420px (see the query at the
+     end of this block); wrap only catches a longer CTA label being set in
+     data/landing.php later, and drops it to its own row instead of making the
+     whole page pan sideways. */
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  min-height: clamp(88px, 8.2vw, 158px);
+}
+.lp-header__logo { display: block; flex: 0 0 auto; }
+.lp-header__logo img {
+  display: block;
+  width: clamp(78px, 5.8vw, 112px);
+  height: auto;
+}
+.lp-header__cta { flex: 0 0 auto; }
+
+/* At 320px the logo (78) plus a full-size pill (213) plus the gap and the
+   container's 20px gutters comes to 355 — 35px more than the viewport. */
+@media (max-width: 419.98px) {
+  .lp-header__inner { gap: 10px 12px; }
+  .lp-header__cta {
+    padding-inline: 18px;
+    font-size: var(--fs-sm);
+    min-height: 46px;
+  }
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+.lp-hero { padding-bottom: clamp(48px, 5vw, 96px); }
+
+.lp-hero__grid {
+  display: grid;
+  gap: clamp(32px, 3.4vw, 66px);
+  align-items: start;
+  padding-top: clamp(28px, 3.4vw, 68px);
+}
+@media (min-width: 992px) {
+  /* 760 + 66 + 594 = 1420 */
+  .lp-hero__grid { grid-template-columns: minmax(0, 760fr) minmax(0, 594fr); }
+}
+
+.lp-hero__copy h1 {
+  /* No max-width and no <br>. The 760px copy column is itself what breaks the
+     drawn headline in the right places — the longest line, lp1's "Book
+     Publishing Services", measures 728px — and letting it wrap naturally is
+     what keeps it sane on a 360px phone.
+
+     Size and leading are both overridden. The site h1 is 76/88; these are drawn
+     at 70/75. 70px is not a guess — setting the three drawn lines in Urbanist
+     600 at -2.5% tracking reproduces their measured widths (661/722/733px) to
+     within 0.5% at 70px, and runs 8% wide at 76px. The 6px matters: at 76px the
+     headline takes four lines instead of the drawn three. */
+  font-size: clamp(38px, 4.3vw + 6px, 70px);
+  line-height: 1.07;
+  margin-bottom: 24px;
+}
+.lp-hero__text {
+  /* 20/27 in the design — --fs-lg, not the smaller body size. Measured pitch
+     between the four wrapped lines is exactly 27px. */
+  color: var(--ep-body);
+  font-size: clamp(16px, .42vw + 14px, var(--fs-lg));
+  line-height: 1.35;
+  max-width: 62ch;
+}
+.lp-hero__text + .lp-hero__text { margin-top: 18px; }
+
+.lp-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: clamp(28px, 2.6vw, 44px);
+}
+/* 231x55 at 1920. The shared .ep-btn padding gets close; this pins the height
+   so the two buttons match the header pill exactly. */
+.lp-hero__actions .ep-btn,
+.lp-services__actions .ep-btn,
+.lp-header__cta { min-height: 55px; }
+
+/* --- Hero form card ------------------------------------------------------ */
+.lp-form-card {
+  background: var(--ep-white);
+  border-radius: var(--radius-panel);
+  padding: clamp(24px, 2.4vw, 40px);
+  box-shadow: var(--shadow-card);
+  /* The card is a jump target for all eleven CTAs; without this the sticky-free
+     header still leaves it flush against the viewport top on arrival. */
+  scroll-margin-top: 24px;
+}
+.lp-form-card__title { margin-bottom: 24px; }
+.lp-form__flash { margin-bottom: 20px; }
+.lp-form__flash-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-sm);
+}
+.lp-form .ep-field { margin-bottom: 14px; }
+.lp-form__message { min-height: 132px; }
+.lp-form__submit { width: auto; margin-top: 8px; }
+
+/* --- Book-cover strip ----------------------------------------------------
+   The shared component's 'hero' artwork is 1920x285 and the home page uses it
+   at its full height. These designs crop the same strip to 1920x235, taking
+   the extra 50px off the TOP — the covers sit lower in frame and their tops are
+   cut harder, while their bottoms stay flush against the black band below.
+   Cropping in CSS rather than cutting a second asset: it is the same artwork,
+   and a near-duplicate 1920px image in three formats is 9 files to keep in
+   step for 50px. */
+.lp-hero + .book-band img {
+  aspect-ratio: 1920 / 235;
+  height: auto;
+  object-fit: cover;
+  object-position: bottom;
+}
+
+/* --- Stats on black ------------------------------------------------------
+   Full-bleed black band directly under the cover strip.
+
+   The design's four columns are 391px apart with the row starting 45px left of
+   the container, which puts its right edge 99px PAST the container and only
+   works because the fourth label is short enough not to reach it. Reproducing
+   that offset would mean deliberate horizontal overflow — the exact bug this
+   build spent a session removing — so the columns are equal and fill the
+   container instead. Dividers land within 63px of the drawn positions and the
+   band reads identically. Noted in docs/QA-REPORT.md. */
+.lp-stats {
+  background: var(--ep-black);
+  color: var(--ep-white);
+  padding-block: clamp(36px, 3.8vw, 68px);
+}
+.lp-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 0;
+}
+@media (min-width: 768px) {
+  .lp-stats__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+}
+.lp-stats__item + .lp-stats__item {
+  border-left: 1px solid rgba(255, 255, 255, .3);
+  padding-left: clamp(20px, 2.4vw, 45px);
+}
+/* On the 2-up phone layout the third item starts a new row, so its left border
+   would be a stray hairline against nothing. */
+@media (max-width: 767.98px) {
+  .lp-stats__item:nth-child(odd) { border-left: 0; padding-left: 0; }
+}
+.lp-stats__value {
+  font-size: clamp(30px, 2.2vw + 12px, 52px);
+  font-weight: var(--fw-semibold);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  margin-bottom: 6px;
+}
+.lp-stats__label {
+  font-size: clamp(13px, .3vw + 12px, 18px);
+  line-height: 1.4;
+  color: var(--ep-white);
+  margin: 0;
+}
+
+/* --- Services ------------------------------------------------------------
+   The design leaves ~100px between blocks, once. Both this section and the CTA
+   section below carry .section, so their padding would otherwise stack to 200
+   in the gap between the cards and the green panel. */
+.lp-services { padding-bottom: 0; }
+
+.lp-services__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(20px, 2.4vw, 40px);
+  margin-bottom: clamp(32px, 3.2vw, 56px);
+}
+.lp-services__head h2 {
+  /* Two lines at 1920, as drawn, with the buttons beside it. No max-width:
+     the flex basis leaves the heading the ~893px the design gives it
+     (1420 container - 487 of buttons - the gap), which is where "Complete
+     Children's Book Publishing" breaks. Below 992px the basis is wider than
+     the space left, so the buttons drop to their own line. */
+  flex: 1 1 420px;
+  margin-bottom: 0;
+}
+.lp-services__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+}
+
+.lp-cards {
+  display: grid;
+  gap: var(--ep-gutter);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+/* 3 x 459 + 2 x 23 = 1423, the drawn row. */
+@media (min-width: 992px) {
+  .lp-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.lp-card {
+  display: flex;
+  flex-direction: column;
+  /* The hairline is pinned to the bottom of the card, so cards in a row share
+     one baseline for it even when their copy runs to different lengths. */
+  padding-bottom: clamp(48px, 3.6vw, 60px);
+  position: relative;
+}
+.lp-card .ep-card__icon { border-radius: 14px; }
+.lp-card__title { margin-bottom: 14px; }
+/* 16/24 in the design, not the 14/20 the shared .ep-card__text uses elsewhere —
+   measured pitch between the wrapped lines is exactly 24px. */
+.lp-card__text {
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  margin-bottom: 0;
+}
+/* Decoration, not a divider — see includes/lp-page.php. */
+.lp-card::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 28px;
+  height: 2px;
+  background: var(--ep-green);
+}
+
+/* --- Closing CTA ---------------------------------------------------------
+   .cta-green lives in main.css. The panel is drawn 1420 x 412, and the shared
+   component's generous padding overshoots that by ~54px, so the block metrics
+   are pinned here. Measured, top to bottom: 66 padding, 2 heading lines at 70,
+   20, 2 intro lines at 24, 22, a 56 button row, 60 padding = 412. */
+.lp-cta {
+  padding: clamp(40px, 3.5vw, 66px) clamp(24px, 3vw, 56px) clamp(36px, 3.2vw, 60px);
+}
+.lp-cta h2 { max-width: 30ch; margin-inline: auto; }
+/* Two lines in the design, at the shared 16/24 the panel already inherits. */
+.lp-cta .cta-green__intro { max-width: 55em; }
+.lp-cta .cta-green__actions { margin-top: 22px; }
+
+/* --- Footer --------------------------------------------------------------
+   Solid brand green with INK text, as drawn — not --ep-on-green, which is
+   white and describes the CTA panel above. See includes/lp-footer.php for why
+   these two green surfaces deliberately disagree. Ink on #60C489 is 7.4:1. */
+.lp-footer {
+  background: var(--ep-green);
+  color: var(--ep-ink);
+  padding-block: clamp(36px, 3.4vw, 60px);
+}
+.lp-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(20px, 2.6vw, 48px);
+}
+.lp-footer__logo { display: block; flex: 0 0 auto; }
+.lp-footer__logo img {
+  display: block;
+  width: clamp(84px, 5.8vw, 112px);
+  height: auto;
+}
+.lp-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 2.8vw, 52px);
+}
+.lp-footer__nav a {
+  color: var(--ep-ink);
+  font-size: clamp(15px, .3vw + 13.5px, 18px);
+  text-decoration: none;
+}
+@media (hover: hover) {
+  .lp-footer__nav a:hover { text-decoration: underline; }
+}
+.lp-footer__copy {
+  margin: 0;
+  color: var(--ep-ink);
+  font-size: clamp(14px, .3vw + 12.5px, 18px);
+}
+
+/* Phones: stack the three groups and left-align them rather than leaving the
+   copyright stranded on its own line hard right. */
+@media (max-width: 767.98px) {
+  .lp-footer__inner { flex-direction: column; align-items: flex-start; }
+}

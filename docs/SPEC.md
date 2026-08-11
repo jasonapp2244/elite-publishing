@@ -1065,3 +1065,83 @@ label — handle them explicitly in `includes/config.php`.
 12. **Navbar sticky behaviour, hover states, and the "Publish Your Book" CTA target** are not
     expressed in a static export. Treat §B.3's hover spec as a proposal to be approved.
 13. **Rights clearance** for the real book covers and press mastheads (see §E.2).
+
+---
+
+# H. Campaign landing pages (lp1–lp4)
+
+Added 11 Aug 2026, after §A–§G were complete. Source designs are four PNGs in
+the project root, not in `_figma-ref/`:
+
+| Page | URL | Design file |
+|---|---|---|
+| lp1 | `/lp1` | `Children's Book Publishing.png` (1920 × 2833) |
+| lp2 | `/lp2` | `Christian Book.png` (1920 × 2857) |
+| lp3 | `/lp3` | `Marketing.png` (1920 × 2833) |
+| lp4 | `/lp4` | `Audiobook Production.png` (1920 × 2903) |
+
+## H.1 Structure — identical on all four
+
+```
+header      logo left, one black CTA pill right, no nav          158 tall
+hero        copy left (760) + lead-capture form card right (594)
+cover strip the hero book band, cropped to 1920 x 235            full bleed
+stats       four claims on #000, 1px white dividers              237 tall
+services    h2 + two CTAs, then three cards                      459 x 358 each
+CTA         rounded #60C489 panel, two buttons                   1420 x 412
+footer      logo, three links, copyright — on solid #60C489      209 tall
+```
+
+## H.2 Measured values
+
+Sampled from the exports at 1920. Anything not listed matches §A.
+
+| | value |
+|---|---|
+| content column | x 250 → 1670 (1420, unchanged) |
+| hero wash | ellipse at 50% 0%, `#B5E2C8` → `#D4EDDE` → page bg by y≈600 |
+| | starts at y=0, **behind** the header |
+| h1 | 70 / 75 @600, tracking −2.5% — **not** §A's 76 / 88 |
+| hero body | 20 / 27 (`--fs-lg`) |
+| form card | 594 × 546, radius 24, white |
+| header CTA / hero buttons | 231 × 55 |
+| cover strip | y 881 → 1115 (235 tall), flush to the black band |
+| stats band | y 1116 → 1352, `#000`, value ~52px, label 18px |
+| service card | 459 × 358, 28 padding, 1px `#E6E6E6`, radius 16 |
+| card icon tile | 70 × 70, radius 14, `#F0FAF4` fill, `#60C489` **solid** glyph |
+| card title | 28 / 34, two lines, break drawn |
+| card copy | 16 / 24 |
+| card hairline | 2px `#60C489`, spans the inner width, 28 above the card edge |
+| CTA panel | 1420 × 412, `#60C489`, radius 16, white text |
+| | 66 pad / h2 60·70 ×2 / 20 / intro 16·24 ×2 / 22 / buttons 56 / 60 pad |
+| footer | 209 tall, solid `#60C489`, **ink** text and logo, 60 padding |
+| footer logo | 112 × 89, the all-ink lockup (`logo-ink.png`) |
+
+## H.3 Card icons — all drawn solid
+
+Eleven new glyphs, hand-authored in `ep_icon()` and registered in its `$filled`
+list. The existing `palette`, `mic`, `megaphone`, `magnifier` and `book-open` are
+strokes and read noticeably lighter at 30px inside a 68px tile, so these are
+separate entries rather than reuses.
+
+| Page | card 1 | card 2 | card 3 |
+|---|---|---|---|
+| lp1 | `palette-solid` | `printer` | `search-sparkle` |
+| lp2 | `leaf` | `book-ribbon` | `search-solid` |
+| lp3 | `megaphone-solid` | `search-solid` | `calendar-check` |
+| lp4 | `mic-solid` | `audio-track` | `book-open-solid` |
+
+`audio-track` carries `fill-rule="evenodd"` — its sprocket holes and music note
+are subpaths cut out of the card, and under the default nonzero rule the glyph
+renders as a solid block.
+
+## H.4 Copy
+
+Transcribed verbatim in `data/landing.php`. Nothing on these four pages is
+drafted — every string is drawn — so nothing carries `'draft' => true`. The open
+items are destinations and unverifiable claims, not copy: see
+`CLIENT-QUESTIONS.md` §F.
+
+The footer's middle link is labelled **"Terms of Service"** in all four designs
+while the page it points at is titled "Terms & Conditions". The drawn label
+wins, per DECISIONS §11.

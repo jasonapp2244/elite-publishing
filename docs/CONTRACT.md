@@ -352,3 +352,81 @@ Also required, and **not** yet built: `img/favicon.svg`, `img/apple-touch-icon.p
 7. Finish by loading your pages at `http://localhost/Elite%20Publishing/` with
    zero PHP notices and zero console errors, then write
    `docs/reports/<your-name>.md`.
+
+---
+
+## 7. Campaign landing pages (lp1–lp4) — added after Phase 4
+
+### 7.1 File ownership
+
+| File | Role |
+|---|---|
+| `lp1.php` … `lp4.php` | 27 lines each, **no markup**. Set `$lpKey` and page meta. |
+| `includes/lp-page.php` | The whole layout. Renders all four. |
+| `includes/lp-header.php` | Logo + one CTA. Not a variant of `header.php`. |
+| `includes/lp-footer.php` | Logo, three links, copyright. Closes the document. |
+| `data/landing.php` | All copy, for all four, plus the shared bits. |
+| `assets/css/p-lp.css` | Landing-only styles. |
+| `tools/assets-lp.php` | Builds `logo-ink.png` / `.webp`. |
+
+To change copy, edit `data/landing.php`. To change layout, edit
+`includes/lp-page.php` — and it changes on all four pages, which is the point.
+
+### 7.2 `data/landing.php` shape
+
+```php
+return [
+  'shared' => [
+    'header_cta'       => string,
+    'form'             => ['title' => string, 'submit' => string],
+    'stats'            => [ ['value' => string, 'label' => string], … ],   // 4
+    'services_actions' => [ ['label' => string, 'style' => string], … ],   // 2
+    'footer_links'     => [ ['label' => string, 'page' => string], … ],    // 3
+  ],
+  '<key>' => [                        // children | christian | marketing | audiobook
+    'slug'  => string,                // 'lp1'… — goes to the inbox as `campaign`
+    'title' => string,                // <title>, without the brand suffix
+    'meta'  => string,                // meta description
+    'hero'  => ['h1' => string, 'paras' => string[]],
+    'services' => [
+      'heading' => string,
+      'cards'   => [ ['icon' => string, 'title' => string, 'text' => string], … ], // 3
+    ],
+    'cta' => ['heading' => string, 'text' => string, 'primary' => string],
+  ],
+];
+```
+
+`'title'` on a card carries a drawn `\n` and is rendered with `ep_lines()`.
+`'heading'` under `'cta'` does too. The hero `h1` does **not** — see
+DECISIONS §16g.
+
+`'page'` in `footer_links` is a key for `ep_page_url()`, not a URL.
+
+### 7.3 Adding a fifth landing page
+
+1. Add a key to `data/landing.php`.
+2. Copy `lp4.php` to `lp5.php`; change `$lpKey`.
+3. Add `'lp5'` to the loop in `sitemap.php`.
+
+No CSS, no template and no routing change — `.htaccess`'s extensionless rewrite
+already resolves `/lp5` to `lp5.php`.
+
+### 7.4 Form contract
+
+The hero form posts to the existing `forms/contact-handler.php` with
+`full_name` / `email` / `phone` / `message`, plus `_form=lp-contact` and
+`campaign=<slug>`. The handler needed **no changes**: any `_form` value that is
+not `wizard` is treated as a contact form, which requires a message — and that
+is exactly what this four-field card is.
+
+`campaign` is carried so whoever reads the inbox can tell which ad produced the
+lead. It is not validated against a list, and it is only ever echoed into a
+plain-text mail body through `ep_field()`.
+
+### 7.5 `$pageChrome`
+
+`includes/head.php` takes `$pageChrome`: `'site'` (default) or `'lp'`. It selects
+the header partial, and the landing pages require `lp-footer.php` at the end of
+`lp-page.php` rather than `footer.php`. Everything above `<body>` — canonical,
+OG tags, font preloads, the session `ep_csrf_field()` depends on — is shared.
