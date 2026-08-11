@@ -1,0 +1,82 @@
+# ==========================================================================
+# Elite Publishing — routing, compression, caching, security headers
+# ==========================================================================
+
+Options -Indexes
+DirectoryIndex index.php
+
+# --- Pretty URLs ----------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # /services/ghostwriting  ->  service.php?s=ghostwriting
+  RewriteRule ^services/([a-z0-9-]+)/?$ service.php?s=$1 [L,QSA]
+
+  # Allow extensionless page URLs (/about -> about.php)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.php -f
+  RewriteRule ^(.+?)/?$ $1.php [L,QSA]
+</IfModule>
+
+# --- Compression ----------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css application/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/json image/svg+xml
+</IfModule>
+
+# --- Caching --------------------------------------------------------------
+# Assets are requested with a ?v=<mtime> query string, so a long max-age is safe.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                          "access plus 1 month"
+  ExpiresByType text/html                 "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+  ExpiresByType image/avif                "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|woff2|avif|webp|png|jpe?g|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.php$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # --- Security headers ---
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  Header always unset X-Powered-By
+</IfModule>
+
+# --- MIME types -----------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/avif  .avif
+  AddType image/webp  .webp
+  AddType font/woff2  .woff2
+</IfModule>
+
+# --- Block access to internals -------------------------------------------
+<FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|\.env|.*\.md)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteRule ^(includes|data|docs|_figma-ref)/ - [F,L]
+</IfModule>
+
+ErrorDocument 404 /404.php

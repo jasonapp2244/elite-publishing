@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Elite Publishing — Design tokens
+   Values sampled directly from the Figma exports (1920px artboards).
+   Do not hardcode colours, sizes or radii anywhere else — use these vars.
+   ========================================================================== */
+
+/* --- Self-hosted Urbanist (latin subset, ~27KB per weight) --------------- */
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/urbanist-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/urbanist-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/urbanist-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/urbanist-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* --- Colour ----------------------------------------------------------- */
+  /* Sampled from the exports; flat fills are exact. See docs/SPEC.md §A.1.  */
+  --ep-green:        #60C489;  /* brand primary: buttons, panels, highlight  */
+  --ep-green-hover:  #4FB177;  /* derived — no hover state exists in Figma   */
+  --ep-green-glass:  rgba(255, 255, 255, .12);  /* tiles inside green panel  */
+
+  /* Three genuinely distinct tints, not one. */
+  --ep-green-tint:      #EAF5EF;  /* footer band                             */
+  --ep-green-tint-band: #E8F3ED;  /* full-bleed rounded section bands        */
+  --ep-green-tint-soft: #EFFAF4;  /* inner panels, unselected wizard chips   */
+  --ep-green-line:      #DFF3E7;  /* green-tinted hairline                   */
+
+  --ep-ink:          #2B2A28;  /* headings, nav, card titles                 */
+  --ep-body:         #3D3D3D;  /* long-form body paragraphs                  */
+  --ep-muted:        #5F5E5C;  /* card descriptions, roles, meta             */
+  --ep-black:        #000000;  /* press band, primary button fill            */
+  --ep-white:        #FFFFFF;  /* cards                                      */
+  --ep-bg:           #FAFAFA;  /* page background (measured 100% flat)       */
+
+  --ep-surface-input: #FBFBFB; /* form input fill                            */
+  --ep-icon-tile:     #F2F2F2; /* pale icon tile variant                     */
+  --ep-border:        #E6E8E7; /* neutral hairline / card border             */
+
+  /* Accents — third-party or decorative, not brand. */
+  --ep-star:      #F5620A;  /* 5-star rating glyphs                          */
+  --ep-trustpilot:#00B67A;
+  --ep-carousel-red: #C41230;  /* Our Books carousel arrows only (see SPEC)  */
+
+  /* Hero wash: a soft mint gradient, not a flat colour. */
+  --ep-hero-wash: radial-gradient(120% 90% at 50% 0%, #D8EEE2 0%, #F2F7F3 45%, var(--ep-bg) 78%);
+
+  /* --- Type ------------------------------------------------------------- */
+  --ep-font: 'Urbanist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Artboard px @1920; scaled down via clamp() in main.css.
+     Figma-confirmed: h2 = 60/70 @600, letter-spacing -2.5%.                 */
+  --fs-h1: 76px;   --lh-h1: 88px;
+  --fs-h2: 60px;   --lh-h2: 70px;
+  --fs-h3: 40px;   --lh-h3: 48px;
+  --fs-h4: 28px;   --lh-h4: 34px;
+  --fs-h5: 24px;   --lh-h5: 32px;
+  --fs-lg: 20px;   --lh-lg: 27px;
+  --fs-base: 16px; --lh-base: 24px;
+  --fs-sm: 14px;   --lh-sm: 20px;
+  --fs-nav: 18px;
+  --fs-price: 62px;
+
+  --tracking-display: -0.025em;  /* -2.5%, per Figma                         */
+  --tracking-eyebrow: 0.09em;    /* ALL-CAPS eyebrow labels                  */
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* --- Layout ----------------------------------------------------------- */
+  --ep-container: 1420px;      /* content: artboard x 250 -> 1670            */
+  --ep-container-nav: 1700px;  /* the navbar is wider than the content       */
+  --ep-gutter: 23px;           /* 3-up grid: 3x459 + 2x23 = 1423             */
+  --ep-gutter-tight: 18px;     /* 4-up grid: 4x342 + 3x18 = 1422             */
+
+  --space-section: 100px;  /* standard vertical section rhythm               */
+  --space-section-sm: 64px;
+
+  /* --- Shape ------------------------------------------------------------ */
+  --radius-btn: 12px;
+  --radius-card: 16px;
+  --radius-input: 10px;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(43, 42, 40, .04), 0 8px 24px rgba(43, 42, 40, .06);
+  --shadow-card-hover: 0 2px 4px rgba(43, 42, 40, .06), 0 16px 40px rgba(43, 42, 40, .10);
+
+  /* --- Motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --dur: 200ms;
+}
+
+/* Respect the user's motion preference everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 1ms; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
