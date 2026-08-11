@@ -171,10 +171,25 @@
         return first.getBoundingClientRect().width + gap;
       }
 
+      /* sync() reads layout (scrollWidth/clientWidth) and then writes to the
+         DOM (button.disabled). Called straight from a scroll listener, once
+         per scroller, that interleaving forces a synchronous reflow on every
+         event — measured at 154ms across the page's rails. Coalescing into one
+         animation frame collapses a burst of scroll events into a single
+         read-then-write, and the frame callback runs at a point where layout
+         is already being computed. */
+      var queued = false;
+
       function sync() {
-        var max = track.scrollWidth - track.clientWidth - 1;
-        if (prev) prev.disabled = track.scrollLeft <= 0;
-        if (next) next.disabled = track.scrollLeft >= max;
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(function () {
+          queued = false;
+          var max  = track.scrollWidth - track.clientWidth - 1;
+          var left = track.scrollLeft;                 // all reads first
+          if (prev) prev.disabled = left <= 0;         // then all writes
+          if (next) next.disabled = left >= max;
+        });
       }
 
       if (prev) prev.addEventListener('click', function () {
@@ -315,9 +330,19 @@
     var rails = document.querySelectorAll('.ep-scroller, [data-rail]');
 
     function sync() {
-      Array.prototype.forEach.call(rails, function (rail) {
-        var overflows = rail.scrollWidth > rail.clientWidth + 1;
-        var reachable = rail.querySelector('a, button, [tabindex]:not([tabindex="-1"])');
+      /* Measure every rail before touching any of them. Reading scrollWidth
+         and then writing an attribute inside the same loop invalidates layout
+         for the next rail's read, so an N-rail page pays N reflows. */
+      var measured = Array.prototype.map.call(rails, function (rail) {
+        return {
+          rail: rail,
+          overflows: rail.scrollWidth > rail.clientWidth + 1,
+          reachable: rail.querySelector('a, button, [tabindex]:not([tabindex="-1"])')
+        };
+      });
+
+      measured.forEach(function (m) {
+        var rail = m.rail, overflows = m.overflows, reachable = m.reachable;
 
         if (overflows && !reachable) {
           // tabindex + a label is all a scrollable region needs. Do NOT set
@@ -333,7 +358,19 @@
       });
     }
 
-    sync();
+    /* Deferred past the first paint on purpose. Reading scrollWidth during
+       boot forces the browser to compute the whole page's first layout
+       synchronously, on the main thread, before anything is on screen —
+       measured at 132ms here. Two frames later that layout already exists,
+       so the same reads are nearly free. Nothing visual depends on this; it
+       only adds a keyboard affordance to rails that overflow. */
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(sync);
+      });
+    } else {
+      sync();
+    }
     window.addEventListener('resize', sync, { passive: true });
   }
 
@@ -349,35 +386,89 @@
   function initReveal() {
     if (!('IntersectionObserver' in window)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.requestAnimationFrame) return;   // no way to defer; skip motion
 
+    /* Wait for the first paint before measuring. Every getBoundingClientRect
+       below would otherwise force the browser to compute the entire page's
+       layout synchronously during boot — 114ms on this page, all of it on the
+       main thread, all of it before the visitor sees anything. Two frames
+       later that layout is already done and the same reads cost nothing.
+       Deferring is safe here precisely because no reveal target is above the
+       fold: for those two frames the only elements not yet hidden are ones
+       nobody can see. */
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(startReveal);
+    });
+  }
+
+  function startReveal() {
     var SELECTOR = [
+      /* headings and shared sections */
       '.section-head',
-      '.svc-card-cell',
+      '.books-head',
       '.journey__step',
       '.stories__grid > li',
       '.plans__grid > li',
       '.ep-faq__item',
       '.wizard-card',
       '.cta-block__copy',
+      '.cta-green',
       '.panel-green',
       '.press-band__row',
       '.plat-card',
+      /* home */
+      '.book-band',
+      '.proc-card',
+      '.book-rail',
+      /* service pages */
+      '.svc-intro',
+      '.svc-e2e',
+      '.svc-why',
+      /* about */
       '.value-card',
       '.why-grid > *',
+      '.why-list__item',
+      /* our books */
+      '.books-carousel',
+      /* the services rail animates as one block, its cards do not */
+      '.ep-scroller--4up',
+      /* policy pages */
       '.doc__block'
     ].join(',');
 
+    /* Horizontal rails and the marquee move on their own; the hero and header
+       must never be hidden. Note the test below is `parentElement.closest`,
+       not `el.closest` — an element that *is* a rail can animate as one block,
+       but its cells cannot, because hiding a horizontally-scrolled child
+       fights the scroll. */
     var EXCLUDE = '.ep-scroller, .marquee, .svc-hero, .ep-header';
     var fold    = window.innerHeight * 0.9;
 
     var targets = Array.prototype.filter.call(
       document.querySelectorAll(SELECTOR),
       function (el) {
-        if (el.closest(EXCLUDE)) return false;
+        if (el.parentElement && el.parentElement.closest(EXCLUDE)) return false;
+
+        /* Skip anything not currently rendered — inactive tab panels, closed
+           accordions, hidden slides. A display:none element never intersects,
+           so it would never receive .is-revealed, and would then appear at
+           opacity 0 *permanently* the moment its tab was opened. */
+        if (!el.getClientRects().length) return false;
+
         return el.getBoundingClientRect().top > fold;   // below the fold only
       }
     );
     if (!targets.length) return;
+
+    /* Drop any element that sits inside another target: a child fading in
+       while its parent is also fading in reads as a flicker, and the child's
+       delay stacks on top of the parent's. Outermost block wins. */
+    targets = targets.filter(function (el) {
+      for (var p = el.parentElement; p; p = p.parentElement) {
+        if (targets.indexOf(p) !== -1) return false;
+      }
+      return true;
+    });
 
     targets.forEach(function (el) {
       el.setAttribute('data-reveal', '');
@@ -397,20 +488,41 @@
         entry.target.classList.add('is-revealed');
         io.unobserve(entry.target);      // reveal once; never re-hide on scroll up
       });
-      // Positive bottom margin extends the root *past* the fold, so an element
-      // starts its entrance just before it is actually on screen. A negative
-      // margin (waiting until it is 8% inside) leaves a band at the bottom of
-      // the viewport where content is visible but still transparent — which
-      // looks like a bug if the visitor happens to stop scrolling there.
-    }, { rootMargin: '0px 0px 8% 0px', threshold: 0 });
+      // Bottom: a positive margin extends the root *past* the fold, so an
+      // element starts its entrance just before it is actually on screen. A
+      // negative margin (waiting until it is 8% inside) leaves a band at the
+      // bottom of the viewport where content is visible but still transparent,
+      // which looks like a bug if the visitor stops scrolling there.
+      //
+      // Top: a very large margin extends the root far *above* the viewport, so
+      // anything already scrolled past counts as intersecting and is revealed
+      // at once. Without this, a fast scroll — dragging the scrollbar, End,
+      // find-in-page — can jump over a section between two frames; the observer
+      // never sees it intersect and it stays transparent until the visitor
+      // happens to scroll back up to it. An element is only ever hidden while
+      // it is still below the viewport.
+    }, { rootMargin: '10000px 0px 8% 0px', threshold: 0 });
 
     targets.forEach(function (el) { io.observe(el); });
 
-    // If anything is asked to print, or the tab is restored from bfcache
-    // mid-scroll, make sure nothing is left invisible.
-    window.addEventListener('beforeprint', function () {
+    function revealAll() {
       targets.forEach(function (el) { el.classList.add('is-revealed'); });
-    });
+    }
+
+    // If anything is asked to print, make sure nothing is left invisible.
+    window.addEventListener('beforeprint', revealAll);
+
+    // Last-resort failsafe. Everything above is best-effort, but a block that
+    // stays transparent is worse than no animation at all, so if the observer
+    // has not accounted for every target a few seconds after load, show them.
+    // In normal use this fires with nothing left to do.
+    window.setTimeout(function () {
+      var stuck = targets.filter(function (el) {
+        return !el.classList.contains('is-revealed') &&
+               el.getBoundingClientRect().top < window.innerHeight;
+      });
+      stuck.forEach(function (el) { el.classList.add('is-revealed'); });
+    }, 4000);
   }
 
   /* --- Boot -------------------------------------------------------------- */

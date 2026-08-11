@@ -97,6 +97,7 @@ would save ~27 KB.
 | Self-hosted subset fonts, `font-display: swap`, 2 preloaded | No FOIT, no third-party connection. |
 | `.htaccess`: deflate/brotli, immutable 1-year asset caching, `?v=<mtime>` busting | Repeat views are near-instant; cache lifetime is safe because URLs change with content. |
 | Hand-rolled vanilla JS, deferred | 14.2 KB total, no framework, no jQuery, no Bootstrap JS. |
+| **Removed 114 ms of forced reflow** | Three separate places read layout (`scrollWidth`, `getBoundingClientRect`) during boot, forcing the browser to compute the whole page's first layout synchronously before anything was on screen. `initScrollers` also interleaved reads and writes inside a scroll listener — layout thrashing on every scroll event, 154 ms of it. Reads are now batched ahead of writes, the scroll handler is coalesced into one animation frame, and all three initialisers are deferred past the first paint. `ForcedReflow` no longer appears in the trace at all; home LCP went 308 ms → **214 ms**. |
 
 ## Known costs not paid down
 

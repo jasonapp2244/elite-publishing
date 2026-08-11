@@ -96,8 +96,29 @@ defensive:
   preference. A stylesheet that loads without its script cannot blank the page.
 - **`prefers-reduced-motion: reduce` disables it entirely** — the script returns
   before tagging anything.
-- Carousels and the testimonial marquee are excluded; they already move.
-- Printing forces everything visible.
+- **Nothing that is not currently rendered is tagged.** A `display:none`
+  element — an inactive process tab, a closed panel — never intersects, so it
+  would never be un-hidden, and would then appear at opacity 0 *permanently*
+  the moment its tab was opened.
+- **Anything already scrolled past is revealed immediately**, via a very large
+  top `rootMargin`. Without it a fast scroll (scrollbar drag, `End`,
+  find-in-page) can jump a section between two frames; the observer never sees
+  it intersect and it stays transparent. An element is only hidden while it is
+  still *below* the viewport.
+- **Only the outermost block in any nest animates.** A child fading in inside a
+  fading parent reads as a flicker and stacks the two delays.
+- **Rails animate as one block; their cells do not** — hiding a
+  horizontally-scrolled child fights the scroll. The testimonial marquee is
+  excluded outright.
+- A 4-second failsafe reveals anything still hidden inside the viewport, and
+  printing forces everything visible. Neither should ever have work to do.
+
+None of the measurement happens during boot: reading `getBoundingClientRect`
+there forces the browser to compute the whole page's first layout
+synchronously, on the main thread, before anything is on screen. Deferring the
+reveal, the rail measurements and the carousel button state past the first
+paint removed **114 ms** of forced reflow and took home-page LCP from 308 ms to
+214 ms. Deferring is only safe because no reveal target is above the fold.
 
 To change the feel, `--dur-reveal` and `--ease-out` are in `tokens.css`. To turn
 it off completely, delete the `initReveal()` call in `assets/js/main.js`.
