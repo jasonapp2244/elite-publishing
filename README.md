@@ -163,17 +163,27 @@ guard.
    with spaces before the commas, `Elite Publishing , The`, the About paragraph
    that ends mid-sentence on a comma. All twelve are listed in `DECISIONS.md`
    §11 with pre-written corrections. Do not "fix" them casually.
-2. **Text on green panels is dark ink, not white as drawn.** White on `#60C489`
-   measures 2.15:1 and fails WCAG AA at every text size. `DECISIONS.md` §14 has
-   the measurements and a one-line revert.
+2. **Text on green panels is white, as drawn, and it fails contrast.** White on
+   `#60C489` measures 2.15:1 where WCAG AA needs 4.5:1. This is not an
+   oversight: the build shipped dark ink (7.4:1) until the design owner chose
+   fidelity to the Figma instead. `DECISIONS.md` §14a has the measurements, and
+   `--ep-on-green` in `tokens.css` reverses it in one line.
 
 ---
 
 ## Status
 
 - 17/17 pages render with zero PHP notices and zero console errors
-- Lighthouse **100 / 100 / 100** (Accessibility, Best Practices, SEO) on every
-  page template, desktop and mobile
+- Lighthouse **100** for Best Practices, SEO and Agentic Browsing on every page
+  template, desktop and mobile
+- Lighthouse **Accessibility 97** — the only failing audit is `color-contrast`,
+  entirely from the white-on-green decision above (17 nodes at 2.15:1 and
+  1.95:1). Everything else passes.
+  A navigation-mode audit still prints 100, and **that number is misleading**:
+  axe skips elements at `opacity: 0`, and the scroll-reveal leaves the green
+  sections hidden while the audit runs. The 97 is a snapshot audit taken after
+  scrolling the page to reveal everything — measure it that way, or you are
+  measuring the animation.
 - CLS **0.00**; home page ships ~241 KB over 13 requests
 
 **Before production launch** — see `docs/CLIENT-QUESTIONS.md`:

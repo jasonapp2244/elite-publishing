@@ -187,16 +187,18 @@ p:last-child { margin-bottom: 0; }
 @media (hover: hover) {
   .ep-btn--ghost-white:hover { background: var(--ep-white); color: var(--ep-ink); }
 }
-/* Outlined-white reads fine on a dark photo but not on brand green (2.15:1).
-   Both green surfaces on the site are listed here — .panel-green (Why Us) and
-   .cta-green (the Contact page band) — so the accessible treatment lives in one
-   place rather than being re-derived per page. */
+/* The outlined-white button on the two green surfaces — .panel-green (Why Us)
+   and .cta-green (the Contact band) — takes its colour from --ep-on-green so
+   both surfaces stay in step from one place.
+   The hover fill must be the literal token, not --ep-on-green: the fill and the
+   label have to be opposites, and while --ep-on-green is white, using it for
+   both would paint a white label on a white fill and erase the text. */
 :is(.panel-green, .cta-green) .ep-btn--ghost-white {
   color: var(--ep-on-green); border-color: var(--ep-on-green);
 }
 @media (hover: hover) {
   :is(.panel-green, .cta-green) .ep-btn--ghost-white:hover {
-    background: var(--ep-on-green); color: var(--ep-white); border-color: var(--ep-on-green);
+    background: var(--ep-white); color: var(--ep-ink); border-color: var(--ep-white);
   }
 }
 

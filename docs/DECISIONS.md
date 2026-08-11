@@ -174,6 +174,37 @@ drawn appearance returns, at the cost of the accessibility score and WCAG AA
 compliance. `CLIENT` — this is a real trade-off and yours to make. It is listed
 in `docs/CLIENT-QUESTIONS.md`.
 
+### 14a. Reversed — white on green, by the design owner's decision
+
+The trade-off above was put to the design owner, who chose fidelity to the
+Figma. `--ep-on-green` is now `#FFFFFF`. **Only that token changed**; the green
+surface is still exactly `#60C489`, so the brand colour was never in question.
+
+One rule had to change with it. The outlined-white button on a green surface
+inverts on hover — fill and label swap. It took both colours from
+`--ep-on-green`, which was safe while that token was ink but paints a white
+label on a white fill once the token is white, erasing the text. The hover now
+names `--ep-white` / `--ep-ink` literally.
+
+**What this costs, measured after the change:**
+
+| | Result |
+|---|---|
+| White on `#60C489` (panel, FAQ open, genre chips, CTA band) | **2.15:1** — AA needs 4.5:1, large text 3:1 |
+| White on the glass tiles' composited `#73CB97` | **1.95:1** |
+| Lighthouse Accessibility, everything visible | **97**, 17 failing nodes, all `color-contrast` |
+
+Note the navigation-mode Lighthouse run still reports **100**, and that number
+is not evidence. axe skips elements at `opacity: 0`, and the scroll-reveal
+leaves most of the page hidden while the audit runs, so the green sections are
+never examined. The 97 above comes from a snapshot audit taken after scrolling
+the whole page to reveal it. Anyone re-checking this should do the same, or
+they will measure the animation rather than the contrast.
+
+`--ep-green-text: #2C7A50` (green text on *light* surfaces — `Learn More`,
+`STEP 01`) was deliberately left alone: this decision was about text on green,
+not green as text. Reverting that too would add roughly a dozen more failures.
+
 ---
 
 ## 15. Service hero photography — replaced, not cropped

@@ -59,14 +59,19 @@
      brand colour belongs and contrast is carried by the label on top. */
   --ep-green-text:   #2C7A50;
 
-  /* Text ON brand green. The design draws white here, but white on #60C489 is
-     2.15:1 — it fails AA for body copy (4.5:1) and even for large headings
-     (3:1), so it cannot ship as drawn. The two ways out are to darken the green
-     surface a long way (losing the brand colour) or to darken the text. This
-     keeps the brand green exactly as designed and inverts the text to ink,
-     which measures 7.4:1. Documented in docs/DECISIONS.md and DEV-GUIDE §7.
-     Revert this one token to #FFFFFF to restore the drawn appearance. */
-  --ep-on-green:     #2B2A28;
+  /* Text ON brand green. White, as the design draws it — set deliberately,
+     with the trade-off known and accepted.
+
+     White on #60C489 measures 2.15:1. That fails WCAG AA for body copy (4.5:1)
+     and for large headings (3:1), and Lighthouse reports it. The build shipped
+     ink (#2B2A28, 7.4:1) until the design owner chose the drawn appearance
+     instead; see docs/DECISIONS.md §14 for the measurements and the reversal.
+
+     If accessibility later outranks fidelity, change this one token back to
+     #2B2A28 — every green surface reads from it, so nothing else needs
+     touching. Do NOT "fix" it by darkening --ep-green: that changes the brand
+     colour on every button and panel. */
+  --ep-on-green:     #FFFFFF;
   --ep-green-glass:  rgba(255, 255, 255, .12);  /* tiles inside green panel  */
 
   /* Three genuinely distinct tints, not one. */
