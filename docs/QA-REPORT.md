@@ -422,3 +422,47 @@ last link is reachable and unobstructed; the skip link lands `#main` clear of
 the sticky header (`scroll-padding-top` is set); all four text inputs are 16px,
 so iOS does not zoom on focus; and no content is hover-only, so touch users
 lose nothing when hover is gated.
+
+---
+
+## Addendum — Figma parity pass
+
+Compared the build against the 151 Figma reference exports in `_figma-ref/`,
+section by section, measuring the build in the browser rather than eyeballing.
+
+**Two differences found and fixed:**
+
+1. **Reviewer avatars were empty circles.** The testimonial cards rendered a
+   blank pale-green disc where the design shows a photo. The four images had
+   been built (`avatar-1..4-96` in AVIF/WebP/JPEG) and `data/shared.php` already
+   pointed at them — only the markup was missing. Now wired through
+   `ep_srcset()` at 96px into a 32px box, so they stay crisp to 3× density.
+2. **The services carousel showed no fifth card.** The design runs that track
+   past the container's right edge and lets the artboard cut it, leaving a card
+   roughly two-thirds visible — the only cue that the row scrolls. The build
+   clipped at the container, so four cards sat flush and read as a finished
+   static grid. The track now spans the full width and pads its left edge back
+   into line with the heading: 227px of peek against the design's 236px, with
+   `scroll-padding-inline` so snapping does not drag the first card back to the
+   edge. Doing this with `margin-right: calc((100% - 100vw)/2)` instead looks
+   identical but makes the document horizontally scrollable, so it was rejected.
+
+**Verified as already matching** (measured, not assumed): container widths
+1420/1700; hero copy including the deliberate `Publishing , The`; 7 press logos;
+service card 341px against 345px drawn; the Why Us glass cards staggered with
+the second indented; all 7 process tabs with their connecting hairlines, the
+green STEP label, the 2x2 checklist in its `#EFFAF4` panel and the 45/55 split;
+genre and portfolio rails at 240px covers with 5 visible and a 6th peeking;
+green rail arrows vs black process arrows; 4 platform cards; 3 story cards;
+plans 3-up with the middle raised; FAQ measure exactly 1084px; wizard emoji
+chips and 4-segment progress bar; 5-column footer.
+
+**Two differences deliberately not "fixed":**
+
+- **Text on green is ink, not the white the design draws.** White on `#60C489`
+  is 2.15:1 and fails AA at every size. See `DECISIONS.md` §14 — it is a
+  one-token revert if the client prefers the drawn appearance over the
+  accessibility score.
+- **The Genres row is under-filled** on three tabs because the placeholder
+  catalogue has one book in some genres. Padding it out would mean tagging books
+  with genres they do not belong to. Logged as client question 45.

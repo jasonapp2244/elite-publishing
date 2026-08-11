@@ -748,6 +748,28 @@ which passes there. */
 /* --- Service card carousel (SPEC §B.5) ----------------------------------- */
 /* 4-up at 1920 with a tighter 18px gutter than the 3-up grids. */
 .ep-scroller--4up { gap: var(--ep-gutter-tight); padding-bottom: 8px; }
+
+/* The design runs this track past the right edge of the container and lets it
+   be cut by the artboard, so a fifth card is half-visible (SPEC §C.1 §5, "5th
+   peeks"). That peek is the only thing telling a visitor the row scrolls;
+   without it four cards sit flush inside the container looking like a finished
+   static grid.
+   The track therefore spans the full width and pads its own left edge back
+   into line with the heading, rather than reaching out of the container with a
+   negative margin. A `margin-right: calc((100% - 100vw)/2)` produces the same
+   picture but makes the entire document horizontally scrollable — measured at
+   878px of pan on the home page, which `body { overflow-x: clip }` did not
+   contain. Padding a full-width block cannot overflow anything. */
+.svc-rail-bleed { width: 100%; }
+.svc-rail-bleed > .ep-scroller {
+  --rail-inset: max(clamp(20px, 4vw, 48px),
+                    calc((100% - var(--ep-container)) / 2));
+  padding-inline: var(--rail-inset);
+  /* Snapping aligns a card's edge with the scrollport edge, which ignores
+     padding and drags the first card back to x=0 — undoing the inset. Matching
+     scroll-padding moves the snap line to the padding edge instead. */
+  scroll-padding-inline: var(--rail-inset);
+}
 .svc-card-cell { width: clamp(268px, 24%, 342px); }
 .svc-card { display: flex; flex-direction: column; height: 100%; }
 .svc-card .link-arrow { margin-top: auto; }
@@ -938,6 +960,7 @@ which passes there. */
 .review-card__avatar {
   width: 32px; height: 32px; flex: 0 0 auto;
   border-radius: 50%; background: var(--ep-green-tint);
+  object-fit: cover;   /* the crops are square, but never distort a face */
 }
 .review-card__role {
   display: block;

@@ -34,7 +34,18 @@ $renderCard = static function (array $c, bool $clone): void {
       </div>
       <blockquote class="review-card__quote"><?= esc($c['quote'] ?? '') ?></blockquote>
       <figcaption class="review-card__by">
-        <span class="review-card__avatar" aria-hidden="true"></span>
+        <?php /* Decorative: the reviewer's name sits right next to it as real
+                 text, so an alt would just be read twice. Explicit width and
+                 height keep the 32px circle from shifting anything while it
+                 loads. */ ?>
+        <?= ep_srcset(
+              $c['img'] ?? 'img/avatar-1',
+              [96],
+              '',
+              32,
+              32,
+              ['class' => 'review-card__avatar', 'sizes' => '32px']
+            ) ?>
         <span>
           <strong><?= esc($c['name'] ?? '') ?></strong>
           <span class="review-card__role"><?= esc($c['role'] ?? '') ?></span>

@@ -50,7 +50,15 @@ $headId  = 'services-' . substr(md5($heading), 0, 6);
         </button>
       </div>
     </div>
+  </div>
 
+  <?php /* The track deliberately sits OUTSIDE .container-ep. The design runs it
+           past the container's right edge so a fifth card is half-visible, and
+           that peek is the only thing telling a visitor the row scrolls. Doing
+           it with a negative margin instead makes the whole document
+           horizontally scrollable, so the track is full-width and pads its own
+           left edge back into line with the heading. */ ?>
+  <div class="svc-rail-bleed">
     <ul class="ep-scroller ep-scroller--4up list-plain">
       <?php foreach ($svc['cards'] as $card): ?>
         <li class="svc-card-cell">
@@ -68,7 +76,6 @@ $headId  = 'services-' . substr(md5($heading), 0, 6);
         </li>
       <?php endforeach; ?>
     </ul>
-
   </div>
 </section>
 <?php

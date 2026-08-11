@@ -329,3 +329,23 @@ sticky in the design, because a static export cannot show scroll behaviour. On a
 home page that is nine screens tall, a nav that scrolls away is a usability
 problem, so we made it stick to the top on scroll. Say the word if you want it
 to scroll away instead.
+
+---
+
+**45. The Genres row is nearly empty on three of its five tabs.**
+The design shows a full row of covers under every genre tab — five visible with
+a sixth peeking. The catalogue we were given is ten placeholder covers, and each
+book can honestly belong to only one genre, so the tabs currently hold:
+
+| Tab | Covers | Empty rail |
+|---|---|---|
+| Fiction | 4 | 370px |
+| Romance | 2 | 910px |
+| Children's | 2 | 910px |
+| Non-Fiction | **1** | **1180px** |
+| Christian | **1** | **1180px** |
+
+We did **not** pad this out by tagging books with genres they do not belong to —
+calling *Project Hail Mary* a Christian title would fix the picture and mislead
+the reader. It needs about six real titles per genre. Send the real catalogue
+with genres and we will fill the row as designed.
