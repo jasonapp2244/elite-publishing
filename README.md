@@ -251,8 +251,37 @@ guard.
 
 ## Deploying to SiteGround
 
-The site is plain PHP with no build step, so deployment is a file copy. Mail is
-the only part that needs setting up, and it needs doing in this order.
+The site is plain PHP with no build step, so deployment is a file copy.
+
+### What not to upload
+
+The project is ~282 MB. **The site is 15.7 MB of it.** Everything below is
+design source, documentation or local tooling — none of it is read at runtime,
+and uploading it means putting the client's design files and your build notes on
+a public server for no benefit:
+
+```
+Elite Publishing -fgma-images/   107 MB   raw Figma exports
+.git/                            139 MB   history
+_figma-ref/                       19 MB   design reference, incl. landing-pages/
+docs/                            0.3 MB   spec, decisions, QA, client questions
+tools/                            42 KB   CLI image builders, never web-facing
+*.md                              32 KB   README, PROJECT-PLAN
+```
+
+Upload everything else: the root `*.php`, `assets/`, `data/`, `forms/`,
+`includes/`, `.htaccess`, `robots.txt`.
+
+Do **not** delete any of the above from the project — `docs/` is the record of
+why the build is the way it is, `_figma-ref/` is the design source of truth, and
+`tools/` regenerates every image. They just do not belong on the server.
+
+`.htaccess` denies all of them anyway, so an accidental upload is not an
+exposure — but 266 MB of it is still 266 MB.
+
+### Mail
+
+Mail is the only part that needs setting up, and it needs doing in this order.
 
 1. **Create the sending mailbox.** Site Tools → Email → Accounts. It must be on
    the site's own domain, and it must match `EP_MAIL_FROM` in `email.php` —

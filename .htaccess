@@ -83,8 +83,14 @@ DirectoryIndex index.php
   Require all denied
 </FilesMatch>
 
+# tools/ holds the CLI image builders and "Elite Publishing -fgma-images" holds
+# 108MB of raw Figma exports. Neither belongs on a web server at all — see
+# README "What not to upload" — but a rule costs nothing and a folder that was
+# reachable at 200 is exactly the kind of thing that gets re-uploaded by a
+# drag-and-drop deploy later. The space in the folder name is intentional.
 <IfModule mod_rewrite.c>
-  RewriteRule ^(includes|data|docs|_figma-ref)/ - [F,L]
+  RewriteRule ^(includes|data|docs|tools|_figma-ref)/ - [F,L]
+  RewriteRule ^Elite\ Publishing\ -fgma-images/ - [F,L]
 </IfModule>
 
 # --- 404 ------------------------------------------------------------------

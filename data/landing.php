@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Elite Publishing — campaign landing pages (lp1–lp4).
  *
- * Copy transcribed from the four design PNGs in the project root:
+ * Copy transcribed from the four design PNGs in _figma-ref/landing-pages/:
  *   Children's Book Publishing.png · Christian Book.png
  *   Marketing.png                  · Audiobook Production.png
  *

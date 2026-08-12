@@ -578,3 +578,49 @@ must exist on the domain or bounces disappear. `email.php` carries a documented
 one-line switch to send as `EP_MAIL_TO` instead, for anyone who would rather not
 create a second mailbox — with the trade written out rather than presented as a
 shortcut.
+
+---
+
+## 21. Pre-deployment cleanup — what was deleted and what deliberately was not
+
+Asked to remove unnecessary files before deploying. The answer split three ways,
+because "unnecessary on the server" and "unnecessary to the project" are not the
+same thing.
+
+**21a. Deleted: 18 files, 1.3 MB, unreferenced by anything the site serves.**
+Found by matching every file under `assets/` against the runtime source only —
+root `*.php`, `includes/`, `forms/`, `data/`, `assets/css`, `assets/js`.
+Deliberately excluding `tools/` and `*.md` from that scan is what made the audit
+useful: a first pass that included them reported one dead file, because the
+build script and the README still named the band images. A file mentioned only
+by a build script is still dead weight on a server.
+
+| Files | Why dead |
+|---|---|
+| `hero-band-*` `footer-band-*` (15) | the cover band became ten CSS-positioned covers in §17d |
+| `logo-light.png/.webp` (2) | built for a dark header variant that was never made; nothing has ever referenced it |
+| `assets/fonts/_google.css` (1) | left over from before the fonts were self-hosted |
+
+The jobs that produced them were removed from `tools/build-assets.php` at the
+same time, so the tool and the assets agree. Leaving a generator for files
+nobody wants is how they come back.
+
+**21b. Moved, not deleted: the four landing-page design PNGs.** They sat in the
+web root and were served at **200** — 5.7 MB of the client's design comps,
+downloadable by anyone who guessed the filename. They are now in
+`_figma-ref/landing-pages/`, which `.htaccess` denies. The `Design:` comment at
+the top of each `lp*.php` was updated to match.
+
+**21c. Also exposed and now blocked: `Elite Publishing -fgma-images/`.** 107 MB
+of raw Figma exports, also served at 200. `.htaccess` now denies it and
+`tools/`, which was reachable too — every file in it is CLI-guarded, so it was
+not exploitable, but it listed the build pipeline to anyone who looked.
+
+**21d. NOT deleted: `docs/`, `tools/`, `_figma-ref/`, the `*.md` files.** These
+are 266 MB of the project and none of it belongs on the server — but deleting
+them would destroy the design source of truth, the record of every decision, and
+the scripts that regenerate every image. "Do not upload" and "delete" are
+different instructions, and only one of them is reversible.
+
+The README now carries a **What not to upload** list instead. The site is
+**15.7 MB** of a 282 MB project.

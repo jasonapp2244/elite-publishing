@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * lp3 — Book marketing campaign landing page.
  *
- * Design: "Marketing.png" (project root).
+ * Design: "Marketing.png" (_figma-ref/landing-pages/).
  *
  * There is no page markup here on purpose. All four landing pages are the same
  * layout, so the sections live in includes/lp-page.php and the copy lives in

@@ -25,11 +25,8 @@ $logo   = trimAlpha(keyBackground(crop($navbar, 60, 60, 500, 400), 30.0), 2);
 saveSet($logo, 'logo', ['png', 'webp']);
 printf("    -> %dx%d\n", imagesx($logo), imagesy($logo));
 
-// --- 1b. White logo for the dark header variant -----------------------------
-echo "\n  header logo, light-on-dark (logo-light.png)\n";
-$logoLight = trimAlpha(keyBackground(crop($navbar, 40, 520, 540, 380), 30.0), 2);
-saveSet($logoLight, 'logo-light', ['png', 'webp']);
-printf("    -> %dx%d\n", imagesx($logoLight), imagesy($logoLight));
+/* 1b was a white logo-light for a dark header variant that was never built, and
+   nothing on the site has ever referenced it. Dropped with the files. */
 
 $home = load('Homepage.png');
 
@@ -41,21 +38,13 @@ $mark = trimAlpha(keyBackground(crop($footer, 940, 300, 320, 360), 60.0), 2);
 saveSet($mark, 'logo-mark', ['png', 'webp']);
 printf("    -> %dx%d\n", imagesx($mark), imagesy($mark));
 
-// --- 3. Footer book-cover band (4x source) ----------------------------------
-echo "\n  footer book band\n";
-$fBand = crop($footer, 0, 1932, 7680, 1264);
-foreach ([1280, 1920, 2560] as $w) {
-    saveSet(resizeTo($fBand, $w), "footer-band-$w", ['avif', 'webp', 'jpg'], 80);
-}
+/* 3 and 4 built the hero and footer cover strips as flat images. The band is
+   now ten individual covers positioned in CSS so each one can lift on hover
+   (DECISIONS §17d), so those 15 files were dead weight and are gone. The crops
+   are in git history if the flat strip is ever wanted back:
+     git show HEAD~1 -- tools/build-assets.php */
 
-// --- 4. Hero book-cover band (1x source; different backdrop to the footer) --
-echo "\n  hero book band\n";
-$hBand = crop($home, 0, 845, 1920, 285);
-foreach ([1280, 1920] as $w) {
-    saveSet(resizeTo($hBand, $w), "hero-band-$w", ['avif', 'webp', 'jpg'], 80);
-}
-
-// --- 5. Open Graph card -----------------------------------------------------
+// --- 3. Open Graph card -----------------------------------------------------
 echo "\n  open graph card\n";
 saveSet(resizeTo(crop($home, 0, 0, 1920, 1005), 1200), 'og-default', ['jpg'], 82);
 
