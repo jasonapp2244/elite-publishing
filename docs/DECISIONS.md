@@ -552,3 +552,29 @@ mail succeeds. A lead is never lost to a mail problem. That file holds personal
 data: it is gitignored and `.htaccess` denies `data/` over HTTP. Both need
 checking after the deploy — `.htaccess` rules are the thing that quietly does
 not survive a move between hosts.
+
+---
+
+## 20. Enquiries are delivered to info@, not to the address on the page
+
+`EP_MAIL_TO` was `EP_EMAIL`. They are now separate, and deliberately different:
+
+| | value | what it is |
+|---|---|---|
+| `EP_EMAIL` | `Contact@Elitepublishing.Co` | the address SHOWN — footer, contact block, thank-you page. Drawn in the design, reproduced verbatim (DECISIONS §11). |
+| `EP_MAIL_TO` | `info@elitepublishing.co` | the inbox form submissions are POSTED to. |
+
+So the site invites people to write to contact@ while the forms arrive at info@.
+That is a perfectly normal arrangement and nothing in the build depends on the
+two matching — but it looks like an inconsistency, and the next person to read
+it will be tempted to "fix" one to match the other. They are separate on
+purpose: one is copy from the design, the other is operational routing.
+
+**Both mailboxes have to exist**, since the page invites mail to contact@.
+
+`EP_MAIL_FROM` is unchanged and still resolves to `no-reply@elitepublishing.co`.
+That is the sending identity, a third distinct thing from the other two, and it
+must exist on the domain or bounces disappear. `email.php` carries a documented
+one-line switch to send as `EP_MAIL_TO` instead, for anyone who would rather not
+create a second mailbox — with the trade written out rather than presented as a
+shortcut.

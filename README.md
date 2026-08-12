@@ -259,8 +259,11 @@ the only part that needs setting up, and it needs doing in this order.
    which derives from the host, so on `elitepublishing.co` it will look for
    `no-reply@elitepublishing.co`. Skip this and Exim still accepts the mail, but
    bounces go nowhere and you never learn a message failed.
-2. **Point `EP_MAIL_TO` at the inbox you actually read.** It is `EP_EMAIL` in
-   `includes/config.php` by default.
+2. **`EP_MAIL_TO` is `info@elitepublishing.co`** — where every enquiry is
+   delivered. One line in `includes/config.php` if that ever changes. Note this
+   is *not* the address the site shows visitors: the design draws
+   `Contact@Elitepublishing.Co`, and that is what the footer and contact block
+   still say. Both mailboxes need to exist.
 3. **Publish SPF and DKIM** for the domain in Site Tools. Without them the mail
    is authenticated by nothing and spam filters treat it accordingly.
 4. **Check `.htaccess` survived the upload** — `data/` and `includes/` must

@@ -104,8 +104,25 @@ const EP_SOCIAL = [
     'instagram' => '#',
 ];
 
-// Where contact-form submissions are delivered.
-define('EP_MAIL_TO', EP_EMAIL);
+/**
+ * Where contact-form submissions are DELIVERED.
+ *
+ * Deliberately not EP_EMAIL any more. The two are different things and were
+ * only ever the same by coincidence:
+ *
+ *   EP_EMAIL    the address SHOWN to visitors — in the footer, in the contact
+ *               block, and on the thank-you page. It is drawn in the design as
+ *               "Contact@Elitepublishing.Co" and is reproduced verbatim.
+ *   EP_MAIL_TO  the inbox the site actually posts enquiries to.
+ *
+ * So the site invites people to write to contact@ while forms arrive at info@.
+ * That is a normal arrangement and nothing depends on the two matching — but it
+ * is worth knowing before someone "fixes" the mismatch. To show info@ as well,
+ * change EP_EMAIL; to route somewhere else, change this line only.
+ *
+ * The mailbox must exist on the domain, or mail to it bounces into nothing.
+ */
+define('EP_MAIL_TO', 'info@elitepublishing.co');
 
 // --- Services ---------------------------------------------------------------
 /**

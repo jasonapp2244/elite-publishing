@@ -66,10 +66,22 @@ if (!defined('EP_ROOT')) {
  * -------------------------------------------------------------------------- */
 
 /**
- * The mailbox mail is sent AS. Must exist on the site's own domain.
- * Derived from the host so the same code is correct on any domain, but set it
- * to a literal once the production domain is fixed, e.g.
- *   const EP_MAIL_FROM = 'no-reply@elitepublishing.co';
+ * The mailbox mail is sent AS — not where it is delivered. That is EP_MAIL_TO
+ * in includes/config.php, currently info@elitepublishing.co.
+ *
+ * It MUST exist on the site's own domain. Derived from the host below, which
+ * resolves to no-reply@elitepublishing.co in production, so that mailbox has to
+ * be created in Site Tools -> Email -> Accounts.
+ *
+ * If you would rather not create a second mailbox, send as the inbox you
+ * already have by uncommenting this one line:
+ *
+ *     define('EP_MAIL_FROM', EP_MAIL_TO);
+ *
+ * That is a real trade, not a shortcut. A dedicated no-reply@ keeps automated
+ * mail out of the same thread as replies and makes bounces obvious; sending
+ * from and to the same address puts everything in one place, and a few filters
+ * treat identical From and To as a mild spam signal. Either works.
  */
 if (!defined('EP_MAIL_FROM')) {
     $epHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
