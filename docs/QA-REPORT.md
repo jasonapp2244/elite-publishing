@@ -834,3 +834,59 @@ silently swallows bounces if skipped.
 
 Test submissions written during this work were deleted, along with
 `data/rate-limit.json`.
+
+---
+
+## Addendum — lp1–lp4 form check
+
+Every landing-page form exercised over HTTP with a real session and a real CSRF
+token. All four are wired identically and correctly.
+
+| | lp1 | lp2 | lp3 | lp4 |
+|---|---|---|---|---|
+| posts to the handler | ✓ | ✓ | ✓ | ✓ |
+| CSRF token present | ✓ | ✓ | ✓ | ✓ |
+| honeypot present | ✓ | ✓ | ✓ | ✓ |
+| `_form=lp-contact` | ✓ | ✓ | ✓ | ✓ |
+| `campaign` | `lp1` | `lp2` | `lp3` | `lp4` |
+| valid submit → `/thankyou` | ✓ | ✓ | ✓ | ✓ |
+| campaign recorded | ✓ | ✓ | ✓ | ✓ |
+
+### Behaviour under abuse and error
+
+| Case | Result |
+|---|---|
+| honeypot filled (bot) | 303 → `?form=ok`, nothing delivered — the bot is told it worked |
+| no CSRF token | 303 → `?form=error`, values handed back |
+| bad email | 303 → `?form=error` |
+| 6th post in 10 minutes | rate-limited, "That is a lot of messages in a short time" |
+| short name + bad email + short message | 3 errors listed, 3 `aria-invalid`, all typed values preserved |
+
+The rate limiter was hit for real during this pass — it fired at the 6th
+submission and masked the field errors until the window was cleared. Worth
+knowing before anyone reports the error list as broken.
+
+### One defect found and fixed
+
+**The message field was required by the server but not marked `required` in the
+markup** — on all four landing pages and on the ten service pages. A visitor
+filling name and email and pressing Send got a full page round-trip to be told
+the message was needed. On a landing page, where the form is the entire point,
+that is a conversion thrown away.
+
+The attribute is now on both forms, so the browser says so inline. The server
+rule is untouched and is still the one that decides — re-verified after the
+change: a post with no message is still rejected.
+
+### Where the leads go
+
+All four send to `EP_MAIL_TO` — currently `Contact@Elitepublishing.Co`, one
+constant in `includes/config.php`. The mail carries a `Campaign:` line, so lp1
+and lp3 leads are distinguishable in the inbox without a separate address. If
+they ever need to route to different mailboxes, the branch point is the `$to` in
+`ep_send_mail()` and the `campaign` value is already there.
+
+lp1 desktop after the change: Accessibility 96 · Best Practices 100 · SEO 100 ·
+Agentic 100, `color-contrast` the only failure — unchanged.
+
+Test submissions and `data/rate-limit.json` were deleted afterwards.

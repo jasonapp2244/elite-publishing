@@ -139,10 +139,17 @@ $old = static fn(string $f): string => (string) ($flash['old'][$f] ?? '');
                  <?= isset($formErrors['phone']) ? 'aria-invalid="true"' : '' ?>>
         </div>
 
+        <?php /* `required` matters here. The handler rejects an empty message
+                 for every non-wizard form, but without this attribute the
+                 browser lets the visitor press Send and they only learn that
+                 after a full round-trip — on a landing page, where the form is
+                 the entire point, that is a conversion thrown away. The
+                 attribute makes the browser say so inline instead; the server
+                 rule is unchanged and is still the one that decides. */ ?>
         <div class="ep-field">
           <label class="visually-hidden" for="lp-message">Your message</label>
           <textarea class="ep-textarea lp-form__message" id="lp-message" name="message"
-                    rows="4" placeholder="Write your message here..."
+                    rows="4" placeholder="Write your message here..." required
                     <?= isset($formErrors['message']) ? 'aria-invalid="true"' : '' ?>><?= esc($old('message')) ?></textarea>
         </div>
 
