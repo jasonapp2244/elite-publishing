@@ -564,7 +564,7 @@ which passes there. */
 
 /* Below 414px the 26px floor above is wider than the space left beside the
    logo mark, and `word-break` splits the address at its last dot — leaving the
-   footer's most prominent line reading "Contact@Elitepublishing." over a
+   footer's most prominent line reading "Info@Elitepublishing." over a
    stranded "Co". The address is one token; the only fix that keeps it whole is
    to let the type keep scaling below the floor.
 

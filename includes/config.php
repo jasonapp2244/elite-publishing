@@ -71,7 +71,10 @@ define('EP_ORIGIN', $epScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
 // --- Brand ------------------------------------------------------------------
 define('EP_NAME', 'Elite Publishing');
 define('EP_TAGLINE', 'Premium book publishing services for independent authors');
-define('EP_EMAIL', 'Contact@Elitepublishing.Co');   // shown verbatim in the footer
+// Shown in the footer, the CTA block and the thank-you page. The design draws
+// "Contact@Elitepublishing.Co"; the client asked for info@ instead, so only the
+// mailbox changed — the title-case styling is the design's and is kept.
+define('EP_EMAIL', 'Info@Elitepublishing.Co');
 define('EP_PHONE', '+1 (800) 000-0000');
 /**
  * Street address. Shown in the contact block on the home page, the contact page
@@ -107,18 +110,18 @@ const EP_SOCIAL = [
 /**
  * Where contact-form submissions are DELIVERED.
  *
- * Deliberately not EP_EMAIL any more. The two are different things and were
- * only ever the same by coincidence:
+ * Kept separate from EP_EMAIL even though both now point at info@, because they
+ * answer different questions:
  *
- *   EP_EMAIL    the address SHOWN to visitors — in the footer, in the contact
- *               block, and on the thank-you page. It is drawn in the design as
- *               "Contact@Elitepublishing.Co" and is reproduced verbatim.
- *   EP_MAIL_TO  the inbox the site actually posts enquiries to.
+ *   EP_EMAIL    the address SHOWN to visitors — in the footer, in the CTA block
+ *               and on the thank-you page. Carries the design's title-case
+ *               styling. Display only; never used to route anything.
+ *   EP_MAIL_TO  the inbox the site actually posts enquiries to. Lower-case,
+ *               because this one goes into a mail header.
  *
- * So the site invites people to write to contact@ while forms arrive at info@.
- * That is a normal arrangement and nothing depends on the two matching — but it
- * is worth knowing before someone "fixes" the mismatch. To show info@ as well,
- * change EP_EMAIL; to route somewhere else, change this line only.
+ * The two matching means a visitor who writes in by hand lands in the same inbox
+ * as a form submission, which is usually what you want. Nothing depends on it:
+ * to route enquiries elsewhere later, change this line alone.
  *
  * The mailbox must exist on the domain, or mail to it bounces into nothing.
  */

@@ -335,7 +335,7 @@ return [
         'heading' => "Let's Bring Your\nBook To Life",
         'intro'   => 'Ready to self-publish or have questions about our services? Get in touch with our editorial team today for a free manuscript evaluation and consultation.',
         'site'    => 'ElitePublishing.co',
-        'email'   => 'contact@elitepublishing.co',
+        'email'   => 'info@elitepublishing.co',
         'buttons' => [
             ['label' => 'Publish Your Book', 'href' => 'contact.php', 'variant' => 'primary'],
             ['label' => 'Free Consultation', 'href' => 'contact.php', 'variant' => 'outline'],
