@@ -48,7 +48,29 @@ define('EP_NAME', 'Elite Publishing');
 define('EP_TAGLINE', 'Premium book publishing services for independent authors');
 define('EP_EMAIL', 'Contact@Elitepublishing.Co');   // shown verbatim in the footer
 define('EP_PHONE', '+1 (800) 000-0000');
-define('EP_ADDRESS', '');
+/**
+ * Street address. Shown in the contact block on the home page, the contact page
+ * and all ten service pages, and published as schema.org PostalAddress.
+ *
+ * This is the single source of truth — it is NOT duplicated into
+ * data/shared.php with the rest of that block's copy, because an address is a
+ * business fact rather than page copy, and two copies of it is how one of them
+ * goes stale. Set EP_ADDRESS to '' to hide the row everywhere; the component and
+ * the structured data both check it.
+ *
+ * EP_ADDRESS_PARTS carries the same address split for schema.org. Keep the two
+ * in step — a search engine reading a postal code that disagrees with the one on
+ * the page is worse than publishing no structured address at all.
+ */
+define('EP_ADDRESS', '261 Madison Ave., New York, NY 10016');
+
+const EP_ADDRESS_PARTS = [
+    'streetAddress'   => '261 Madison Ave.',
+    'addressLocality' => 'New York',
+    'addressRegion'   => 'NY',
+    'postalCode'      => '10016',
+    'addressCountry'  => 'US',
+];
 
 // Social profiles shown in the footer. Empty string hides the icon.
 const EP_SOCIAL = [

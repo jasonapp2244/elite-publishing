@@ -441,3 +441,40 @@ right of a 2560 monitor — the one thing a full-bleed band must never do.
 The old strips (`assets/img/{hero,footer}-band-*`, 15 files, 1.3MB) are now
 unreferenced. They are left on disk because `tools/build-assets.php` still
 produces them; drop both together when convenient.
+
+---
+
+## 18. Street address — added, not replaced
+
+The client supplied **261 Madison Ave., New York, NY 10016** as an address to
+replace. There was no address to replace: `EP_ADDRESS` existed in
+`includes/config.php` but was `''` and unused, the design draws only the website
+and the email in its contact block, and a search of the whole build for street
+or ZIP patterns found nothing. So it is new content, and it went in where an
+address is useful rather than nowhere.
+
+**One source of truth, in `config.php`, not `data/shared.php`.** The rest of that
+contact block's copy lives in the data file, and putting the address there would
+have been the consistent-looking choice. It is a business fact, not page copy,
+and duplicating it across a data file and a schema block is exactly how the two
+drift apart — a page showing one postal code while the structured data publishes
+another is worse than publishing no address at all. `EP_ADDRESS` is the display
+string; `EP_ADDRESS_PARTS` is the same address split for schema.org.
+
+**Where it shows:** a third row in the contact block, under the website and the
+email, with the `map-pin` glyph that was already in the icon set. That block
+appears on the home page, the contact page and all ten service pages. It is
+plain text, not a link — a maps URL is a destination nobody asked for, and it
+would send a visitor off-site from the one block whose job is to keep them.
+
+**The landing pages do not show it.** They draw their own minimal footer and no
+contact block, and adding one would work against what a landing page is for.
+They still publish it in structured data, like every other page.
+
+**It is drawn as a third row the design does not have.** The design's block has
+two. An address the client supplied and nobody can see is not worth having, so
+the row was added rather than the address filed away.
+
+Setting `EP_ADDRESS` back to `''` removes the row and the `PostalAddress` from
+the markup together — both check it — so there is no way to leave half an
+address behind.

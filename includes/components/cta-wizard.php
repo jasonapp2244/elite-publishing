@@ -51,6 +51,18 @@ if (empty($cta) && empty($steps)) {
             <a href="mailto:<?= esc($cta['email']) ?>"><?= esc($cta['email']) ?></a>
           </li>
         <?php endif; ?>
+        <?php /* The address is a third row the design does not draw — it shows
+                 only the site and the email. It is here because the client
+                 supplied it to be published, and a contact block is where a
+                 visitor looks for it. Plain text, not a link: a maps URL would
+                 be a destination nobody asked for. Reads EP_ADDRESS rather than
+                 $cta so there is one copy of it (see includes/config.php). */ ?>
+        <?php if (EP_ADDRESS !== ''): ?>
+          <li>
+            <span class="cta-block__ico"><?= ep_icon('map-pin', ['size' => 18]) ?></span>
+            <span class="cta-block__address"><?= esc(EP_ADDRESS) ?></span>
+          </li>
+        <?php endif; ?>
       </ul>
 
       <p class="cta-block__actions">
