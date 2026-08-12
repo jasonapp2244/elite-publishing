@@ -4,23 +4,29 @@ declare(strict_types=1);
 /**
  * Contact form handler — the only back-end on the site.
  *
- * Serves two posters:
- *   1. the hero contact card on the ten service pages (SPEC §B.13 "Hero contact
- *      form"): full_name / email / phone / message, no `_form` value;
- *   2. the 4-step consultation wizard in includes/components/cta-wizard.php,
- *      which posts `_form=wizard` plus genre / stage / budget and the four
- *      step-4 fields.
+ * Serves all three forms:
+ *   hero-contact  the enquiry card on the ten service pages (SPEC §B.13)
+ *   wizard        the 4-step consultation block in components/cta-wizard.php,
+ *                 which adds genre / stage / budget
+ *   lp-contact    the hero card on lp1-lp4, which adds a `campaign` value
  *
  * Everything is checked here, never in the browser: CSRF, honeypot, field
  * validation, and a per-session and per-IP rate limit. The response is always a
- * 303 redirect back to the page that posted (POST-redirect-GET), carrying a
- * flash in the session — a visitor is never left looking at this URL.
+ * 303 redirect (POST-redirect-GET) — a visitor is never left looking at this
+ * URL, and a refresh cannot resend.
  *
- * Delivery: mail() in production, one JSON line in data/submissions.log in
- * development. data/ is denied by .htaccess, so the log is not web-readable.
+ *   success  ->  /thankyou
+ *   failure  ->  back to the page that posted, with the errors and the values
+ *                the visitor typed
+ *
+ * Sending is NOT done here. ep_send_mail() in email.php owns the message, the
+ * headers and the transport; this file owns whether a submission deserves to be
+ * sent at all. That split is the point: change how mail goes out by editing one
+ * file, without touching a line of validation.
  */
 
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../email.php';
 
 ep_session_start();
 
@@ -62,6 +68,16 @@ function ep_return_url(): string
     }
 
     return url(ep_page_url('contact'));
+}
+
+/** Send the visitor to the thank-you page. Never returns. */
+function ep_form_thanks(): void
+{
+    /* Nothing is carried across in the URL. The thank-you page needs no state,
+       and a query string is the kind of thing that ends up pasted into a
+       support ticket with someone's email address in it. */
+    header('Location: ' . url('thankyou'), true, 303);
+    exit;
 }
 
 /** Store the flash, redirect, stop. Never returns. */
@@ -171,31 +187,10 @@ function ep_field(string $key, int $max): string
     return mb_substr(trim($value), 0, $max);
 }
 
-/**
- * A value safe to drop into a mail header.
- *
- * Anything that could start a new header — CR, LF, or a bare colon-prefixed
- * line — is removed rather than escaped, because a header is not the place to
- * be clever.
- */
-function ep_header_safe(string $value): string
-{
-    return trim(str_replace(["\r", "\n", "\t"], ' ', $value));
-}
-
-/** Append one JSON line to data/submissions.log (development delivery). */
-function ep_log_submission(array $entry): bool
-{
-    $dir = EP_ROOT . '/data';
-    if (!is_dir($dir)) {
-        return false;
-    }
-
-    $line = json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
-    return $line !== false
-        && file_put_contents($dir . '/submissions.log', $line . "\n", FILE_APPEND | LOCK_EX) !== false;
-}
+/* ep_header_safe() and ep_log_submission() moved to email.php when sending was
+   split out of this file. They are mail concerns, and having one copy of them
+   is the whole reason for the split — this file requires email.php at the top,
+   so both are available here. */
 
 // ---------------------------------------------------------------------------
 // 1. Method
@@ -341,75 +336,38 @@ if ($errors !== []) {
 // ---------------------------------------------------------------------------
 // 6. Deliver
 // ---------------------------------------------------------------------------
-$entry = [
-    'time'    => date('c'),
-    'outcome' => 'accepted',
-    'form'    => $isWizard ? 'wizard' : 'contact',
-    'name'    => $name,
-    'email'   => $email,
-    'phone'   => $phone,
-    'genre'   => $answers['genre'],
-    'stage'   => $answers['stage'],
-    'budget'  => $answers['budget'],
-    'message' => $message,
-    'page'    => ep_return_url(),
-    'ip'      => ep_client_ip(),
-    'ua'      => mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 200),
-];
+// Composing and sending belong to email.php. This hands it clean, validated
+// values and does nothing with them but act on the answer.
+$formKey = ($_POST['_form'] ?? '') === 'wizard' ? 'wizard'
+         : (($_POST['_form'] ?? '') === 'lp-contact' ? 'lp-contact' : 'hero-contact');
 
-$delivered = false;
+$delivered = ep_send_mail([
+    'form'     => $formKey,
+    'name'     => $name,
+    'email'    => $email,
+    'phone'    => $phone,
+    'message'  => $message,
+    'genre'    => $answers['genre'],
+    'stage'    => $answers['stage'],
+    'budget'   => $answers['budget'],
+    // Which service page or campaign produced the lead. Validated the same way
+    // as everything else — these are echoed into a mail body.
+    'service'  => ep_field('service', 120),
+    'campaign' => ep_field('campaign', 40),
+    'page'     => ep_return_url(),
+    'ip'       => ep_client_ip(),
+    'ua'       => mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 200),
+]);
 
-if (EP_ENV === 'production') {
-    $subject = ep_header_safe(
-        ($isWizard ? 'Consultation request' : 'Website enquiry') . ' — ' . $name
-    );
-
-    $lines = [
-        'Form:    ' . ($isWizard ? 'Consultation wizard' : 'Contact form'),
-        'Name:    ' . $name,
-        'Email:   ' . $email,
-        'Phone:   ' . ($phone !== '' ? $phone : '—'),
-    ];
-    if ($isWizard) {
-        $lines[] = 'Genre:   ' . ($answers['genre'] !== '' ? $answers['genre'] : '—');
-        $lines[] = 'Stage:   ' . ($answers['stage'] !== '' ? $answers['stage'] : '—');
-        $lines[] = 'Budget:  ' . ($answers['budget'] !== '' ? $answers['budget'] : '—');
-    }
-    $lines[] = 'Page:    ' . $entry['page'];
-    $lines[] = '';
-    $lines[] = $message !== '' ? $message : '(no message)';
-
-    // From is a mailbox on our own domain — sending as the visitor gets the
-    // mail rejected by SPF. Their address goes in Reply-To.
-    $fromDomain = preg_replace('/[^a-z0-9.\-]/i', '', (string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
-    $headers    = [
-        'From: ' . ep_header_safe(EP_NAME) . ' <no-reply@' . $fromDomain . '>',
-        'Reply-To: ' . ep_header_safe($name) . ' <' . ep_header_safe($email) . '>',
-        'Content-Type: text/plain; charset=UTF-8',
-        'MIME-Version: 1.0',
-        'X-Mailer: PHP/' . PHP_VERSION,
-    ];
-
-    $delivered = mail(
-        ep_header_safe(EP_MAIL_TO),
-        $subject,
-        implode("\n", $lines),
-        implode("\r\n", $headers)
-    );
-
-    if (!$delivered) {
-        // Never lose a lead because the MTA is down — keep it on disk too.
-        $entry['outcome'] = 'mail-failed';
-        ep_log_submission($entry);
-    }
-} else {
-    $delivered = ep_log_submission($entry);
-}
-
-if (!$delivered && EP_ENV !== 'production') {
+if (!$delivered) {
+    /* The MTA refused it. ep_send_mail() has already written the submission to
+       data/submissions.log, so the lead is not lost — but the visitor must not
+       be thanked for something that did not happen. Send them back to the form
+       with what they typed and a way to reach us that does not depend on the
+       thing that just broke. */
     ep_form_finish(
         'error',
-        'Something went wrong on our side and the message was not saved. Please email us directly.',
+        'We could not send that just now. Please try again in a moment, or email us directly at ' . EP_EMAIL . '.',
         [],
         $old,
         $fragment
@@ -420,10 +378,8 @@ if (!$delivered && EP_ENV !== 'production') {
 // be replayable.
 unset($_SESSION['ep_csrf']);
 
-ep_form_finish(
-    'ok',
-    'Thank you — your message has been sent. Our editorial team will be in touch shortly.',
-    [],
-    [],
-    $fragment
-);
+/* Success goes to a page of its own rather than back to the form with a banner.
+   A dedicated URL is what analytics and ad platforms can count as a conversion,
+   and the visitor gets a clean confirmation instead of hunting for a green
+   message halfway up the page they were already on. */
+ep_form_thanks();

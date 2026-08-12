@@ -478,3 +478,77 @@ the row was added rather than the address filed away.
 Setting `EP_ADDRESS` back to `''` removes the row and the `PostalAddress` from
 the markup together — both check it — so there is no way to leave half an
 address behind.
+
+---
+
+## 19. Mail split out, thank-you page, and environment detection
+
+Asked for: check the forms, add an `email.php` that sends, redirect to a
+`thankyou.php`, deploying to SiteGround.
+
+**19a. There are three forms, and they all post to one handler.** The audit:
+
+| Form | Where | Extra fields |
+|---|---|---|
+| `hero-contact` | the ten service pages | `service` |
+| `wizard` | home, contact, every service page | `genre` `stage` `budget` |
+| `lp-contact` | lp1–lp4 | `campaign` |
+
+All three carry a CSRF token and a honeypot and share
+`forms/contact-handler.php`. No fourth form exists anywhere in the build.
+
+**19b. `email.php` sends; it is not the form action.** The obvious reading of
+the request was to point the forms at `email.php`. That would have skipped the
+CSRF check, the honeypot, the validation and the rate limit in one move, and the
+address would be harvested within days. So the split is by concern, not by
+request path: the handler decides whether a submission deserves to be sent,
+`email.php` owns the message, the headers and the transport. Changing how mail
+goes out — SMTP, a different From, a new body — is now one file, with no risk of
+disturbing a line of validation.
+
+`ep_header_safe()` and `ep_log_submission()` moved with it, so there is one copy
+of each. A second copy in the handler would have been a fatal redeclaration
+anyway, which is a good property for this kind of split to have.
+
+**19c. Success goes to `/thankyou`; failure goes back to the form.** Both are
+303s, so a refresh can never resend. A dedicated success URL is what an
+analytics or ad platform can count as a conversion — a green banner on the page
+you were already on is invisible to both. Failure still returns to the form with
+the values the visitor typed, because sending someone to a thank-you page for a
+message that was refused is a lie, and making them retype a long enquiry is how
+a real lead is lost.
+
+The page carries **no query string**. It needs no state, and a URL is the last
+place a name or an email address should end up — they get pasted into support
+tickets and logged by analytics. It follows that the page can be opened
+directly, which is fine: it confirms nothing it was not told.
+
+It is `noindex`. **Lighthouse scores it SEO 63 for exactly that reason** — the
+single failing audit is `is-crawlable`, and it is correct that it fails. A
+thank-you page in search results tells a stranger their message was sent when it
+was not. Do not "fix" this.
+
+**19d. `EP_ENV` is detected, not hardcoded — and this was a live landmine.** It
+was the literal string `'development'`. Deployed to SiteGround unchanged, every
+enquiry would have been quietly appended to `data/submissions.log` and no mail
+would ever have been sent, with nothing in any log to say so. It now resolves to
+production for anything that is not plainly a local host, and a `*.local.php`
+or a pre-definition can force it either way.
+
+**19e. SiteGround specifics that are not optional.** `From:` is a mailbox on the
+site's own domain and the envelope sender (`-f`) matches it. Sending "as" the
+visitor's Gmail address is the single most common reason these mails land in
+spam: the domain's SPF record does not authorise SiteGround to send as
+gmail.com, so the message fails SPF and usually DMARC too. The visitor goes in
+`Reply-To`, where hitting Reply still reaches them.
+
+The mailbox in `EP_MAIL_FROM` has to exist in Site Tools → Email → Accounts, or
+bounces go nowhere. If deliverability is still poor after SPF and DKIM are
+published, the answer is authenticated SMTP, which `mail()` cannot do — swap the
+one `@mail()` call in `ep_send_mail()` for PHPMailer and nothing else changes.
+
+**19f. A copy of every accepted submission is still written to disk**, even when
+mail succeeds. A lead is never lost to a mail problem. That file holds personal
+data: it is gitignored and `.htaccess` denies `data/` over HTTP. Both need
+checking after the deploy — `.htaccess` rules are the thing that quietly does
+not survive a move between hosts.

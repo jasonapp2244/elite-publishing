@@ -247,13 +247,62 @@ guard.
   no new failure class; its footer, ink on green at 7.4:1, passes.
 - CLS **0.00**; home page ships ~241 KB over 13 requests
 
+---
+
+## Deploying to SiteGround
+
+The site is plain PHP with no build step, so deployment is a file copy. Mail is
+the only part that needs setting up, and it needs doing in this order.
+
+1. **Create the sending mailbox.** Site Tools → Email → Accounts. It must be on
+   the site's own domain, and it must match `EP_MAIL_FROM` in `email.php` —
+   which derives from the host, so on `elitepublishing.co` it will look for
+   `no-reply@elitepublishing.co`. Skip this and Exim still accepts the mail, but
+   bounces go nowhere and you never learn a message failed.
+2. **Point `EP_MAIL_TO` at the inbox you actually read.** It is `EP_EMAIL` in
+   `includes/config.php` by default.
+3. **Publish SPF and DKIM** for the domain in Site Tools. Without them the mail
+   is authenticated by nothing and spam filters treat it accordingly.
+4. **Check `.htaccess` survived the upload** — `data/` and `includes/` must
+   return 403, not 200. This is the thing that most often does not make it
+   across a host move, and `data/submissions.log` holds submitted personal data.
+5. **Send one test enquiry** and confirm it arrives. If it lands in spam,
+   re-check 1 and 3 before changing anything in code.
+
+`EP_ENV` detects itself from the host — anything that is not obviously a local
+machine is production — so there is no flag to remember to flip. To force it on
+a staging domain that should not send real mail, define `EP_ENV` before
+`includes/config.php` loads, or drop one line in a `*.local.php` (gitignored).
+
+If deliverability is still poor after all of the above, the fix is authenticated
+SMTP, which PHP's `mail()` cannot do. Install PHPMailer and replace the single
+`@mail()` call in `ep_send_mail()`; nothing else in the site changes.
+
+### How a submission flows
+
+```
+three forms  ->  forms/contact-handler.php  ->  email.php        ->  /thankyou
+(CSRF +          (CSRF, honeypot,               (headers, body,      (303, noindex)
+ honeypot)        validation, rate limit)        mail(), log)
+                          |
+                          `-- on any failure: 303 back to the form,
+                              errors shown, typed values preserved
+```
+
+`email.php` **sends**; it is not a form action, and requesting it directly
+returns 404. Pointing a form at it would skip every check in the handler.
+
+---
+
 **Before production launch** — see `docs/CLIENT-QUESTIONS.md`:
 
 - **Rights clearance** for the real book covers and press mastheads used in the
   design. This is a legal decision, not a build one.
-- **SMTP credentials.** The contact handler is complete and header-injection
-  safe, but XAMPP has no mailer, so delivery is untested. In development it
-  appends to `data/submissions.log`; in production it calls `mail()`.
+- **One test email from the live host.** The mail path is complete and
+  header-injection safe, and `EP_ENV` now detects production by itself, but
+  XAMPP has no MTA so delivery has never been exercised anywhere. See
+  **Deploying to SiteGround** above — creating the `EP_MAIL_FROM` mailbox is
+  step 1 for a reason.
 - Placeholder content: the book catalogue, author-story names and reviewer
   avatars are all placeholders in the design itself.
 

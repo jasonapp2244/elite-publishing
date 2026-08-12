@@ -765,3 +765,72 @@ The middle tile's offset to the right *is* correct and deliberate
 (`.home-why__tiles > li:nth-child(2) { margin-left: 18% }`, drawn that way).
 Left open pending a description of what the client is seeing — a browser
 extension and a stale cached stylesheet are both consistent with the evidence.
+
+---
+
+## Addendum — form audit, mail transport and the thank-you page
+
+### The forms
+
+Three, all posting to `forms/contact-handler.php`, all carrying a CSRF token and
+a honeypot. There is no fourth form anywhere in the build.
+
+| Form | Pages | Required | Extra |
+|---|---|---|---|
+| `hero-contact` | 10 service pages | name, email, message | `service` |
+| `wizard` | home, contact, 10 service pages | name, email | `genre` `stage` `budget` |
+| `lp-contact` | lp1–lp4 | name, email, message | `campaign` |
+
+### Tested end to end
+
+Every row below was exercised over HTTP with a real session and a real CSRF
+token, not by reading the code.
+
+| Case | Result |
+|---|---|
+| `hero-contact` valid | 303 → `/thankyou`, logged with `service=Book Editing` |
+| `lp-contact` valid | 303 → `/thankyou`, logged with `campaign=lp2` |
+| `wizard` valid | 303 → `/thankyou`, logged with `genre=Fiction` |
+| invalid (short name, bad email, short message) | 303 → `/lp3?form=error#form-result`, all three errors listed, `aria-invalid` on the right inputs, typed values handed back |
+| `email.php` requested directly | **404** — it is a library, not an endpoint |
+| `includes/`, `data/` over HTTP | 403, unchanged |
+| `/thankyou` in `sitemap.xml` | absent, as intended |
+
+### Mail header injection
+
+`ep_mail_name()` and `ep_header_safe()` were fed hostile input directly:
+
+| Input | Output |
+|---|---|
+| `Bob\r\nBcc: victim@example.com` | `"Bob  Bcc: victim@example.com"` — inert inside the quoted name |
+| `Bob\nCc: victim@example.com` | `"Bob Cc: victim@example.com"` |
+| `Bob\tX-Injected: yes` | `"Bob X-Injected: yes"` |
+| `Bob"><script>…` | quote stripped, cannot close the quoted string |
+| `Ünïcödé Näme` | `=?UTF-8?B?…?=`, correctly MIME-encoded |
+
+No input produced a CR or LF in a header, so no new header can be started.
+
+### Lighthouse
+
+`/thankyou` desktop: **Accessibility 100 · Best Practices 100 · Agentic 100 ·
+SEO 63**.
+
+The SEO score is correct and must not be "fixed". The only failing audit is
+`is-crawlable`, which fails because the page is deliberately `noindex` — a
+thank-you page in search results tells a stranger their message was sent when it
+was not. Every other SEO audit passes.
+
+22/22 pages return 200 with zero PHP diagnostics.
+
+### Still not verifiable here
+
+**Delivery.** XAMPP has no MTA, so `EP_ENV` resolves to development locally and
+`ep_send_mail()` records to `data/submissions.log` and reports success — which
+is what lets the whole flow, redirect included, be tested. Whether SiteGround's
+Exim actually accepts and delivers the message can only be confirmed on the
+host. The deployment checklist is in README under **Deploying to SiteGround**;
+the first item on it, creating the `EP_MAIL_FROM` mailbox, is the one that
+silently swallows bounces if skipped.
+
+Test submissions written during this work were deleted, along with
+`data/rate-limit.json`.

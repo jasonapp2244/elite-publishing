@@ -338,3 +338,40 @@
   justify-content: center;
   margin-top: 32px;
 }
+
+/* ==========================================================================
+   Thank-you page (thankyou.php)
+   One short centred column. No hero wash: the page is a receipt, not a
+   destination, and dressing it up implies there is more to do here.
+   ========================================================================== */
+.thanks { padding-block: clamp(56px, 8vw, 132px); }
+.thanks__inner {
+  max-width: 62ch;
+  margin-inline: auto;
+  text-align: center;
+}
+.thanks__mark {
+  display: grid; place-items: center;
+  width: clamp(56px, 5vw, 76px); aspect-ratio: 1;
+  margin: 0 auto clamp(20px, 2.4vw, 32px);
+  border-radius: 50%;
+  background: var(--ep-green);
+  /* Ink, not --ep-on-green. That token is white (DECISIONS §14) and white on
+     brand green is 2.15:1; this glyph is the one thing on the page a visitor
+     must be able to read at a glance. Ink measures 7.4:1. */
+  color: var(--ep-ink);
+}
+/* Smaller than the site h1. At the full 76px this runs to three lines in a
+   62ch column and reads like a landing headline; this page is a receipt. */
+.thanks h1 {
+  font-size: clamp(30px, 2.6vw + 12px, 52px);
+  margin-bottom: 20px;
+}
+.thanks__lead { color: var(--ep-body); margin-bottom: 16px; }
+.thanks__meta { color: var(--ep-muted); font-size: var(--fs-sm); line-height: var(--lh-sm); }
+.thanks__meta a { color: var(--ep-ink); text-decoration: underline; }
+.thanks__actions {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  justify-content: center;
+  margin-top: clamp(28px, 3vw, 44px);
+}

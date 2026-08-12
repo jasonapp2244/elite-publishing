@@ -7,7 +7,32 @@ declare(strict_types=1);
  */
 
 // --- Environment ------------------------------------------------------------
-define('EP_ENV', 'development');            // 'development' | 'production'
+/**
+ * 'development' | 'production' — detected from the host, not hardcoded.
+ *
+ * This used to be a literal 'development', which is a deployment landmine: on
+ * SiteGround it would have kept quietly appending to data/submissions.log
+ * instead of sending mail, and every enquiry would have been lost with no error
+ * anywhere. Anything that is not obviously a local machine is production.
+ *
+ * To force it either way — a staging domain that should not send real mail, or
+ * testing delivery locally — define EP_ENV before including this file, or drop
+ * one line in a *.local.php (already gitignored).
+ */
+if (!defined('EP_ENV')) {
+    $epHostRaw = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    $epHostRaw = preg_replace('/:\d+$/', '', $epHostRaw);
+    $epIsLocal = $epHostRaw === ''
+        || $epHostRaw === 'localhost'
+        || $epHostRaw === '127.0.0.1'
+        || $epHostRaw === '::1'
+        || str_ends_with($epHostRaw, '.local')
+        || str_ends_with($epHostRaw, '.test')
+        || str_ends_with($epHostRaw, '.localhost')
+        || PHP_SAPI === 'cli';
+
+    define('EP_ENV', $epIsLocal ? 'development' : 'production');
+}
 define('EP_DEBUG', EP_ENV === 'development');
 
 ini_set('display_errors', EP_DEBUG ? '1' : '0');
