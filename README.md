@@ -146,6 +146,19 @@ paint removed **114 ms** of forced reflow and took home-page LCP from 308 ms to
 To change the feel, `--dur-reveal` and `--ease-out` are in `tokens.css`. To turn
 it off completely, delete the `initReveal()` call in `assets/js/main.js`.
 
+Three things move on their own, and all three stop:
+
+- **The testimonial marquee and the press band** share one implementation
+  (`.marquee`) and both carry a visible Pause button — WCAG 2.2.2, since neither
+  track holds anything focusable for `:focus-within` to catch.
+- **The services carousel auto-advances**, opted in with `data-autoplay` on the
+  `[data-scroller]` wrapper. It stops permanently on the first real input — an
+  arrow click, a wheel, a drag, a key, or focus reaching a card link — and never
+  starts under `prefers-reduced-motion` or while off-screen. The arrows are its
+  pause mechanism; `DECISIONS.md` §17b explains that reading.
+- **Book covers lift on hover.** Only `transform` moves, so the band's height is
+  fixed and CLS stays 0.
+
 ### Responsive
 
 Breakpoints are at 480 / 576 / 768 / 992 / 1200 / 1520. Content sits in a
@@ -191,6 +204,13 @@ guard.
 
 ### Two things that look like bugs but are not
 
+0. **The book-cover bands are ten elements, not one image, and are not
+   pixel-identical to the original artwork.** They were a pre-composed bitmap
+   until the covers had to lift on hover — a bitmap has no per-cover element to
+   attach that to. The tilts and the 202px pitch were measured off
+   `hero-band-1920.jpg`; the reconstruction reads the same but does not match
+   it exactly. `assets/img/{hero,footer}-band-*` are now unreferenced.
+   `DECISIONS.md` §17d.
 1. **The design's copy bugs are reproduced on purpose** — `romance , christian ,`
    with spaces before the commas, `Elite Publishing , The`, the About paragraph
    that ends mid-sentence on a comma. All twelve are listed in `DECISIONS.md`

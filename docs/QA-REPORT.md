@@ -683,3 +683,85 @@ Both were flagged by a first-pass probe and are wrong:
 failing audit — 7 nodes, all the `--ep-on-green` decision from DECISIONS §14.
 Landscape phone (844 × 390): the sticky header is 76px, 19% of the screen; the
 landing header is not sticky.
+
+---
+
+## Addendum — client-requested motion and hover states
+
+Six changes from annotated screenshots. What each one found, and what it left.
+
+| Asked for | State before | Now |
+|---|---|---|
+| Services carousel auto-advances | no autoplay anywhere in the build | `data-autoplay="4500"`, stops on first input |
+| Press band moves | static wrapping `<ul>` | `.marquee`, six copies, no seam |
+| Review cards: green border on hover | **`.plat-card` had zero hover rules** | 2px green edge, no layout shift |
+| Basic/Premium: green border on hover | only `.plan--featured:hover` existed | 2px green edge, halo left to the featured card |
+| Hero covers lift on hover | **one flat bitmap — nothing to hover** | rebuilt from 10 individual covers |
+| Footer covers lift on hover | same bitmap | same rebuild, `--footer` variant |
+
+### Verified
+
+- **Press band loop**: half-track ≥ viewport at 360 / 768 / 1440 / 1920 / 2560,
+  so no gap scrolls through at any width. 7 mastheads exposed to the
+  accessibility tree, 35 duplicates `aria-hidden`. No page pan.
+- **Autoplay**: measured advancing on a real page (0 → 572px over two ticks);
+  the arrow still works after; and 12s after any input the position is unchanged
+  — it stays stopped. Confirmed the end-of-rail branch loops back to 0.
+  The first attempt to test this in an off-screen iframe reported "never
+  advances" — that was the harness, not the feature: an iframe parked at
+  `left:-99999px` never intersects, so the IntersectionObserver correctly kept
+  it paused.
+- **Hover borders**: applied the shipped declarations to a live card and
+  measured — `.plat-card` border `#E6E8E7 → #60C489` plus a 1px ring, box size
+  unchanged; `.plan:not(.plan--featured)` the same, inside a matching
+  `@media (hover: hover)`.
+- **Cover lift**: measured a 14px rise at a 124px band (0.11 × band height),
+  neighbours unmoved, band height unchanged before and after — the lift is
+  `transform` only, so CLS cannot move.
+- **Band fills the viewport** at 360 / 768 / 1440 / 1920 / 2560, overflowing
+  both edges at each.
+- 21/21 pages 200 with zero PHP diagnostics; responsive re-sweep clean over
+  9 page templates × 6 widths.
+- Home, desktop: navigation audit **100 / 100 / 100 / 100**; snapshot audit
+  after revealing everything **97 / 100 / 100 / 100** with `color-contrast` the
+  only failure at **39 nodes** — the same count as before this work, so no new
+  failure class. `image-alt`, `aria-hidden-focus` and `target-size` all pass.
+- **LCP 267 ms, CLS 0.00.** The hero band is the home page's LCP element and is
+  now ten images rather than one, so this is the number to watch; it was ~214 ms
+  before. Still an order of magnitude inside budget, and measured unthrottled on
+  localhost where variance is high.
+
+### Payload
+
+The band's ten covers are the same files the Genres and Portfolio rails already
+load, so on the home page and the service pages the rebuild costs roughly
+nothing. On pages with no cover rail — the policy pages, contact, the landing
+pages — the footer band is **+171 KB** against the single strip it replaced
+(268 KB of AVIF covers against 96 KB), lazy-loaded below the fold and shared
+across every page after the first. If that matters, a 240px cover variant would
+roughly halve it; the band never renders a cover wider than 234px.
+
+Offsetting it, `assets/img/{hero,footer}-band-*` — 15 files, 1.3 MB — are now
+unreferenced.
+
+### Not reproduced
+
+One screenshot (`Screenshot 2026-08-12 041016.png`) shows the "Why Us" panel
+with its middle glass tile rendering pale mint with dark text, where its two
+siblings are the correct translucent white on green.
+
+**This build does not do that**, in any state that could be found:
+
+- All three tiles compute `rgba(255,255,255,.12)` with white text, live.
+- Hovering the middle tile — verified with a real pointer, `:hover` matching —
+  changes nothing; there is no hover rule matching `.tile-glass` in any
+  stylesheet.
+- `.tile-glass` has never been modified since the first commit.
+- Sampled against the design: `homepage__02.jpg` has all three tiles at
+  ~`#68C78F`, which is what the build renders. The screenshot's middle tile is
+  `#D0EDDC` — white at ~70% opacity, a value that appears nowhere in the CSS.
+
+The middle tile's offset to the right *is* correct and deliberate
+(`.home-why__tiles > li:nth-child(2) { margin-left: 18% }`, drawn that way).
+Left open pending a description of what the client is seeing — a browser
+extension and a stale cached stylesheet are both consistent with the evidence.

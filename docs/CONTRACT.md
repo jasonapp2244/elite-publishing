@@ -430,3 +430,43 @@ plain-text mail body through `ep_field()`.
 the header partial, and the landing pages require `lp-footer.php` at the end of
 `lp-page.php` rather than `footer.php`. Everything above `<body>` — canonical,
 OG tags, font preloads, the session `ep_csrf_field()` depends on — is shared.
+
+---
+
+## 8. `book-band` after the rebuild
+
+The component no longer renders one `<picture>`. Its inputs are unchanged —
+`$bandVariant` ('hero' | 'footer') and `$bandEager` — but it now emits:
+
+```html
+<div class="book-band book-band--hero" aria-hidden="true">
+  <ul class="book-band__row list-plain">
+    <li class="book-band__item" style="--tilt: -3.4deg; --drop: 0.09;"> <picture>…</picture> </li>
+    …ten of them, from data/books.php in file order
+  </ul>
+</div>
+```
+
+Anything styling `.book-band img` directly will still apply, but code that
+assumed a single image will not. The one place that did — `p-lp.css`, which
+cropped the band with `aspect-ratio` — now sets `--band-h` instead.
+
+Tuning knobs, all on `.book-band`:
+
+| Custom property | Meaning |
+|---|---|
+| `--band-h` | drawn height of the strip; covers overflow past its bottom |
+| `--cover-w` | one cover's width; `max()` with no cap, so it always fills |
+| `--overlap` | fraction of `--cover-w` each cover overlaps its neighbours |
+| `--tilt` | per-cover, set inline from `$bandTilt` |
+| `--drop` | per-cover, in units of `--band-h`, set inline from `$bandDrop` |
+
+`$bandTilt` and `$bandDrop` in the component are indexed by position and wrap,
+so a catalogue longer or shorter than ten still renders.
+
+## 9. `data-autoplay`
+
+Put it on a `[data-scroller]` wrapper to make that rail advance itself; the
+value is the interval in milliseconds. Only the services carousel carries it.
+`initAutoplay()` in `assets/js/main.js` handles the rest, including stopping for
+good on the first real user input.

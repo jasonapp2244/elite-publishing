@@ -202,6 +202,87 @@
       track.addEventListener('scroll', sync, { passive: true });
       window.addEventListener('resize', sync, { passive: true });
       sync();
+
+      initAutoplay(wrap, track, step, sync);
+    });
+  }
+
+  /* --- Carousel autoplay -------------------------------------------------- */
+  /* Opt-in per rail with data-autoplay on the [data-scroller] wrapper, so the
+     book rails stay manual and only the marked carousel advances itself.
+
+     It stops rather than merely pauses the moment the visitor takes control —
+     an arrow click, a wheel, a drag, a key, or focus landing on a card link.
+     Content that keeps moving under someone who is trying to read it is worse
+     than no autoplay at all, and a carousel that fights the user is the single
+     most common complaint about this pattern.
+
+     WCAG 2.2.2 wants a mechanism to pause anything that moves for more than
+     five seconds. The arrows are that mechanism here: using either one ends the
+     motion for the session. That is a deliberate reading — the alternative is a
+     visible pause button, which the marquees carry but which this section's
+     design does not draw. See docs/QA-REPORT.md. */
+  function initAutoplay(wrap, track, step, sync) {
+    if (!wrap.hasAttribute('data-autoplay')) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var DELAY = parseInt(wrap.getAttribute('data-autoplay'), 10) || 4500;
+    var timer = null;
+    var stopped = false;
+    var visible = true;
+    var hovered = false;
+
+    function canRun() {
+      return !stopped && visible && !hovered && !document.hidden
+        && track.scrollWidth > track.clientWidth + 1;
+    }
+
+    function advance() {
+      if (!canRun()) return;
+      var max = track.scrollWidth - track.clientWidth - 2;
+      if (track.scrollLeft >= max) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        track.scrollBy({ left: step(), behavior: 'smooth' });
+      }
+      sync();
+    }
+
+    function start() { if (timer === null) timer = window.setInterval(advance, DELAY); }
+    function pause() { if (timer !== null) { window.clearInterval(timer); timer = null; } }
+
+    function stop() {
+      stopped = true;
+      pause();
+    }
+
+    /* Any deliberate input ends it for good. `click` covers the arrows without
+       needing a reference to them. */
+    ['pointerdown', 'wheel', 'touchstart', 'keydown', 'click'].forEach(function (evt) {
+      wrap.addEventListener(evt, stop, { passive: true, once: true });
+    });
+    track.addEventListener('focusin', stop);
+
+    /* Do not animate a rail nobody is looking at — it burns battery and, worse,
+       a visitor who scrolls back up finds the carousel somewhere they did not
+       leave it. */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (canRun()) { start(); } else { pause(); }
+      }, { threshold: 0.25 }).observe(wrap);
+    } else {
+      start();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (canRun()) { start(); } else { pause(); }
+    });
+
+    wrap.addEventListener('mouseenter', function () { hovered = true; pause(); });
+    wrap.addEventListener('mouseleave', function () {
+      hovered = false;
+      if (canRun()) start();
     });
   }
 

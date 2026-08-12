@@ -648,8 +648,70 @@ which passes there. */
 }
 
 /* --- Full-bleed book-cover band ------------------------------------------ */
-.book-band { width: 100%; overflow: hidden; line-height: 0; }
-.book-band img { width: 100%; height: auto; object-fit: cover; }
+/* --- Book-cover band -----------------------------------------------------
+   Ten individual covers, tilted and overlapped, bottoms cropped by the band.
+   See includes/components/book-band.php for why this is no longer one image.
+
+   --band-h is the drawn height of the strip; the covers are taller than it and
+   overflow past the bottom edge, which is what gives the row its cut-off look.
+   Height is set on the band itself rather than left to the content, so the
+   surrounding layout cannot shift when a cover lifts. */
+.book-band {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  --band-h: clamp(112px, 14.8vw, 285px);
+  /* Sized off the original strip: its covers repeat at a ~202px pitch at 1920,
+     so ten of them overflow both edges rather than stopping short of them.
+
+     Deliberately `max()` with no upper cap. A clamp() ceiling would stop the
+     covers growing past ~1920, and on a 2560 monitor ten of them would then
+     stop short of the right edge and leave a bare strip — the one thing a
+     full-bleed band must never do. The floor keeps them legible on a phone. */
+  --cover-w: max(104px, 12.2vw);
+  --overlap: 0.062;
+  height: var(--band-h);
+}
+.book-band--footer { --band-h: clamp(124px, 16.4vw, 316px); }
+
+.book-band__row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+}
+.book-band__item {
+  flex: 0 0 auto;
+  width: var(--cover-w);
+  /* Negative margin overlaps neighbours so ten covers span the viewport. The
+     tilt is applied about the bottom edge: rotating about the centre swings the
+     tops apart and opens gaps between covers. */
+  margin-inline: calc(var(--cover-w) * var(--overlap) * -1);
+  margin-top: calc(var(--band-h) * var(--drop));
+  transform: rotate(var(--tilt));
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-reveal) var(--ease-out);
+  will-change: transform;
+}
+.book-band__cover,
+.book-band__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(43, 42, 40, .18);
+}
+
+/* The lift the client asked for. Only `transform` moves, so the band's height
+   is untouched and CLS stays at 0. z-index brings the raised cover clear of the
+   neighbours it overlaps. */
+@media (hover: hover) {
+  .book-band__item:hover {
+    transform: rotate(var(--tilt)) translateY(calc(var(--band-h) * -0.11));
+    position: relative;
+    z-index: 2;
+  }
+}
 
 /* ==========================================================================
    Motion
@@ -804,11 +866,41 @@ which passes there. */
   padding-block: clamp(40px, 4.4vw, 74px);
   text-align: center;
 }
-.press-band__eyebrow { color: var(--ep-white); justify-content: center; margin-bottom: 34px; }
+.press-band__eyebrow { color: var(--ep-white); justify-content: center; margin-bottom: 22px; }
+
+/* The row is a .marquee__track, so it must NOT wrap — a wrapping track has no
+   single row to translate and the loop breaks. It also cannot be
+   space-between: that distributes the logos across the track's own width, and
+   a duplicated track is twice the viewport, so the two halves would not line
+   up and the seam would show. A fixed gap keeps the two copies identical. */
 .press-band__row {
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: space-between;
-  gap: clamp(20px, 3vw, 44px);
+  display: flex; flex-wrap: nowrap;
+  align-items: center; justify-content: flex-start;
+  gap: clamp(36px, 4.4vw, 84px);
+  padding-inline: clamp(18px, 2.2vw, 42px);
+  /* Half this track is ~3050px at 1920, against the testimonials' ~2000px, so
+     the shared 64s would run it half again as fast. ~34px/s matches the pace of
+     the review row. */
+  animation-duration: 90s;
+}
+/* The pause control sits on black, so the light pill the testimonial marquee
+   uses would be a bright blob on an otherwise quiet band.
+
+   Scoped as `.press-band .marquee__toggle`, not `.press-band__toggle`: the two
+   class selectors have equal specificity and .marquee__toggle is defined LATER
+   in this file, so a single-class override loses and the button renders white
+   on white. */
+.press-band .marquee__bar { margin-bottom: 18px; }
+.press-band .marquee__toggle {
+  background: transparent;
+  border-color: rgba(255, 255, 255, .38);
+  color: var(--ep-white);
+}
+@media (hover: hover) {
+  .press-band .marquee__toggle:hover {
+    border-color: var(--ep-white);
+    background: rgba(255, 255, 255, .1);
+  }
 }
 .press-band__logo {
   color: rgba(255, 255, 255, .55);
@@ -1065,6 +1157,19 @@ which passes there. */
   padding: 32px 28px;
   height: 100%;
   display: flex; flex-direction: column;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+/* Basic and Premium take a green edge on hover. Deliberately a plain 2px edge
+   and NOT the featured card's border-plus-halo: the halo is what marks Standard
+   as "Most Popular", and if hovering either neighbour reproduced it, the one
+   card that is supposed to stand out stops standing out. Same no-layout-shift
+   trick as .plat-card — colour the 1px border and paint a 1px ring outside it.
+   :not(.plan--featured) so this never overrides the halo. */
+@media (hover: hover) {
+  .plan:not(.plan--featured):hover {
+    border-color: var(--ep-green);
+    box-shadow: 0 0 0 1px var(--ep-green);
+  }
 }
 /* Standard: 2px green border, an offset outer halo, and ~30px taller. */
 .plan--featured {

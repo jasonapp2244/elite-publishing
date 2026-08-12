@@ -164,12 +164,7 @@ body.lp {
    Cropping in CSS rather than cutting a second asset: it is the same artwork,
    and a near-duplicate 1920px image in three formats is 9 files to keep in
    step for 50px. */
-.lp-hero + .book-band img {
-  aspect-ratio: 1920 / 235;
-  height: auto;
-  object-fit: cover;
-  object-position: bottom;
-}
+.lp-hero + .book-band { --band-h: clamp(96px, 12.2vw, 235px); }
 
 /* --- Stats on black ------------------------------------------------------
    Full-bleed black band directly under the cover strip.

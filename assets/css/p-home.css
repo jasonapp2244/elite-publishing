@@ -343,6 +343,17 @@
   background: var(--ep-white);
   border: 1px solid var(--ep-border);
   border-radius: var(--radius-card);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+/* Green edge on hover. The 1px border only changes colour and a 1px ring is
+   painted outside it with box-shadow, which reads as a 2px green edge without
+   growing the box — bumping border-width to 2px would pull the card's contents
+   in by a pixel and jitter the whole row. */
+@media (hover: hover) {
+  .plat-card:hover {
+    border-color: var(--ep-green);
+    box-shadow: 0 0 0 1px var(--ep-green);
+  }
 }
 .plat-card__head {
   display: flex; align-items: center; gap: 10px;

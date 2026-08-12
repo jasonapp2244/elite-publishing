@@ -367,3 +367,77 @@ close with the same green panel as the contact page. It was never really
 page-scoped — `main.css` already styled its ghost button and `main.js` already
 listed it as a reveal target — and a landing page loading `p-contact.css` to
 borrow a shared component would have been misleading.
+
+---
+
+## 17. Motion and hover states requested from screenshots
+
+Six changes asked for by the client as annotated screenshots. Four were CSS;
+two changed structure.
+
+**17a. The press band is now a slider, and it reuses the marquee.** The
+mastheads were a static wrapping row. Rather than write a second scroller, the
+band adopts `.marquee` — same keyframes, same pause-on-hover and
+`:focus-within`, same `[data-marquee-toggle]` handler, which already scoped
+itself with `btn.closest('.marquee')` and so supports any number per page.
+
+The track holds **six** copies of the list, not the marquee's usual two, and
+that number is load-bearing. The animation translates by −50%, so the second
+half must cover the viewport alone or a bare gap scrolls through. One copy of
+seven text mastheads measures 1017px at 1920, against a 2560px widest supported
+viewport; three copies per half clears it. The count must stay even or the seam
+lands mid-copy.
+
+**17b. The services carousel advances itself, and stops for good on the first
+real input.** Opt-in per rail with `data-autoplay` on the `[data-scroller]`
+wrapper, so the book rails stay manual. It pauses off-screen, on a hidden tab
+and on hover, and never starts under `prefers-reduced-motion`.
+
+WCAG 2.2.2 wants a mechanism to pause anything moving for more than five
+seconds. **The arrows are that mechanism**: a click on either ends the motion
+for the session, as does a wheel, drag, key or focus landing on a card link.
+That is a deliberate reading of the criterion rather than a strict one — the
+strict answer is a visible pause button, which the two marquees carry but which
+this section's design does not draw. If an audit demands it, the control already
+exists and is one include away.
+
+**17c. Hovered cards take a green edge — and the featured plan keeps its
+halo.** `.plat-card` and `.plan:not(.plan--featured)` colour their 1px border
+green and paint a 1px ring outside it with `box-shadow`, which reads as a 2px
+edge without growing the box; going to `border-width: 2px` would pull the
+contents in by a pixel and jitter the row.
+
+`:not(.plan--featured)` is the point of the rule, not a detail. The featured
+card's border-plus-halo is what marks it "Most Popular"; if hovering either
+neighbour reproduced that treatment, the one card meant to stand out would stop
+standing out.
+
+**17d. The book band was rebuilt from individual covers.** This is the
+structural one. Both bands were a single pre-composed bitmap, and a bitmap has
+no per-cover element to hover — there was nothing to attach the requested lift
+to. They are now ten `<li>`s built from the same `data/books.php` covers every
+other rail on the site uses, tilted and overlapped in CSS.
+
+Stated plainly: **this is not pixel-identical to the artwork it replaces.** The
+tilts, drops and a 202px cover pitch were measured off `hero-band-1920.jpg` and
+tuned side by side until the two read the same at 1920, but a CSS
+reconstruction of hand-placed art never matches exactly. The client accepted
+that trade before the work started.
+
+What it buys besides the hover: the covers scale with the viewport instead of
+being resampled from a fixed raster, the band fills the screen at 2560 where a
+capped image would not, and pages that already show a cover rail get the band
+for free from cache.
+
+It stays **decorative** — `aria-hidden` on the container, empty `alt` on every
+cover, exactly the semantics the flat image had. The band repeats titles already
+listed on Our Books; announcing them a third time would be noise, and the lift
+carries no information.
+
+`--cover-w` is `max(104px, 12.2vw)` with **no upper cap** on purpose. A clamp
+ceiling would stop the covers growing past ~1920 and leave a bare strip down the
+right of a 2560 monitor — the one thing a full-bleed band must never do.
+
+The old strips (`assets/img/{hero,footer}-band-*`, 15 files, 1.3MB) are now
+unreferenced. They are left on disk because `tools/build-assets.php` still
+produces them; drop both together when convenient.

@@ -25,7 +25,10 @@ if (empty($svc['cards'])) {
 $heading = $carouselHeading ?? ($svc['heading'] ?? '');
 $headId  = 'services-' . substr(md5($heading), 0, 6);
 ?>
-<section class="section" aria-labelledby="<?= esc($headId) ?>" data-scroller>
+<?php /* data-autoplay: advance every 4.5s until the visitor takes control. The
+         value is the interval in ms; remove the attribute to make the rail
+         manual again. See initAutoplay() in assets/js/main.js. */ ?>
+<section class="section" aria-labelledby="<?= esc($headId) ?>" data-scroller data-autoplay="4500">
   <div class="container-ep">
 
     <div class="section-head">
