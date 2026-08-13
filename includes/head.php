@@ -10,14 +10,6 @@ declare(strict_types=1);
  *   $pageCss         array   extra stylesheet paths relative to assets/, optional
  *   $ogImage         string  path relative to assets/, optional
  *   $bodyClass       string  optional
- *   $pageChrome      string  'site' (default) | 'lp'
- *
- * $pageChrome picks which header/footer pair the page gets. The campaign
- * landing pages (lp1-lp4) draw no navigation at all, so they use lp-header.php
- * and lp-footer.php instead. Pages set it once, here, rather than skipping
- * head.php — everything above the <body> tag (canonical, OG, preloads, the
- * session that ep_csrf_field() needs) is identical either way, and a second
- * copy of it would be the thing that silently drifts.
  */
 
 require_once __DIR__ . '/config.php';
@@ -28,7 +20,6 @@ $pageDescription = $pageDescription ?? EP_TAGLINE;
 $pageCss         = $pageCss         ?? [];
 $bodyClass       = $bodyClass       ?? '';
 $ogImage         = $ogImage         ?? 'img/og-default.jpg';
-$pageChrome      = $pageChrome      ?? 'site';
 
 /**
  * Start the session here, before a single byte of output.
@@ -129,7 +120,7 @@ if (EP_ADDRESS !== '') {
 </head>
 <body<?= $bodyClass !== '' ? ' class="' . esc($bodyClass) . '"' : '' ?>>
 <a class="skip-link" href="#main">Skip to main content</a>
-<?php require __DIR__ . ($pageChrome === 'lp' ? '/lp-header.php' : '/header.php'); ?>
+<?php require __DIR__ . '/header.php'; ?>
 <?php /* tabindex="-1" so the skip link moves focus, not just the scroll
          position — without it a screen-reader cursor stays in the header. */ ?>
 <main id="main" tabindex="-1">

@@ -8,7 +8,9 @@ declare(strict_types=1);
  *   hero-contact  the enquiry card on the ten service pages (SPEC §B.13)
  *   wizard        the 4-step consultation block in components/cta-wizard.php,
  *                 which adds genre / stage / budget
- *   lp-contact    the hero card on lp1-lp4, which adds a `campaign` value
+ *   lp-contact    the home-page hero card, which adds a `campaign` value. The
+ *                 name is historical — it served the campaign landing pages,
+ *                 which are gone; renaming it would break live leads in flight.
  *
  * Everything is checked here, never in the browser: CSRF, honeypot, field
  * validation, and a per-session and per-IP rate limit. The response is always a

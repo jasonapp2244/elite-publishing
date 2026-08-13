@@ -15,6 +15,29 @@ DirectoryIndex index.php
   # Generated sitemap, served at the conventional path
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+  # Retired campaign landing pages -> home, permanently.
+  #
+  # lp1-lp4 and their whole stack were deleted. Live ads and any indexed link
+  # still point at these URLs, so they must land somewhere rather than 404.
+  # 301 (not 302) so Google folds the old pages' equity into the home page and
+  # eventually drops them from the index.
+  #
+  # Matches with and without the .php, with or without a trailing slash. This
+  # sits ABOVE the extensionless rule on purpose: that rule only rewrites when
+  # a matching .php file exists, which it no longer does, so without this the
+  # request would fall through to the 404 handler at the bottom.
+  #
+  # Keep this block until the ad campaigns are repointed and Search Console
+  # shows the old URLs gone — it costs nothing to leave in place.
+  #
+  # The target is written for a domain root, which is where this site deploys.
+  # A relative target is NOT the portable fix here: without a RewriteBase,
+  # mod_rewrite resolves it against the filesystem directory and emits the
+  # server path in the Location header. If this ever runs from a
+  # sub-directory, set RewriteBase to that directory rather than editing this
+  # line.
+  RewriteRule ^lp[1-4](\.php)?/?$ / [R=301,L]
+
   # The one page whose spec'd URL differs from its filename (SPEC §F.3).
   # The generic extensionless rule below only finds same-named files, so
   # without this /about-our-company 404s.

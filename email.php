@@ -18,7 +18,9 @@ declare(strict_types=1);
  * The three forms it serves:
  *   wizard        the 4-step consultation block (home, contact, service pages)
  *   hero-contact  the enquiry card on the ten service pages
- *   lp-contact    the hero card on lp1-lp4, carries a `campaign` value
+ *   lp-contact    the home-page hero card, carries a `campaign` value. Named
+ *                 for the campaign landing pages it was built for; those pages
+ *                 are gone, the key stayed so live leads keep routing.
  *
  * ---------------------------------------------------------------------------
  * SITEGROUND

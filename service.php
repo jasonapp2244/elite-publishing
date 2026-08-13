@@ -182,9 +182,8 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
                  <?= isset($formErrors['phone']) ? 'aria-invalid="true"' : '' ?>>
         </div>
 
-        <?php /* Same as the landing pages: the handler requires a message on
-                 this form, so the markup has to say so or the visitor finds out
-                 only after a round-trip. See includes/lp-page.php. */ ?>
+        <?php /* The handler requires a message on this form, so the markup has
+                 to say so or the visitor finds out only after a round-trip. */ ?>
         <div class="ep-field">
           <label class="visually-hidden" for="svc-message">Your message</label>
           <textarea class="ep-textarea svc-form__message" id="svc-message" name="message"

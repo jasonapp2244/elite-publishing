@@ -27,15 +27,6 @@ foreach (array_keys(EP_SERVICES) as $slug) {
     $urls[] = ['loc' => 'services/' . $slug, 'priority' => '0.9', 'freq' => 'monthly'];
 }
 
-/* The four campaign landing pages. Listed because their copy is unique and
-   indexable, at a lower priority than the service pages they sit alongside.
-   If they turn out to be paid-traffic-only, they should be noindex instead of
-   demoted — that is a marketing decision, and it is open in
-   docs/CLIENT-QUESTIONS.md §46. */
-foreach (['lp1', 'lp2', 'lp3', 'lp4'] as $lp) {
-    $urls[] = ['loc' => $lp, 'priority' => '0.6', 'freq' => 'monthly'];
-}
-
 /** Last modified: the newest page/template mtime, not "now" — a sitemap that
  *  claims everything changed on every crawl is ignored. */
 $stamp = 0;
