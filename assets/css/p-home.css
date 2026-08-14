@@ -13,7 +13,9 @@
   background-image: var(--ep-hero-wash);
   background-repeat: no-repeat;
   background-position: top center;
-  background-size: 100% clamp(520px, 45vw, 864px);
+  /* Tracks the hero's height — the wash is meant to sit behind the hero and
+     stop where the cover band starts. Shortened along with the hero below. */
+  background-size: 100% clamp(430px, 37.2vw, 715px);
 }
 .page-home .ep-header { background: transparent; }
 .page-home .ep-header.is-stuck { background: var(--ep-bg); }
@@ -21,13 +23,19 @@
 /* ==========================================================================
    2 — Hero
    ========================================================================== */
-.home-hero { padding-block: clamp(36px, 6.2vw, 118px) clamp(56px, 7.8vw, 150px); }
+/* The hero and the cover band that follows it are one composition, and on a
+   1080p screen the band was landing almost entirely below the fold — about
+   60px of cover showing under a 760px-tall hero. The height came out of the
+   padding and the vertical rhythm rather than the type: the headline, lead and
+   buttons are all still at their designed sizes, they just sit closer
+   together. That buys back ~150px, which is most of a cover. */
+.home-hero { padding-block: clamp(28px, 3.4vw, 64px) clamp(40px, 4.4vw, 84px); }
 
 .home-hero__inner { max-width: 1220px; text-align: center; }
 
 /* The three line breaks are designed (SPEC §D.3); the box only has to be wide
    enough that the longest of them does not wrap again. */
-.home-hero__title { margin-bottom: 30px; }
+.home-hero__title { margin-bottom: 22px; }
 
 /* The green highlight is a solid rectangle with the ink word on top — not a
    rounded pill (SPEC §A.1). */
@@ -38,11 +46,11 @@
   border-radius: 0;
 }
 
-.home-hero__text { max-width: 900px; margin-inline: auto; margin-bottom: 32px; }
+.home-hero__text { max-width: 900px; margin-inline: auto; margin-bottom: 24px; }
 
 .home-hero__actions {
   display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .home-hero__rating {

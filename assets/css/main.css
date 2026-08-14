@@ -708,11 +708,18 @@ which passes there. */
    overflow past the bottom edge, which is what gives the row its cut-off look.
    Height is set on the band itself rather than left to the content, so the
    surrounding layout cannot shift when a cover lifts. */
+
+/* The hero band's drawn height is needed outside this file too: on the service
+   pages the band is pulled up onto the hero photograph, and the hero has to
+   reserve exactly this much extra height for it. One declaration, so the two
+   can never disagree — see .svc-hero in p-service.css. */
+:root { --band-h-hero: clamp(112px, 14.8vw, 285px); }
+
 .book-band {
   width: 100%;
   overflow: hidden;
   line-height: 0;
-  --band-h: clamp(112px, 14.8vw, 285px);
+  --band-h: var(--band-h-hero);
   /* Sized off the original strip: its covers repeat at a ~202px pitch at 1920,
      so ten of them overflow both edges rather than stopping short of them.
 
@@ -722,7 +729,37 @@ which passes there. */
      full-bleed band must never do. The floor keeps them legible on a phone. */
   --cover-w: max(104px, 12.2vw);
   --overlap: 0.062;
-  height: var(--band-h);
+
+  /* How far a hovered cover rises. Declared once, here, because the :hover rule
+     and the headroom below both need it and they must never drift apart. */
+  --lift: calc(var(--band-h) * 0.11);
+
+  /* Headroom for that lift. `overflow: hidden` crops the covers' bottoms on
+     purpose — but it crops their tops just as hard, and a raised cover ran
+     straight into that edge and had its top sliced off.
+
+     So the box is grown upward by the lift (plus a little for the cover's
+     shadow) and pulled back by the same amount with a negative margin, while
+     the row is pushed down by it again. The band therefore draws in exactly
+     the same place, occupies exactly the same height in the flow, and a lifted
+     cover now has somewhere to go. */
+  --headroom: calc(var(--lift) + 20px);
+
+  /* How far the band is dragged up onto whatever precedes it. Zero wherever it
+     stands on its own ground — the home page's pale wash, the footer's green
+     field. The service pages set it to --band-h so the covers sit on the hero
+     photograph rather than on a bare white strip below it. */
+  --band-pull: 0px;
+
+  height: calc(var(--band-h) + var(--headroom));
+  margin-top: calc((var(--headroom) + var(--band-pull)) * -1);
+  padding-top: var(--headroom);
+
+  /* Those negative margins lay the band over whatever sits above it — the
+     footer's legal links, the whole bottom of a service hero. The band is
+     decorative and aria-hidden, so nothing in it needs to catch a pointer
+     except the covers themselves, which take it back below. */
+  pointer-events: none;
 }
 .book-band--footer { --band-h: clamp(124px, 16.4vw, 316px); }
 
@@ -730,11 +767,16 @@ which passes there. */
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  /* The band's content box, i.e. --band-h — its padding-top is the headroom.
+     The compensation lives up there rather than as padding on this row because
+     this row is also .list-plain, whose `padding: 0` is declared later in this
+     file at equal specificity and would silently win. */
   height: 100%;
 }
 .book-band__item {
   flex: 0 0 auto;
   width: var(--cover-w);
+  pointer-events: auto;
   /* Negative margin overlaps neighbours so ten covers span the viewport. The
      tilt is applied about the bottom edge: rotating about the centre swings the
      tops apart and opens gaps between covers. */
@@ -756,10 +798,11 @@ which passes there. */
 
 /* The lift the client asked for. Only `transform` moves, so the band's height
    is untouched and CLS stays at 0. z-index brings the raised cover clear of the
-   neighbours it overlaps. */
+   neighbours it overlaps. The distance is --lift, the same value the band
+   reserves as headroom, so the cover cannot rise past the crop again. */
 @media (hover: hover) {
   .book-band__item:hover {
-    transform: rotate(var(--tilt)) translateY(calc(var(--band-h) * -0.11));
+    transform: rotate(var(--tilt)) translateY(calc(var(--lift) * -1));
     position: relative;
     z-index: 2;
   }

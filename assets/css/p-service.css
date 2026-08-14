@@ -80,15 +80,38 @@ body.page-service { overflow-x: clip; }
 }
 
 /* --- 2 · Hero ------------------------------------------------------------ */
+/* The book-cover band that follows is dragged back up onto this photograph —
+   see the rule under it. So the hero carries --band-h-hero of extra height at
+   the bottom, purely as ground for those covers to stand on: added to BOTH the
+   min-height and the bottom padding, which leaves the content box exactly the
+   size it was and the headline, buttons and form card exactly where they were.
+   Without it the covers sat on a bare white strip between the photo and the
+   press band.
+
+   The rest of the hero was then cut back, the same way and for the same reason
+   as the home hero: at 866px of photo plus the band it ran a full screen and a
+   half, and about 55px of cover reached the first screen. The `min(…, 76vh)`
+   is what stops a short laptop screen putting the band below the fold again —
+   the width-based clamp alone cannot see how tall the window is. Height above
+   it is still content-driven, so the form card can always grow. */
 .svc-hero {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: clamp(520px, 45vw, 866px);
-  padding-top: calc(var(--svc-nav-h) + clamp(28px, 7.3vw, 141px));
-  padding-bottom: clamp(44px, 5.1vw, 98px);
+  min-height: calc(min(clamp(460px, 38vw, 730px), 76vh) + var(--band-h-hero));
+  padding-top: calc(var(--svc-nav-h) + clamp(24px, 4.2vw, 81px));
+  padding-bottom: calc(clamp(32px, 2.1vw, 40px) + var(--band-h-hero));
   overflow: hidden;
   color: var(--ep-white);
+}
+
+/* Pull the band up over that reserved strip.
+   position/z-index are load-bearing: .svc-hero is positioned, so it paints
+   above a following static sibling and would swallow the covers whole. */
+.page-service .book-band--hero {
+  --band-pull: var(--band-h);
+  position: relative;
+  z-index: 1;
 }
 
 .svc-hero__media { position: absolute; inset: 0; }
@@ -319,7 +342,9 @@ body.page-service { overflow-x: clip; }
 @media (max-width: 991.98px) {
   .svc-hero {
     min-height: 0;
-    padding-bottom: clamp(40px, 6vw, 64px);
+    /* Height is content-driven here, so the band's ground has to come entirely
+       from the padding. */
+    padding-bottom: calc(clamp(40px, 6vw, 64px) + var(--band-h-hero));
   }
   .svc-hero__inner { grid-template-columns: 1fr; }
   .svc-hero__media::after {
