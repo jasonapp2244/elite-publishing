@@ -59,7 +59,14 @@ function ep_return_url(): string
         $parts = parse_url($referer);
         $host  = $parts['host'] ?? '';
         $path  = $parts['path'] ?? '';
-        $self  = (string) ($_SERVER['HTTP_HOST'] ?? '');
+
+        /* HTTP_HOST carries the port, parse_url()'s host never does. Comparing
+           them raw made "127.0.0.1" != "127.0.0.1:8765" on any install not
+           served from port 80/443, so every rejected submission was bounced to
+           the contact page instead of back to the form the visitor was filling
+           in — losing what they had typed. Invisible in production, wrong
+           everywhere else, and one line to make correct in both. */
+        $self = preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')) ?? '';
 
         if ($host !== '' && strcasecmp($host, $self) === 0
             && str_starts_with($path, EP_BASE)

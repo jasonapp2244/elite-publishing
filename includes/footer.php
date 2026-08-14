@@ -46,7 +46,7 @@ $footerCols = ep_footer_nav();
     </nav>
 
     <div class="ep-footer__legal">
-      <p class="m-0">&copy; Copyright <?= esc(date('Y')) ?> All Rights Reserved.</p>
+      <p class="m-0 ep-footer__legal-copy">&copy; Copyright <?= esc(date('Y')) ?> All Rights Reserved.</p>
       <p class="m-0 ep-footer__legal-links">
         <a href="<?= esc(url(ep_page_url('terms-conditions'))) ?>">Terms &amp; Conditions</a>
         <span aria-hidden="true">|</span>
@@ -58,6 +58,15 @@ $footerCols = ep_footer_nav();
 
   <?php require __DIR__ . '/components/book-band.php'; ?>
 </footer>
+
+<?php /* The "Publish Your Book" popup. Last thing in the body, after every
+         section that could claim the submission banner — see the component. */ ?>
+<?php require __DIR__ . '/components/publish-modal.php'; ?>
+
+<?php /* The book-cover lightbox. An empty shell — initCoverZoom() fills it from
+         whichever cover was clicked. Included on every page for the same reason
+         as the popup above; it binds nothing on a page with no covers. */ ?>
+<?php require __DIR__ . '/components/cover-modal.php'; ?>
 
 <script src="<?= esc(asset('js/main.js')) ?>" defer></script>
 <?php foreach (($pageJs ?? []) as $js): ?>

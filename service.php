@@ -118,7 +118,8 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
       <?php endif; ?>
 
       <p class="svc-hero__actions">
-        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>">
+        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>"
+           data-modal-open="publish-modal">
           Publish Your Book <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>
         <a class="ep-btn ep-btn--ghost-white" href="<?= esc(url(ep_page_url('contact'))) ?>">

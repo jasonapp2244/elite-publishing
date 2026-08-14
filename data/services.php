@@ -30,13 +30,13 @@ return [
         'meta_desc' => 'Publish your book worldwide with Elite Publishing. We handle formatting, ISBN, platform setup and global distribution so readers can find your title.',
         'hero' => [
             'h1'    => "Turn Your Book Into A\nGlobally Published\nSuccess",
-            'text'  => 'We publish your book on leading platforms and make it available to readers worldwide. From setup to final launch, we handle everything so your book is professionally published and ready for global audience reach.',
+            'text'  => 'We publish your book on major retail platforms and make it available to readers worldwide. From setup to final launch, we handle formatting, publishing setup, metadata, and distribution.',
             'image' => 'img/svc/books-publishing-hero',
         ],
         'intro' => [
             'h2'    => "Global Book Publishing Made\nEasy",
             'paras' => [
-                'We simplify the entire publishing process by handling all technical and platform requirements. From formatting to final upload, we ensure your book is properly published and optimized for maximum visibility.',
+                'We handle the technical and platform requirements of publishing. From formatting to final upload, we prepare your files to each store\'s specification and complete the listing details readers search on.',
                 'Our team manages everything so you can focus on your writing while we take care of publishing and distribution.',
                 'The result is a professionally published book ready for global readers.',
             ],
@@ -82,7 +82,7 @@ return [
         'title'     => 'Book Cover Design',
         'meta_desc' => 'Custom book cover design that fits your genre and sells your story. Concept through to print and eBook-ready artwork built to stand out in any store.',
         'hero' => [
-            'h1'    => "Turn Your Book Into A\nVisually Stunning\nBestseller",
+            'h1'    => "Give Your Book A\nVisually Stunning\nCover",
             'text'  => 'We design eye-catching, professional book covers that instantly attract readers and reflect your book\'s true message. From concept to final design, we create covers that stand out in both digital and print markets.',
             'image' => 'img/svc/book-cover-design-hero',
         ],
@@ -139,7 +139,7 @@ return [
         'meta_desc' => 'Audio book production from first concept to final recording. We structure and produce audio-ready narration that keeps listeners engaged start to finish.',
         'hero' => [
             'h1'    => "Transform Your\nConcepts Into Audio\nScripts.",
-            'text'  => 'We craft expertly written audio scripts that grab attention, convey clear messages, and engage your audience in various formats.',
+            'text'  => 'We write audio scripts that hold attention, convey clear messages, and suit the format you are producing for.',
             'image' => 'img/svc/audio-book-production-hero',
         ],
         'intro' => [
@@ -173,7 +173,7 @@ return [
         'meta_desc' => 'Professional ghostwriting that turns your idea into a publish-ready book. We write in your voice, from the first concept to the final manuscript.',
         'hero' => [
             'h1'    => "Turn Your Idea Into A\nPowerful, Professionally\nWritten Book",
-            'text'  => 'We transform your ideas into compelling, high-quality books that reflect your voice, vision, and message. From concept to final manuscript, our expert ghostwriters handle everything so you can focus on your goals while we bring your story to life.',
+            'text'  => 'We turn your ideas into a finished book that reflects your voice, vision, and message. From concept to final manuscript, our ghostwriters handle the writing so you can focus on the story you want told.',
             'image' => 'img/svc/ghostwriting-hero',
         ],
         'intro' => [
@@ -200,14 +200,14 @@ return [
         'title'     => 'Book Marketing',
         'meta_desc' => 'Book marketing that builds visibility and sales. Launch strategy, author branding, audience targeting and promotion that put your book in front of readers.',
         'hero' => [
-            'h1'    => "Turn Your Book Into A\nBestselling Success",
+            'h1'    => "Put Your Book In Front\nOf More Readers",
             'text'  => 'We promote your book with powerful marketing strategies that increase visibility, attract the right readers, and boost sales across global platforms. From launch to ongoing promotion, we handle everything to grow your author brand.',
             'image' => 'img/svc/book-marketing-hero',
         ],
         'intro' => [
             'h2'    => "Strategic Book Marketing\nThat Drives Real Results",
             'paras' => [
-                'We create targeted marketing strategies that help your book reach the right audience and gain maximum visibility. From author branding to promotional campaigns, we focus on building strong market presence.',
+                'We build a marketing plan around your book, your audience, and your publishing goals. From author branding to promotional campaigns, we develop the materials and run the activity behind your launch.',
                 'Our team ensures your book is not only published but also actively promoted to increase engagement, reach, and sales.',
                 'The result is a strong author brand with a book that gets real attention.',
             ],
@@ -286,14 +286,14 @@ return [
         'meta_desc' => 'Blog article and script writing that turns your concepts into engaging, well-structured content your audience will actually read and remember.',
         'hero' => [
             'h1'    => "Transform Your\nConcepts Into\nEngaging Scripts",
-            'text'  => 'We craft expertly written scripts that grab attention, convey clear messages, and resonate with your audience in various formats.',
+            'text'  => 'We write scripts that hold attention, convey clear messages, and suit the format and audience you are writing for.',
             'image' => 'img/svc/blog-article-writing-hero',
         ],
         'intro' => [
             'h2'    => "Crafting Scripts That Bring\nYour Vision To Life",
             'paras' => [
                 'Crafting scripts that truly reflect your vision is our passion. Whether it\'s for a book, video, podcast, or an engaging story, we focus on creating clear, compelling narratives. Our team ensures smooth transitions and powerful messaging, transforming your ideas into scripts that captivate and resonate with your audience.',
-                'At our core, we are dedicated to bringing your ideas to life through expertly crafted scripts. Be it for a novel, a video, a podcast, or a captivating tale, we prioritize clarity and engagement in our storytelling. Our skilled team guarantees seamless transitions and impactful messaging, ensuring your concepts are transformed into scripts that truly connect with your audience.',
+                'At our core, we are dedicated to bringing your ideas to life through carefully written scripts. Be it for a novel, a video, a podcast, or a captivating tale, we prioritize clarity and engagement in our storytelling. Our skilled team delivers seamless transitions and impactful messaging, so your concepts are transformed into scripts that truly connect with your audience.',
             ],
             'image' => 'img/svc/blog-article-writing-intro',
         ],

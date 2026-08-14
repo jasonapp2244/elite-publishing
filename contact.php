@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/config.php';
 $pageKey         = 'contact';
 $pageTitle       = 'Contact Us';
 $pageDescription = 'Get in touch with the Elite Publishing team for questions, project '
-                 . 'details or expert guidance on publishing your book.';
+                 . 'details or guidance on publishing your book.';
 $pageCss         = ['css/p-core.css', 'css/p-contact.css'];
 
 require __DIR__ . '/includes/head.php';
@@ -40,7 +40,7 @@ if (!is_array($flash) || (time() - (int) ($flash['time'] ?? 0)) > 300) {
     <h1 id="contact-hero-h"><?= ep_lines("Get In Touch With\nOur Team") ?></h1>
     <p class="lead page-hero__intro">
       We're here to help you with your publishing journey. Reach out to us for any questions,
-      project details, or expert guidance.
+      project details, or guidance on where to start.
     </p>
   </div>
 </section>
@@ -77,7 +77,8 @@ require __DIR__ . '/includes/components/cta-wizard.php';
         professionally published success.
       </p>
       <p class="cta-green__actions">
-        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>">
+        <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>"
+           data-modal-open="publish-modal">
           Publish Your Book
           <?= ep_icon('arrow-up-right', ['class' => 'arrow']) ?>
         </a>

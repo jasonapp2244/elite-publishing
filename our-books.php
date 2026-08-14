@@ -13,8 +13,8 @@ require_once __DIR__ . '/includes/config.php';
 
 $pageKey         = 'books';
 $pageTitle       = 'Our Books';
-$pageDescription = 'A collection of books we have helped authors turn from ideas into '
-                 . 'professionally published titles, across fiction, non-fiction and more.';
+$pageDescription = 'A selection of titles across the genres we work in — fiction, '
+                 . 'non-fiction, children\'s books and more.';
 $pageCss         = ['css/p-core.css'];
 
 require __DIR__ . '/includes/head.php';
@@ -24,10 +24,15 @@ $books = ep_data('books');
 
 <section class="page-hero hero-wash" aria-labelledby="books-hero-h">
   <div class="container-ep">
-    <h1 id="books-hero-h"><?= ep_lines("Stories We've\nHelped Bring To Life") ?></h1>
+    <?php /* Was "Stories We've Helped Bring To Life" over a grid of real
+             commercial titles published by other houses — a claim of
+             involvement the project cannot support. The page now presents the
+             grid as the genres we work in, which is what it can honestly say
+             while the covers remain. */ ?>
+    <h1 id="books-hero-h"><?= ep_lines("Genres We\nWork In") ?></h1>
     <p class="lead page-hero__intro">
-      We take pride in transforming ideas into powerful, professionally written books. Each
-      project reflects creativity, dedication, and a commitment to quality storytelling.
+      We work across fiction, non-fiction, children's books and more. Whatever the genre, the
+      process covers writing, editing, design, publishing and distribution.
     </p>
   </div>
 </section>

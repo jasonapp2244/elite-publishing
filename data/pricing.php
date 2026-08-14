@@ -36,7 +36,13 @@ return [
             'period'   => '/ month',
             'icon'     => 'sparkle',
             'featured' => true,
-            'badge'    => 'Most Popular',
+            /* Was a "Most Popular" pill. Popularity is a sales claim, and
+               nothing in the project measures which package sells most. The
+               badge is dropped rather than reworded — the tier is already
+               called Standard Package, so a pill repeating that says nothing.
+               components/plans.php only renders the pill when this is set, so
+               the card layout is unchanged. */
+            'badge'    => null,
             'features' => [
                 'Ghostwriting Support',
                 'Editing & Proofreading',

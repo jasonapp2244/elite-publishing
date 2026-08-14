@@ -178,6 +178,86 @@
          animation frame collapses a burst of scroll events into a single
          read-then-write, and the frame callback runs at a point where layout
          is already being computed. */
+      /* A looping rail renders its children twice (see
+         components/services-carousel.php). One "copy" is therefore half the
+         scrollable content, and stepping past that point can be rewound by
+         exactly that much without anything appearing to move: the pixels either
+         side of the seam are identical. */
+      var loops = wrap.hasAttribute('data-loop');
+
+      /* The distance from the first card to its duplicate — the DOM's own
+         measurement of one copy.
+
+         Two other ways to get this number were wrong. scrollWidth / 2 includes
+         the track's padding-inline and overshoots by ~39px. step() * (cells / 2)
+         looks exact but multiplies a fractional card width eight times: it came
+         out at 2699.2 where the rail actually rests at 2696, so `scrollLeft >=
+         copyWidth` was never true and the rail simply stopped at the seam.
+         Subtracting two offsetLefts cannot drift, whatever the card width. */
+      function copyWidth() {
+        var cells = track.children;
+        var half  = Math.floor(cells.length / 2);
+        if (!half) return 0;
+        return cells[half].offsetLeft - cells[0].offsetLeft;
+      }
+
+      /* The seam is crossed AFTER the rail comes to rest, never before a move.
+
+         The obvious version — rewind, then immediately animate one step — does
+         not work in Chrome. An instant scrollLeft assignment followed in the
+         same frame (or the next, or 300ms later) by a smooth scrollBy leaves two
+         scrolls resolving at once, and with `scroll-snap-type: x mandatory` the
+         browser keeps the instant one and silently discards the animation: the
+         rail rewound to 0 and then sat there, one card short, on every lap.
+         Yielding a frame did not help, and neither did a timeout.
+
+         Doing it this way round means only ONE animated scroll is ever in
+         flight. Steps are always plain forward scrollBy calls that cannot be
+         dropped; the rewind runs 250ms after the last scroll event, when the
+         rail is still and nothing can conflict with it. The two copies are
+         identical, so landing one copy back is invisible.
+
+         There is room to overshoot before rewinding: two copies make the
+         scrollable range nearly twice a copy, so a step past the seam always
+         lands inside real content. */
+      var seamTimer = null;
+
+      function watchSeam() {
+        if (!loops) return;
+        window.clearTimeout(seamTimer);
+        seamTimer = window.setTimeout(function () {
+          var w = copyWidth();
+          /* -1 so a rail resting exactly on the seam is not left there by a
+             sub-pixel: scrollLeft is fractional and the comparison must not be
+             the thing that decides whether the loop continues. */
+          if (w > 0 && track.scrollLeft >= w - 1) {
+            track.scrollLeft -= w;
+            sync();
+          }
+        }, 250);
+      }
+
+      function stepForward() {
+        track.scrollBy({ left: step(), behavior: 'smooth' });
+        sync();
+      }
+
+      function stepBack() {
+        /* Wrapping backwards off the start is the one move that must be
+           instant. Animating it would mean an assignment plus an animation
+           again, which is exactly what gets dropped — and the visitor is going
+           backwards through identical content either way, so there is nothing
+           to see. Land one card short of the seam: the same card that sits one
+           step behind the first, one copy along. */
+        if (loops && track.scrollLeft < step() / 2) {
+          track.scrollLeft = copyWidth() - step();
+          sync();
+          return;
+        }
+        track.scrollBy({ left: -step(), behavior: 'smooth' });
+        sync();
+      }
+
       var queued = false;
 
       function sync() {
@@ -185,6 +265,13 @@
         queued = true;
         window.requestAnimationFrame(function () {
           queued = false;
+          /* A looping rail has no ends, so its arrows must never disable —
+             doing so would grey out Next exactly when the loop is working. */
+          if (loops) {
+            if (prev) prev.disabled = false;
+            if (next) next.disabled = false;
+            return;
+          }
           var max  = track.scrollWidth - track.clientWidth - 1;
           var left = track.scrollLeft;                 // all reads first
           if (prev) prev.disabled = left <= 0;         // then all writes
@@ -192,18 +279,15 @@
         });
       }
 
-      if (prev) prev.addEventListener('click', function () {
-        track.scrollBy({ left: -step(), behavior: 'smooth' });
-      });
-      if (next) next.addEventListener('click', function () {
-        track.scrollBy({ left: step(), behavior: 'smooth' });
-      });
+      if (prev) prev.addEventListener('click', stepBack);
+      if (next) next.addEventListener('click', stepForward);
 
       track.addEventListener('scroll', sync, { passive: true });
+      track.addEventListener('scroll', watchSeam, { passive: true });
       window.addEventListener('resize', sync, { passive: true });
       sync();
 
-      initAutoplay(wrap, track, step, sync);
+      initAutoplay(wrap, track, step, sync, loops ? stepForward : null);
     });
   }
 
@@ -211,18 +295,34 @@
   /* Opt-in per rail with data-autoplay on the [data-scroller] wrapper, so the
      book rails stay manual and only the marked carousel advances itself.
 
-     It stops rather than merely pauses the moment the visitor takes control —
-     an arrow click, a wheel, a drag, a key, or focus landing on a card link.
-     Content that keeps moving under someone who is trying to read it is worse
-     than no autoplay at all, and a carousel that fights the user is the single
-     most common complaint about this pattern.
+     It stops rather than merely pauses once the visitor takes control of the
+     RAIL. Content that keeps moving under someone trying to read it is worse
+     than no autoplay at all.
+
+     What counts as taking control is the whole difficulty, and the first
+     version got it wrong in a way that made the carousel look broken: it bound
+     pointerdown/wheel/touchstart/keydown/click to the section wrapper and
+     stopped on the first of them. The wrapper is a full-width band, so one
+     notch of the mouse wheel while scrolling PAST the section killed the
+     autoplay for the rest of the visit — and on a phone, touchstart fires the
+     instant a finger lands on a card to scroll the page vertically, so the
+     carousel almost never ran on mobile at all. Both are the visitor moving the
+     PAGE, not the rail, and neither should have counted.
+
+     So control is now judged by the outcome instead of the input: after every
+     advance we remember the offset we asked for, and if the rail settles
+     anywhere else, something other than us moved it — a swipe, a horizontal
+     trackpad gesture, an arrow key, a click on the nav buttons. That is true
+     control, and it stops the motion. Vertical page scrolling never changes
+     scrollLeft, so it no longer registers.
 
      WCAG 2.2.2 wants a mechanism to pause anything that moves for more than
-     five seconds. The arrows are that mechanism here: using either one ends the
-     motion for the session. That is a deliberate reading — the alternative is a
-     visible pause button, which the marquees carry but which this section's
+     five seconds. The arrows are that mechanism here — using either one ends the
+     motion for the session — and initScrollerA11y() makes the rail itself
+     focusable, so a keyboard user can stop it by tabbing to it. The alternative
+     is a visible pause button, which the marquees carry but which this section's
      design does not draw. See docs/QA-REPORT.md. */
-  function initAutoplay(wrap, track, step, sync) {
+  function initAutoplay(wrap, track, step, sync, loopStep) {
     if (!wrap.hasAttribute('data-autoplay')) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -239,6 +339,15 @@
 
     function advance() {
       if (!canRun()) return;
+
+      /* A looping rail only ever moves forward — stepForward() owns the seam,
+         rewinding by exactly one duplicated copy onto identical pixels while
+         the rail is still, so the visitor never sees the jump. */
+      if (loopStep) {
+        loopStep();
+        return;
+      }
+
       var max = track.scrollWidth - track.clientWidth - 2;
       if (track.scrollLeft >= max) {
         track.scrollTo({ left: 0, behavior: 'smooth' });
@@ -256,11 +365,56 @@
       pause();
     }
 
-    /* Any deliberate input ends it for good. `click` covers the arrows without
-       needing a reference to them. */
-    ['pointerdown', 'wheel', 'touchstart', 'keydown', 'click'].forEach(function (evt) {
-      wrap.addEventListener(evt, stop, { passive: true, once: true });
+    /* --- What counts as the visitor taking control -----------------------
+       Each listener below is a gesture that can only mean "I am driving this
+       rail". Everything else — scrolling the page past it, tapping a card,
+       resting the cursor on it — leaves the autoplay alone.
+
+       Watching the scroll position instead was tried twice and abandoned. Our
+       own advances are indistinguishable from a swipe once they have finished:
+       Chrome's smooth scrollBy eases out short of the target and scroll-snap
+       nudges the rail again some unbounded time later, so any "did it land
+       where we asked?" test either fires on our own motion or needs a timing
+       window long enough to miss real swipes. Reading the input is exact. */
+
+    // The arrows. These are also the WCAG 2.2.2 pause mechanism.
+    Array.prototype.forEach.call(
+      wrap.querySelectorAll('[data-scroll-prev], [data-scroll-next]'),
+      function (btn) { btn.addEventListener('click', stop); }
+    );
+
+    // A sideways trackpad or shift-wheel gesture over the rail. A plain
+    // vertical wheel is the visitor scrolling the PAGE and is ignored — binding
+    // that was the bug: one notch while scrolling past the section killed the
+    // carousel for the rest of the visit.
+    track.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) stop();
+    }, { passive: true });
+
+    // A drag or swipe across the rail. Judged on horizontal movement, not on
+    // the touch itself: on a phone the first touch of a vertical page scroll
+    // lands on a card, and treating that as control meant the carousel never
+    // ran on mobile at all. 12px is past the tap slop and well short of a
+    // deliberate swipe.
+    var dragFrom = null;
+    track.addEventListener('pointerdown', function (e) { dragFrom = e.clientX; }, { passive: true });
+    track.addEventListener('pointermove', function (e) {
+      if (dragFrom !== null && Math.abs(e.clientX - dragFrom) > 12) {
+        dragFrom = null;
+        stop();
+      }
+    }, { passive: true });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (evt) {
+      track.addEventListener(evt, function () { dragFrom = null; }, { passive: true });
     });
+
+    // Keyboard: the arrow/paging keys scroll a focused rail.
+    track.addEventListener('keydown', function (e) {
+      if (/^(Arrow|Page|Home|End)/.test(e.key)) stop();
+    });
+
+    /* Focus landing inside the rail is deliberate on its own — a keyboard user
+       has arrived and is about to read or drive it. */
     track.addEventListener('focusin', stop);
 
     /* Do not animate a rail nobody is looking at — it burns battery and, worse,
@@ -386,20 +540,10 @@
     });
   }
 
-  /* --- Marquee pause (WCAG 2.2.2) ---------------------------------------- */
-  function initMarquees() {
-    var toggles = document.querySelectorAll('[data-marquee-toggle]');
-
-    Array.prototype.forEach.call(toggles, function (btn) {
-      var marquee = btn.closest('.marquee');
-      if (!marquee) return;
-
-      btn.addEventListener('click', function () {
-        var paused = marquee.classList.toggle('is-paused');
-        btn.setAttribute('aria-pressed', String(paused));
-      });
-    });
-  }
+  /* The marquee Pause/Play handler stood here. Removed with the buttons at the
+     client's request — see the note in includes/components/testimonials.php.
+     The marquees now pause on hover and :focus-within from CSS alone, and
+     prefers-reduced-motion stops them outright. */
 
   /* --- Keyboard-reachable carousels (WCAG 2.1.1) ------------------------- */
   /* Below 768px the prev/next buttons are hidden and the cover rails hold no
@@ -606,6 +750,200 @@
     }, 4000);
   }
 
+  /* --- Modal dialogs ------------------------------------------------------ */
+  /* Opens the "Publish Your Book" popup (includes/components/publish-modal.php)
+     from any [data-modal-open="<id>"] control.
+
+     Built on <dialog>.showModal(), which supplies the focus trap, the Escape
+     key, the inert background and the return of focus to the opening button —
+     all of which a hand-rolled modal has to reimplement and usually gets subtly
+     wrong. Baseline across browsers since March 2022.
+
+     The openers are real links with real hrefs. If this script never runs, or
+     the browser has no <dialog>, or the target id is missing, preventDefault()
+     is never reached and the click navigates exactly as it did before. That is
+     the whole fallback, and it is why the buttons were left as <a>. */
+  function initModals() {
+    var openers = document.querySelectorAll('[data-modal-open]');
+    if (!openers.length) return;
+
+    var supported = typeof HTMLDialogElement === 'function' &&
+                    typeof document.createElement('dialog').showModal === 'function';
+    if (!supported) return;
+
+    function lock(on) {
+      /* showModal() makes the page inert but does NOT stop it scrolling behind
+         the dialog on iOS Safari and older Chrome — the visitor drags the form
+         and the page moves underneath. A class on <html> is the smallest fix
+         that does not fight the dialog's own scroll container. */
+      document.documentElement.classList.toggle('has-modal', on);
+    }
+
+    function open(dialog, opener) {
+      if (dialog.open) return;
+      dialog.showModal();
+      lock(true);
+
+      /* Land on the dialog's own heading rather than the close button. Without
+         this, showModal() focuses the first tabbable element — the close
+         button — and a screen reader announces "close" as the first thing about
+         a form the visitor just asked to see. */
+      var head = dialog.querySelector('.ep-modal__title');
+      if (head) {
+        head.setAttribute('tabindex', '-1');
+        head.focus({ preventScroll: true });
+      }
+      if (opener) dialog.__opener = opener;
+    }
+
+    function close(dialog) {
+      if (dialog.open) dialog.close();
+    }
+
+    Array.prototype.forEach.call(openers, function (btn) {
+      var id = btn.getAttribute('data-modal-open');
+      var dialog = document.getElementById(id);
+      if (!dialog || typeof dialog.showModal !== 'function') return;
+
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        open(dialog, btn);
+      });
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll('dialog.ep-modal'), function (dialog) {
+      dialog.addEventListener('close', function () { lock(false); });
+
+      Array.prototype.forEach.call(dialog.querySelectorAll('[data-modal-close]'), function (btn) {
+        btn.addEventListener('click', function () { close(dialog); });
+      });
+
+      /* Click outside to dismiss. The dialog element fills the viewport and the
+         panel inside it is what you see, so a click whose target IS the dialog
+         landed on the backdrop and nowhere else. Comparing against the panel's
+         bounding box instead breaks the moment the panel scrolls. */
+      dialog.addEventListener('click', function (e) {
+        if (e.target === dialog) close(dialog);
+      });
+
+      /* The server rejected a submission that came from this dialog and the
+         page has nowhere else to show the error — reopen so the visitor reads
+         it, with their answers still in the fields. */
+      if (dialog.hasAttribute('data-modal-autoopen')) open(dialog, null);
+    });
+  }
+
+  /* --- Book-cover lightbox ------------------------------------------------ */
+  /* Clicking a cover shows it enlarged and centred, in the empty dialog from
+     includes/components/cover-modal.php.
+
+     Self-contained rather than routed through initModals(). That function
+     returns early on a page with no [data-modal-open] control, and its close
+     and backdrop handlers sit AFTER that return — so a page with covers but no
+     popup would get a lightbox that opens and cannot be closed with anything
+     but Escape. The handlers below are bound whether or not initModals ran.
+     Binding the same close twice is harmless: dialog.close() is guarded on
+     .open, so the second call is a no-op.
+
+     The cover is CLONED from the card that was clicked, not re-fetched. Each
+     cover is a <picture> — AVIF and WebP <source> children with a JPG <img>
+     fallback — so cloning the whole element is what keeps the format
+     negotiation intact. Copying src/srcset off the inner <img> instead would
+     silently serve everyone the JPG, because the format the browser actually
+     chose is on a sibling <source>, not on the <img>.
+
+     Only `sizes` is rewritten after the clone: the dialog shows the cover at
+     roughly 380px rather than the rail's 240px, and sizes has to say so on
+     every <source> as well as the <img> or the browser picks for the old slot.
+     Nothing new is downloaded when that source is already cached from the rail. */
+  function initCoverZoom() {
+    var dialog = document.getElementById('cover-modal');
+    var zooms  = document.querySelectorAll('[data-cover-zoom]');
+    if (!dialog || !zooms.length) return;
+    if (typeof dialog.showModal !== 'function') return;   // no <dialog>: covers stay static
+
+    var media  = dialog.querySelector('.cover-modal__media');
+    var title  = dialog.querySelector('.cover-modal__title');
+    var author = dialog.querySelector('.cover-modal__author');
+    if (!media) return;
+
+    var SIZES = '(max-width: 600px) 78vw, 380px';
+
+    function open(btn) {
+      if (dialog.open) return;
+
+      /* The <picture> when there is one, the bare <img> when there is not —
+         our-books.php and any future rail may use either. */
+      var source = btn.querySelector('picture') || btn.querySelector('img');
+      if (!source) return;
+
+      var clone = source.cloneNode(true);
+      var cimg  = clone.tagName === 'IMG' ? clone : clone.querySelector('img');
+      if (!cimg) return;
+
+      /* Restate the slot width on the <img> and on every <source>. Also drop
+         the rail's lazy-loading: this image is the only thing the visitor is
+         looking at, so deferring it is exactly wrong. */
+      cimg.setAttribute('sizes', SIZES);
+      cimg.setAttribute('loading', 'eager');
+      cimg.removeAttribute('class');
+      Array.prototype.forEach.call(clone.querySelectorAll ? clone.querySelectorAll('source') : [],
+        function (s) { s.setAttribute('sizes', SIZES); });
+
+      media.textContent = '';
+      media.appendChild(clone);
+
+      /* The caption is the card's own, so the dialog cannot drift from the rail.
+         Read from the figure the button sits in, not from the button. */
+      var fig = btn.closest('.book-card');
+      var t   = fig && fig.querySelector('.book-card__title');
+      var a   = fig && fig.querySelector('.book-card__author');
+      if (title)  title.textContent  = t ? t.textContent : '';
+      if (author) author.textContent = a ? a.textContent : '';
+
+      dialog.showModal();
+      document.documentElement.classList.add('has-modal');
+
+      /* Land on the title, not the close button — same reasoning as the popup:
+         a screen reader should say which cover this is before it says "close". */
+      if (title) {
+        title.setAttribute('tabindex', '-1');
+        title.focus({ preventScroll: true });
+      }
+      dialog.__opener = btn;
+    }
+
+    Array.prototype.forEach.call(zooms, function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        open(btn);
+      });
+    });
+
+    dialog.addEventListener('close', function () {
+      document.documentElement.classList.remove('has-modal');
+      /* Return focus to the cover that opened it. showModal() restores focus on
+         its own in current browsers, but not when the opener was inside a rail
+         that has since been scrolled by autoplay. */
+      if (dialog.__opener && document.contains(dialog.__opener)) {
+        dialog.__opener.focus({ preventScroll: true });
+      }
+      /* Drop the clone so a re-open cannot flash the previous cover before the
+         new one decodes. */
+      media.textContent = '';
+    });
+
+    Array.prototype.forEach.call(dialog.querySelectorAll('[data-modal-close]'), function (btn) {
+      btn.addEventListener('click', function () { if (dialog.open) dialog.close(); });
+    });
+
+    /* Click the backdrop to dismiss — the dialog fills the viewport and the
+       panel is what you see, so a click whose target IS the dialog missed it. */
+    dialog.addEventListener('click', function (e) {
+      if (e.target === dialog && dialog.open) dialog.close();
+    });
+  }
+
   /* --- Boot -------------------------------------------------------------- */
   function boot() {
     initNav();
@@ -614,7 +952,8 @@
     initAccordions();
     initScrollers();
     initWizards();
-    initMarquees();
+    initModals();
+    initCoverZoom();
     initScrollerA11y();
     initReveal();
   }

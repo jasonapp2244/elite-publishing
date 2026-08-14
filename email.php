@@ -71,26 +71,26 @@ if (!defined('EP_ROOT')) {
  * The mailbox mail is sent AS — not where it is delivered. That is EP_MAIL_TO
  * in includes/config.php, currently info@elitepublishing.co.
  *
- * It MUST exist on the site's own domain. Derived from the host below, which
- * resolves to no-reply@elitepublishing.co in production, so that mailbox has to
- * be created in Site Tools -> Email -> Accounts.
+ * It MUST exist on the site's own domain, or SiteGround's Exim has nothing to
+ * authorise the -f envelope sender against and the message is refused or
+ * silently dropped.
  *
- * If you would rather not create a second mailbox, send as the inbox you
- * already have by uncommenting this one line:
+ * This was derived from the request host, which resolved to
+ * no-reply@elitepublishing.co — a mailbox nobody had created in Site Tools, so
+ * every enquiry was being sent as an address that does not exist. It now sends
+ * as EP_MAIL_TO instead, which is a mailbox that has to exist anyway because it
+ * is where the mail is delivered. One mailbox, one thing to get wrong.
  *
- *     define('EP_MAIL_FROM', EP_MAIL_TO);
+ * The trade, so it is a decision and not an accident: a dedicated no-reply@
+ * keeps automated mail out of the same thread as replies and makes bounces
+ * obvious, and a few filters treat identical From and To as a mild spam signal.
+ * If you create no-reply@elitepublishing.co in Site Tools -> Email -> Accounts
+ * later, restore the old behaviour by replacing the line below with:
  *
- * That is a real trade, not a shortcut. A dedicated no-reply@ keeps automated
- * mail out of the same thread as replies and makes bounces obvious; sending
- * from and to the same address puts everything in one place, and a few filters
- * treat identical From and To as a mild spam signal. Either works.
+ *     define('EP_MAIL_FROM', 'no-reply@elitepublishing.co');
  */
 if (!defined('EP_MAIL_FROM')) {
-    $epHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
-    $epHost = preg_replace('/:\d+$/', '', $epHost);          // strip any port
-    $epHost = preg_replace('/[^a-z0-9.\-]/', '', (string) $epHost);
-    $epHost = preg_replace('/^www\./', '', (string) $epHost);
-    define('EP_MAIL_FROM', 'no-reply@' . ($epHost !== '' ? $epHost : 'localhost'));
+    define('EP_MAIL_FROM', EP_MAIL_TO);
 }
 
 /** Where a copy of every accepted submission is written, in addition to mail. */

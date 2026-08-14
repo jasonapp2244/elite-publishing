@@ -256,7 +256,26 @@
 
 /* --- The rail ------------------------------------------------------------- */
 .book-rail { --rail-out: 24px; position: relative; }
-.book-track { gap: clamp(12px, 1.6vw, 30px); }
+/* `safe center`, not plain `center`.
+
+   The genre filter hides cells with display:none, and no genre fills the rail —
+   fiction has four books, romance and children's two, non-fiction and christian
+   one each. Left-aligned, a single cover sat hard against the left edge with
+   two thirds of the row empty beside it. Centring gathers whatever is showing.
+
+   The `safe` keyword is what makes it usable on a scroll container. Plain
+   `center` centres overflowing content too, which pushes the first items to a
+   NEGATIVE offset — before scrollLeft 0 — where nothing can scroll back to
+   them. `safe` centres only while everything fits and falls back to flex-start
+   the moment it does not, so the portfolio rail below (all ten books, wider
+   than the viewport) still starts at its first cover and scrolls normally.
+
+   A browser too old for `safe` drops the declaration and gets today's
+   left-aligned behaviour, which is the right thing to degrade to. */
+.book-track {
+  gap: clamp(12px, 1.6vw, 30px);
+  justify-content: safe center;
+}
 /* 240 of the 1420 container in the artboard — kept proportional. */
 .book-cell { width: clamp(150px, 17%, 240px); }
 
@@ -370,6 +389,34 @@
   font-size: var(--fs-sm); font-weight: var(--fw-semibold); line-height: 1;
 }
 .plat-badge--trustpilot { background: var(--ep-trustpilot); }
+
+/* A card showing the platform's own mark. The dark tile is dropped: these are
+   brand icons drawn in their own colours — Google's four, Reviews.io's orange —
+   and a dark plate behind them reads as a second, competing badge. A hairline
+   keeps the 28px box the same size and shape as the lettered fallback beside
+   it, so a row with a mix of the two still lines up. */
+.plat-badge--img {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+}
+.plat-badge--img img {
+  width: 18px; height: 18px;
+  object-fit: contain;
+}
+
+/* Artwork that already IS the tile — Trustpilot's file is a filled green
+   rounded square. It fills the badge and brings its own colour, so the plate
+   and hairline are dropped; leaving them on would frame a tile inside a tile.
+   The badge keeps its radius so the corners match the three plated marks. */
+.plat-badge--fill {
+  background: transparent;
+  border: 0;
+  overflow: hidden;
+}
+.plat-badge--fill img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+}
 
 .plat-card__score { display: flex; align-items: baseline; gap: 2px; margin: 0; }
 .plat-card__figure {

@@ -25,7 +25,7 @@ return [
                 'slug'  => 'books-publishing',
                 'title' => "Books\nPublishing",
                 'icon'  => 'search',
-                'text'  => 'Transform your raw manuscript into a bookstore-ready paperback, hardcover, or eBook. Our comprehensive publishing service covers formatting, ISBN registration, and distribution to every major retailer.',
+                'text'  => 'Transform your raw manuscript into a bookstore-ready paperback, hardcover, or eBook. Our publishing service covers formatting, ISBN registration, and distribution to major retailers.',
                 'draft' => true,
             ],
             [
@@ -53,7 +53,7 @@ return [
                 'slug'  => 'audio-book-production',
                 'title' => "Audio Book\nProduction",
                 'icon'  => 'mic',
-                'text'  => 'Tap into today\'s fastest-growing literary format. We manage the entire audiobook pipeline, including narrator casting, studio recording, mastering, and store distribution.',
+                'text'  => 'Bring your book to listeners as well as readers. We manage the entire audiobook pipeline, including narrator casting, studio recording, mastering, and store distribution.',
                 'draft' => true,
             ],
             [
@@ -74,7 +74,7 @@ return [
                 'slug'  => 'creative-content-writing',
                 'title' => "Creative Content\nWriting",
                 'icon'  => 'hand-pen',
-                'text'  => 'Need compelling text beyond your manuscript? We write high-converting web copy, author bios, book descriptions, and launch emails in the same voice as your book.',
+                'text'  => 'Need text beyond your manuscript? We write web copy, author bios, book descriptions, and launch emails in the same voice as your book.',
                 'draft' => true,
             ],
         ],
@@ -84,7 +84,7 @@ return [
     // SPEC §D.2 "Your Publishing Journey" — 4 steps, all copy is in the design.
     'journey' => [
         'heading' => 'Your Publishing Journey',
-        'intro'   => 'From your first idea to a bestselling book, we guide you through every step of the process with ease and expertise.',
+        'intro'   => 'From your first idea to a finished, published book, we guide you through every step of the process.',
         'steps'   => [
             [
                 'title' => 'Share Your Idea',
@@ -93,7 +93,7 @@ return [
             ],
             [
                 'title' => 'Writing & Development',
-                'text'  => 'Our expert writers craft your manuscript into a compelling, polished story.',
+                'text'  => 'Our writers work your outline up into a complete, polished manuscript.',
                 'icon'  => 'hand-pen',
             ],
             [
@@ -119,7 +119,7 @@ return [
             [
                 'tab'   => 'Consultation',
                 'title' => 'Consultation',
-                'text'  => 'Our streamlined publishing process ensures every book is professionally prepared, published, and promoted for maximum impact.',
+                'text'  => 'We take each book through preparation, publication, and promotion, with a set schedule at every stage.',
                 'check' => [
                     '30-min video or phone call',
                     'Custom roadmap preview',
@@ -191,7 +191,7 @@ return [
             [
                 'tab'   => 'Marketing',
                 'title' => 'Marketing',
-                'text'  => 'Publication day is the start, not the finish. We run the campaign that puts your book in front of the readers most likely to buy it, and keep it there.',
+                'text'  => 'Publication day is the start, not the finish. We develop the promotional materials and run the campaign activity agreed for your book, audience and publishing goals.',
                 'check' => [
                     'Launch campaign plan',
                     'Author platform setup',
@@ -209,7 +209,7 @@ return [
     'stories' => [
         'eyebrow' => 'AUTHOR STORIES',
         'heading' => "What Our\nAuthors Say",
-        'intro'   => 'Discover the inspiring journeys of authors who placed their trust in us, transforming their manuscripts into bestselling masterpieces. Each story is a testament to the power of collaboration, creativity, and dedication.',
+        'intro'   => 'Discover the inspiring journeys of authors who placed their trust in us, turning their manuscripts into finished, professionally published books. Each story is a testament to the power of collaboration, creativity, and dedication.',
         'cta'     => 'Watch More Stories',
         'cards'   => [
             ['name' => 'Clara Wen', 'title' => 'Everything Remembered', 'img' => 'img/story-1.jpg', 'placeholder' => true],
@@ -253,15 +253,29 @@ return [
     ],
 
     // --------------------------------------------------------------- platforms
-    // SPEC §D.3 "Review platforms" — 4 cards.
+    /**
+     * SPEC §D.3 "Review platforms" — 4 cards.
+     *
+     * 'icon' is a path under assets/img/ holding the platform's own mark. A card
+     * without one falls back to the first letter of the name on a dark tile,
+     * which is what all four used to show.
+     *
+     * 'icon_fill' says the artwork IS the badge rather than a mark to sit
+     * inside one. Trustpilot's file is a filled green rounded tile — 97% of its
+     * pixels are opaque — so it fills the 28px badge and the white plate is
+     * dropped. The other three are small marks on transparency and need the
+     * plate behind them.
+     */
     'platforms' => [
         [
-            'name'    => 'Trustpilot',
-            'score'   => '4.9',
-            'reviews' => 'Based on 1,247 reviews',
-            'link'    => 'View on Trustpilot',
-            'href'    => '#',
-            'style'   => 'squares',
+            'name'      => 'Trustpilot',
+            'score'     => '4.9',
+            'reviews'   => 'Based on 1,247 reviews',
+            'link'      => 'View on Trustpilot',
+            'href'      => '#',
+            'style'     => 'squares',
+            'icon'      => 'img/platforms/trustpilot.png',
+            'icon_fill' => true,
         ],
         [
             'name'    => 'Google Reviews',
@@ -270,6 +284,7 @@ return [
             'link'    => 'View on Google',
             'href'    => '#',
             'style'   => 'stars',
+            'icon'    => 'img/platforms/google.png',
         ],
         [
             'name'    => 'Reviews.io',
@@ -278,6 +293,7 @@ return [
             'link'    => 'View on Reviews.io',
             'href'    => '#',
             'style'   => 'stars',
+            'icon'    => 'img/platforms/reviews-io.png',
         ],
         [
             'name'    => 'Sitejabber',
@@ -286,6 +302,7 @@ return [
             'link'    => 'View on Sitejabber',
             'href'    => '#',
             'style'   => 'stars',
+            'icon'    => 'img/platforms/sitejabber.png',
         ],
     ],
 
@@ -405,17 +422,41 @@ return [
     ],
 
     // ------------------------------------------------------------------- press
-    // SPEC §D.1 press band — 7 logos, order matters.
+    /**
+     * SPEC §D.1 press band. Order matters.
+     *
+     * These were styled TEXT mastheads until the client supplied artwork —
+     * tracing a masthead by hand is a trademark problem and a blurry raster, so
+     * the band waited for real files (DECISIONS §13). Each entry now carries the
+     * name and the file; 'file' is a path under assets/img/ and 'name' is what a
+     * screen reader announces, so both have to stay filled in.
+     *
+     * The New York Times is NOT here. It was in the text list, but no artwork
+     * for it arrived with the other six, and the band cannot mix one text
+     * masthead in among six logos without looking broken. Add the file to
+     * assets/img/press/ and a row here to restore it.
+     *
+     * Drop an entry and the marquee adapts — components/press-band.php sizes the
+     * track from the count.
+     */
     'press' => [
-        'eyebrow' => 'RECOGNIZED BY AUTHORS ACROSS THE GLOBE',
+        /* Was "RECOGNIZED BY AUTHORS ACROSS THE GLOBE" — a recognition claim
+           with nothing behind it, sitting directly above a row of news
+           mastheads, which made it read as press coverage.
+
+           Changing the wording only goes so far: the logos themselves still
+           imply a relationship with those publications. Unless Elite Publishing
+           can point to actual coverage, the band should come out entirely —
+           raised in the handover report. The heading no longer makes the claim
+           either way. */
+        'eyebrow' => 'PUBLISHING NEWS AND RESOURCES',
         'logos'   => [
-            'SNN',
-            'TechCrunch',
-            'techopedia',
-            'TECH TIMES',
-            'The New York Times',
-            'WAPAKONETA DAILY NEWS',
-            'yahoo! news',
+            ['name' => 'SNN',                   'file' => 'img/press/snn.png'],
+            ['name' => 'TechCrunch',            'file' => 'img/press/techcrunch.png'],
+            ['name' => 'Techopedia',            'file' => 'img/press/techopedia.png'],
+            ['name' => 'Tech Times',            'file' => 'img/press/tech-times.png'],
+            ['name' => 'Wapakoneta Daily News', 'file' => 'img/press/wapakoneta-daily-news.png'],
+            ['name' => 'Yahoo News',            'file' => 'img/press/yahoo-news.png'],
         ],
     ],
 

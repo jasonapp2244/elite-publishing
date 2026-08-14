@@ -299,6 +299,36 @@ which passes there. */
   background: var(--ep-green-glass);
   border-radius: var(--radius-card);
   padding: 20px 24px;
+  transition: background var(--dur) var(--ease),
+              transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+
+/* Hover: the tile turns into a solid white card with ink text — the raised
+   card in the Figma export (Component 132).
+
+   The whole tile inverts, so the text has to invert with it. At rest both the
+   heading and the copy are --ep-on-green (white), which would leave white on
+   white and erase the card the moment the cursor arrived; these two rules put
+   them back to ink. They need the extra :hover on the left of the descendant
+   to outrank the resting colours below, which are themselves two-class
+   selectors.
+
+   Ink on white measures about 14:1, so the hovered state is the most legible
+   the tile ever is — the opposite of the usual hover trade.
+
+   Behind (hover: hover) on purpose. A phone has no hover, and a :hover rule
+   that a touch device evaluates on tap sticks: the tile would stay white after
+   the finger left, until something else was tapped. The rest of this file
+   guards its hovers the same way. */
+@media (hover: hover) {
+  .tile-glass:hover {
+    background: var(--ep-white);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(43, 42, 40, .18);
+  }
+  .tile-glass:hover :is(h3, h4, .h3, .h4),
+  .tile-glass:hover p { color: var(--ep-ink); }
 }
 .tile-glass :is(h3, h4, .h3, .h4) { color: var(--ep-on-green); margin-bottom: 6px; }
 .tile-glass p { color: var(--ep-on-green); font-size: var(--fs-sm); line-height: var(--lh-sm); }
@@ -564,8 +594,8 @@ which passes there. */
 
 /* Below 414px the 26px floor above is wider than the space left beside the
    logo mark, and `word-break` splits the address at its last dot — leaving the
-   footer's most prominent line reading "Info@Elitepublishing." over a
-   stranded "Co". The address is one token; the only fix that keeps it whole is
+   footer's most prominent line reading "info@elitepublishing." over a
+   stranded "co". The address is one token; the only fix that keeps it whole is
    to let the type keep scaling below the floor.
 
    The slope holds it to a single line down to 320px: the span needs
@@ -611,13 +641,35 @@ which passes there. */
   min-height: 24px;
 }
 
+/* The copyright is centred in the FOOTER, and the legal links stay hard right
+   where the design puts them.
+
+   Three columns, not a flex row: in `justify-content: space-between` the
+   copyright's position depends on how wide the links are, so it is centred
+   between them rather than in the footer — and it moves the day someone renames
+   a link. The empty first column mirrors the third, so the middle column is the
+   true centre of the band and the copyright sits in it no matter what is beside
+   it. */
 .ep-footer__legal {
-  display: flex; flex-wrap: wrap; gap: 12px 32px;
-  justify-content: space-between; align-items: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px 32px;
   border-top: 1px solid rgba(43, 42, 40, .18);
   padding-block: clamp(18px, 2vw, 28px);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
+}
+.ep-footer__legal-copy { grid-column: 2; text-align: center; }
+.ep-footer__legal-links { grid-column: 3; justify-self: end; }
+
+/* Below the point where the two would collide, stack and centre both — the row
+   used to wrap to the same shape, and a stranded right-aligned link pair under a
+   centred line reads as a mistake. */
+@media (max-width: 767.98px) {
+  .ep-footer__legal { grid-template-columns: 1fr; gap: 10px; }
+  .ep-footer__legal-copy,
+  .ep-footer__legal-links { grid-column: 1; justify-self: center; }
 }
 .ep-footer__legal-links { display: inline-flex; gap: 16px; align-items: center; }
 /* These two links, and the contact pair in .cta-block__contacts, measured
@@ -868,6 +920,20 @@ which passes there. */
 }
 .press-band__eyebrow { color: var(--ep-white); justify-content: center; margin-bottom: 22px; }
 
+/* The gap between the eyebrow and the logo row.
+
+   It lives here, on the viewport, and not as a margin on the eyebrow, because
+   the eyebrow cannot carry one: it is the only child of its .container-ep, so
+   the base `p:last-child { margin-bottom: 0 }` applies — and at 0-1-1 that
+   outranks the 0-1-0 rule above, which is why the 22px never took effect.
+
+   Nobody noticed while the Pause button was there: .marquee__bar sat between
+   the two and supplied its own 18px margin plus 36px of button. Removing the
+   button removed the spacing with it and left the logos 1px under the heading.
+   Setting it explicitly means the band no longer depends on a control that is
+   gone. */
+.press-band .marquee__viewport { margin-top: clamp(26px, 2.6vw, 48px); }
+
 /* The row is a .marquee__track, so it must NOT wrap — a wrapping track has no
    single row to translate and the loop breaks. It also cannot be
    space-between: that distributes the logos across the track's own width, and
@@ -878,36 +944,38 @@ which passes there. */
   align-items: center; justify-content: flex-start;
   gap: clamp(36px, 4.4vw, 84px);
   padding-inline: clamp(18px, 2.2vw, 42px);
-  /* Half this track is ~3050px at 1920, against the testimonials' ~2000px, so
-     the shared 64s would run it half again as fast. ~34px/s matches the pace of
-     the review row. */
-  animation-duration: 90s;
 }
-/* The pause control sits on black, so the light pill the testimonial marquee
-   uses would be a bright blob on an otherwise quiet band.
+/* Half this track measures ~3220px at 1920, against the testimonials' ~2000px,
+   so the shared 64s ran it half again as fast — 50px/s against the review row's
+   34. 95s puts the two at the same pace.
 
-   Scoped as `.press-band .marquee__toggle`, not `.press-band__toggle`: the two
-   class selectors have equal specificity and .marquee__toggle is defined LATER
-   in this file, so a single-class override loses and the button renders white
-   on white. */
-.press-band .marquee__bar { margin-bottom: 18px; }
-.press-band .marquee__toggle {
-  background: transparent;
-  border-color: rgba(255, 255, 255, .38);
-  color: var(--ep-white);
-}
-@media (hover: hover) {
-  .press-band .marquee__toggle:hover {
-    border-color: var(--ep-white);
-    background: rgba(255, 255, 255, .1);
-  }
-}
+   Two classes, and on .marquee__track rather than .press-band__row: this was
+   written as a single-class `animation-duration` on .press-band__row, and
+   .marquee__track's `animation` SHORTHAND is declared later in this file. Equal
+   specificity, later wins, and a shorthand resets duration — so the override
+   silently did nothing and the band had always scrolled at 64s. */
+.press-band .marquee__track { animation-duration: 95s; }
+/* The mastheads are images now, not text. flex: 0 0 auto stops the flex row
+   squeezing them: a marquee track is far wider than its viewport, and a
+   shrinkable item in an overflowing row gets compressed until the two copies no
+   longer match and the loop seam shows. */
 .press-band__logo {
-  color: rgba(255, 255, 255, .55);
-  font-size: clamp(14px, 1.1vw, 19px);
-  font-weight: var(--fw-semibold);
-  letter-spacing: .02em;
-  white-space: nowrap;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+/* Sized by width, not height: every file is the same 155x31 canvas with the
+   artwork padded inside, so equal widths give an even row without measuring
+   each logo. Scaling by height instead would set each one by how tall its own
+   lettering happens to be. */
+.press-band__logo img {
+  width: clamp(94px, 8.1vw, 155px);
+  height: auto;
+  /* The text mastheads sat at 55% white. Pure-white artwork at full strength
+     is louder than the design's band, and these are a credibility strip rather
+     than the point of the section — .78 sits them back without greying them
+     into the black. */
+  opacity: .78;
 }
 
 /* --- Service card carousel (SPEC §B.5) ----------------------------------- */
@@ -1067,31 +1135,15 @@ which passes there. */
   display: flex; gap: 22px; width: max-content;
   animation: marquee 64s linear infinite;
 }
-.marquee:focus-within .marquee__track,
-.marquee.is-paused .marquee__track { animation-play-state: paused; }
+/* The Pause/Play button and its .is-paused class were removed at the client's
+   request, along with the rules that styled them. These two are what is left of
+   the stop mechanism: focus entering the row, and hovering it with a mouse. */
+.marquee:focus-within .marquee__track { animation-play-state: paused; }
 
 @media (hover: hover) {
   .marquee:hover .marquee__track { animation-play-state: paused; }
 }
 
-.marquee__bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
-.marquee__toggle {
-  display: inline-flex; align-items: center; gap: 8px;
-  min-height: 36px; padding: 8px 16px;
-  background: var(--ep-white);
-  border: 1px solid var(--ep-border);
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-sm); font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-@media (hover: hover) {
-  .marquee__toggle:hover { border-color: var(--ep-green); }
-}
-.marquee__toggle-off { display: none; }
-.marquee__toggle[aria-pressed="true"] .marquee__toggle-on { display: none; }
-.marquee__toggle[aria-pressed="true"] .marquee__toggle-off { display: inline; }
-/* Nothing is moving under reduced motion, so a pause control is noise. */
-@media (prefers-reduced-motion: reduce) { .marquee__bar { display: none; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* With motion reduced the track must not sit half-scrolled — reset it and let
@@ -1114,9 +1166,31 @@ which passes there. */
   width: 28px; height: 28px; border-radius: 8px; flex: 0 0 auto;
   background: var(--ep-border);
 }
+/* Colour tiles for any badge with no logo file. 'mark' names no platform and
+   keeps its ink tile; the other two are the fallback if their file ever goes
+   missing, so the badge degrades to what it looked like before rather than to
+   an empty box. */
 .review-card__badge--trustpilot { background: var(--ep-trustpilot); }
 .review-card__badge--google     { background: #EA4335; }
 .review-card__badge--mark       { background: var(--ep-ink); }
+
+/* Carrying a platform logo. Same two treatments as the review platform cards
+   further up the page — see .plat-badge--img / --fill in p-home.css. A mark on
+   transparency gets a white plate and a hairline; artwork that is already a
+   filled tile fills the badge and brings its own colour. */
+.review-card__badge--img,
+.review-card__badge--fill {
+  display: grid; place-items: center;
+  overflow: hidden;
+}
+.review-card__badge--img {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+}
+.review-card__badge--img img { width: 18px; height: 18px; object-fit: contain; }
+
+.review-card__badge--fill { background: transparent; border: 0; }
+.review-card__badge--fill img { width: 100%; height: 100%; object-fit: contain; }
 .review-card__quote {
   margin: 0; flex: 1 1 auto;
   font-size: var(--fs-base); line-height: var(--lh-base);
@@ -1336,4 +1410,201 @@ which passes there. */
 }
 @media (max-width: 575.98px) {
   .wizard__options--2, .wizard__row { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   Publish Your Book modal
+   includes/components/publish-modal.php + initModals() in assets/js/main.js
+   ========================================================================== */
+
+/* A <dialog> ships with a UA border, padding, a white background and an
+   auto-sized box centred by margin:auto. All four are in the way, so the
+   element itself becomes a full-viewport flex container and .ep-modal__panel is
+   the only thing that is actually drawn. */
+.ep-modal {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: clamp(12px, 3vw, 32px);
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+.ep-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ep-modal::backdrop {
+  background: rgba(43, 42, 40, .55);
+  backdrop-filter: blur(2px);
+}
+
+.ep-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  /* dvh, not vh: on mobile Safari the address bar makes 100vh taller than the
+     screen, which puts the submit button under the chrome on exactly the step
+     the visitor needs to reach. The vh line is the fallback for browsers
+     without dvh and is deliberately left below it. */
+  max-height: 92vh;
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ep-white);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card-hover);
+  padding: clamp(24px, 3.4vw, 44px);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sticky so it stays reachable while the panel scrolls on a short screen.
+   Right-aligned in its own row rather than absolutely positioned, so it can
+   never sit on top of the heading when the text wraps to three lines. */
+.ep-modal__close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -8px -8px 0 12px;
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-pill);
+  background: var(--ep-white);
+  color: var(--ep-ink);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+@media (hover: hover) {
+  .ep-modal__close:hover { border-color: var(--ep-green); background: var(--ep-green-tint-soft); }
+}
+
+/* --- Book-cover lightbox -------------------------------------------------
+   The enlarged cover, opened from any book card by initCoverZoom(). Reuses
+   .ep-modal for the dialog, backdrop and close button; everything here is only
+   the difference between showing a picture and showing a form. */
+
+/* The cover's click target. A real <button> for the keyboard and the
+   accessibility tree, stripped back to nothing visually so the rail looks
+   exactly as it did before it became clickable. `display: block` because an
+   inline-block button adds a baseline gap under the image. */
+.book-card__zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: inherit;
+  /* The lift on .book-cell:hover img is a transform on the image inside, so it
+     is not clipped by this wrapper. */
+}
+.book-card__zoom img { display: block; width: 100%; height: auto; }
+/* Keyboard focus must be visible, but the default ring sits square around a
+   rounded cover. Offset so it reads as a frame rather than a box. */
+.book-card__zoom:focus-visible {
+  outline: 2px solid var(--ep-green);
+  outline-offset: 3px;
+}
+
+/* Shrink-to-fit rather than the form panel's fixed 620px, and no padding: the
+   cover runs to the edge of the panel and the caption sits under it. */
+.cover-modal__panel {
+  width: auto;
+  max-width: min(420px, 88vw);
+  padding: 14px;
+  overflow: visible;
+}
+.cover-modal__figure { margin: 0; }
+/* The cloned cover is a <picture>, which is display:inline by default and would
+   sit on a text baseline with a gap beneath it. */
+.cover-modal__media { display: block; }
+.cover-modal__media picture { display: block; }
+.cover-modal__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-card);
+  /* The covers are portrait. Capping the HEIGHT rather than the width is what
+     keeps a tall cover inside a short window instead of pushing the caption
+     off the bottom of the dialog. */
+  max-height: 72vh;
+  max-height: 72dvh;
+  object-fit: contain;
+  margin-inline: auto;
+}
+.cover-modal__cap {
+  margin-top: 14px;
+  text-align: center;
+}
+.cover-modal__title {
+  display: block;
+  font-weight: 600;
+  color: var(--ep-ink);
+}
+.cover-modal__author {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--ep-muted);
+}
+/* The title takes focus when the dialog opens (see initCoverZoom). It is not
+   an interactive control, so the focus ring would be noise. */
+.cover-modal__title:focus { outline: none; }
+
+.ep-modal__head { margin-bottom: clamp(18px, 2vw, 26px); }
+.ep-modal__title { margin: 6px 0 8px; }
+/* main.js moves focus here when the dialog opens so a screen reader announces
+   the popup's own title rather than "close". The element has tabindex="-1" and
+   is not reachable by keyboard, so the global :focus-visible ring marks nothing
+   a visitor can act on — it just drew a green box around the heading every time
+   the popup opened. Suppressed here only; interactive elements keep their ring. */
+.ep-modal__title:focus,
+.ep-modal__title:focus-visible { outline: none; }
+.ep-modal__intro { margin: 0; font-size: var(--fs-sm); }
+
+/* The panel already draws the card, so the form inside must not draw a second
+   one. wizard-form.php is shared with the CTA block, where .wizard-card supplies
+   the surface — here there is no .wizard-card wrapper at all, which is what
+   keeps these two from fighting. */
+.ep-modal .wizard__progress { margin-bottom: 20px; }
+
+/* Stops the page scrolling behind the open dialog. See lock() in main.js. */
+html.has-modal { overflow: hidden; }
+
+/* Phones get a full-screen sheet rather than a floating card — at 390px a
+   centred panel with a margin is mostly backdrop, and the form is long enough
+   to want every pixel.
+
+   The panel is sized in % of the dialog, not dvh. Sizing it in dvh and centring
+   it left a 2px overhang: dvh and the dialog's own height disagree by a
+   sub-pixel, and the difference lands at the bottom of a panel that scrolls, so
+   the last line of the form sat under the fold. Stretching the panel to the
+   dialog box makes the two exactly equal by construction. */
+@media (max-width: 575.98px) {
+  .ep-modal { padding: 0; }
+  .ep-modal[open] { align-items: stretch; }
+  .ep-modal__panel {
+    max-width: none;
+    min-height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    padding: 20px 18px 32px;
+  }
+}
+
+/* The dialog animates in unless the visitor asked it not to. */
+@media (prefers-reduced-motion: no-preference) {
+  .ep-modal[open] .ep-modal__panel { animation: ep-modal-in 220ms var(--ease); }
+}
+@keyframes ep-modal-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
 }

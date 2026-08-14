@@ -70,11 +70,24 @@ define('EP_ORIGIN', $epScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
 
 // --- Brand ------------------------------------------------------------------
 define('EP_NAME', 'Elite Publishing');
-define('EP_TAGLINE', 'Premium book publishing services for independent authors');
-// Shown in the footer, the CTA block and the thank-you page. The design draws
-// "Contact@Elitepublishing.Co"; the client asked for info@ instead, so only the
-// mailbox changed — the title-case styling is the design's and is kept.
-define('EP_EMAIL', 'Info@Elitepublishing.Co');
+/**
+ * Feeds the default meta description AND the schema.org Organization
+ * description in includes/head.php, so a claim left here is published twice —
+ * once to readers and once to search engines. It said "Premium book publishing
+ * services", which is a quality claim about ourselves that nothing supports.
+ */
+define('EP_TAGLINE', 'Book publishing services for independent authors');
+/**
+ * Shown in the footer, the CTA block and the thank-you page.
+ *
+ * The design draws "Contact@Elitepublishing.Co" in title case, and this
+ * followed it. Title case is wrong for an address that is also a mailto: link
+ * and a thing people retype from a screen — it reads as two different addresses
+ * from EP_MAIL_TO below, and a visitor who copies it by hand is being shown
+ * capitals that are not in the mailbox name. One lower-case spelling now, used
+ * everywhere: display, mailto, mail headers.
+ */
+define('EP_EMAIL', 'info@elitepublishing.co');
 define('EP_PHONE', '+1 (800) 000-0000');
 /**
  * Street address. Shown in the contact block on the home page, the contact page

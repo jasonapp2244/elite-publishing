@@ -2,25 +2,31 @@
 declare(strict_types=1);
 
 /**
- * HOME PAGE — the sixteen-section layout.
+ * THE PREVIOUS HOME PAGE, kept as a page of its own at /home-classic.
  *
  * ---------------------------------------------------------------------------
- * WHY THIS LAYOUT
+ * WHY THIS EXISTS
  * ---------------------------------------------------------------------------
- * This was the original home page, and it is the home page again. The LP2
- * layout that briefly sat here is preserved at /home-lp2 (home-lp2.php,
- * noindex) so it can still be viewed and compared.
+ * index.php is now the LP2 layout. This is the sixteen-section home page that
+ * was there before it, unchanged, so it can still be viewed, compared against
+ * the new one, and switched back to.
  *
- * The reason for coming back to this one is that it is the layout that
- * actually carries the moving parts: the services carousel, the press-logo
- * marquee and the book strip are all included below. The LP2 page included
- * none of them, which is why its slider and logo row appeared to be missing —
- * they were never on the page to begin with.
+ * TO SWITCH BACK: copy this file over index.php, then change $pageKey back to
+ * 'home' and delete the $pageNoIndex line below. Nothing else needs touching —
+ * assets/css/p-home.css and assets/js/p-home.js are still on disk, untouched,
+ * and are still exactly what this page needs.
  *
- * TO SWITCH TO LP2: copy home-lp2.php over this file, change $pageKey back to
- * 'home' and delete its $pageNoIndex line.
+ * ---------------------------------------------------------------------------
+ * WHY IT IS noindex
+ * ---------------------------------------------------------------------------
+ * It repeats most of the real home page and large parts of the service and
+ * pricing pages. Two near-identical pages competing for the same searches is
+ * worse than one, so this is served with `noindex, follow` and carries no
+ * canonical tag. It is also deliberately absent from the navigation, the
+ * footer and sitemap.php — reachable by URL, not advertised.
  *
- * assets/css/p-home.css and assets/js/p-home.js belong to this page.
+ * Delete $pageNoIndex to publish it properly, but give it its own title and
+ * description first.
  *
  * ---------------------------------------------------------------------------
  * ORIGINAL NOTES
@@ -40,17 +46,22 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/config.php';
 
-$pageKey         = 'home';
-/* Not the older "Turn Your Manuscript Into A Bestseller". The hero copy below
-   had that claim deliberately removed (no publisher can promise a bestseller),
-   so putting it back in the <title> would reintroduce through the search
-   result exactly what the page stopped saying. */
-$pageTitle       = 'Professional Book Publishing Services For Independent Authors';
+/* NOT 'home'. That key marks the Home item in the header and footer as the
+   current page, and the current page is index.php — the LP2 layout. A key
+   nothing in ep_nav() matches leaves every nav item unhighlighted, which is
+   correct for a page that is not in the navigation. */
+$pageKey         = 'home-classic';
+$pageTitle       = 'Previous Home Page';
 $pageDescription = 'Complete book publishing services for independent authors. '
                  . 'From line editing and cover design to global distribution and audiobooks.';
+/* Both still on disk and still unmodified — this page is the only thing that
+   loads either of them now. */
 $pageCss         = ['css/p-home.css'];
 $pageJs          = ['js/p-home.js'];
 $bodyClass       = 'page-home';
+/* Suppresses the canonical tag and emits `noindex, follow` — see the note at
+   the top of this file. */
+$pageNoIndex     = true;
 
 /** Genre filter tabs (SPEC §D.3) mapped to data/books.php 'genre' keys. */
 $genreTabs = [
@@ -66,30 +77,13 @@ $books   = ep_data('books');
 $process = ep_data_get('shared', 'process');
 $plats   = ep_data_get('shared', 'platforms');
 
-/** One book cover cell, shared by the Genres and Portfolio tracks.
- *
- *  $dupe marks the cell as part of the Portfolio rail's second, duplicate copy
- *  — the one that makes its autoplay loop seamless. A duplicate is decoration:
- *  it is aria-hidden so each book is announced once, not twice. The cells hold
- *  no links, so unlike the services carousel there is no tabindex to manage. */
-$epBookCell = static function (array $book, bool $dupe = false): string {
+/** One book cover cell, shared by the Genres and Portfolio tracks. */
+$epBookCell = static function (array $book): string {
     $title  = (string) ($book['title'] ?? '');
     $author = (string) ($book['author'] ?? '');
 
-    return '<li class="book-cell" data-genre="' . esc((string) ($book['genre'] ?? '')) . '"'
-        . ($dupe ? ' aria-hidden="true"' : '') . '>'
+    return '<li class="book-cell" data-genre="' . esc((string) ($book['genre'] ?? '')) . '">'
         . '<figure class="book-card">'
-        /* A real <button>, not a click handler on the image. The cover opens a
-           dialog, so it has to be reachable and operable from the keyboard and
-           announced as something that does one — a bare <img> with a listener
-           is none of those. .book-card__zoom strips the button chrome so the
-           layout is exactly what it was.
-
-           The duplicate copy is tabindex="-1": the loop seam must not put a
-           second, identical tab stop for every cover in the rail. */
-        . '<button type="button" class="book-card__zoom" data-cover-zoom'
-        . ($dupe ? ' tabindex="-1"' : '')
-        . ' aria-label="' . esc('View larger cover of ' . $title) . '">'
         . ep_srcset(
             (string) ($book['img'] ?? ''),
             [420, 840],
@@ -98,7 +92,6 @@ $epBookCell = static function (array $book, bool $dupe = false): string {
             1160,
             ['class' => 'book-card__img', 'sizes' => '(max-width: 575px) 46vw, (max-width: 991px) 30vw, 240px']
         )
-        . '</button>'
         . '<figcaption class="book-card__cap">'
         . '<span class="book-card__author">' . esc($author) . '</span>'
         . '<span class="book-card__title">' . esc($title) . '</span>'
@@ -332,34 +325,14 @@ require __DIR__ . '/includes/components/services-carousel.php';
       </a>
     </div>
 
-    <?php /* data-autoplay is the interval in ms between advances and is the
-             whole speed control — raise it to slow the rail, lower it to speed
-             it up, remove it to make the rail manual again. 3500 rather than
-             the services carousel's 2000: a cover plus author and title is a
-             smaller read than a service card, but these are images, and moving
-             images past the eye faster than about 3s reads as restless.
-
-             data-loop turns the end of the rail into a seam instead of a wall.
-             It REQUIRES the cells to be rendered twice — initAutoplay()
-             rewinds by exactly one copy's width the moment the rail crosses
-             into the duplicate, and because the content either side of the
-             seam is identical the jump is invisible. Without the second copy
-             the rail would rewind to a different picture and visibly jerk.
-
-             It pauses on hover and on focus-within, so a visitor reading a
-             cover is never scrolled away from it. See initAutoplay() in
-             assets/js/main.js. */ ?>
-    <div class="book-rail" data-scroller data-autoplay="3500" data-loop>
+    <div class="book-rail" data-scroller>
       <ul class="ep-scroller book-track list-plain">
-        <?php for ($copy = 0; $copy < 2; $copy++): ?>
-          <?php $dupe = $copy > 0; ?>
-          <?php foreach (array_slice($books, 4) as $book): ?>
-            <?= $epBookCell($book, $dupe) ?>
-          <?php endforeach; ?>
-          <?php foreach (array_slice($books, 0, 4) as $book): ?>
-            <?= $epBookCell($book, $dupe) ?>
-          <?php endforeach; ?>
-        <?php endfor; ?>
+        <?php foreach (array_slice($books, 4) as $book): ?>
+          <?= $epBookCell($book) ?>
+        <?php endforeach; ?>
+        <?php foreach (array_slice($books, 0, 4) as $book): ?>
+          <?= $epBookCell($book) ?>
+        <?php endforeach; ?>
       </ul>
 
       <button class="rail-nav rail-nav--prev" type="button" data-scroll-prev

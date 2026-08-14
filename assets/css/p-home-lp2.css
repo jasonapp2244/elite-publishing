@@ -1,0 +1,639 @@
+/* ==========================================================================
+   Elite Publishing — Home page (LP2 layout)
+
+   Loaded by index.php ONLY. Every selector in this file starts with `.hl-`
+   (home-LP) or is scoped under one, so nothing here can reach another page.
+
+   CONFLICT RULES OBSERVED
+   -----------------------
+   · No element selectors. Not one rule targets body, h1-h6, p, a, button, img
+     or ul on its own — the source page's stylesheet resets all of them
+     globally, which is exactly what would have broken every other page.
+   · No generic class is redefined. `.container`, `.row`, `.section`, `.hero`,
+     `.btn`, `.card` are either untouched or, where the site already owns them
+     (`.section`, `.container-ep`, `.ep-btn`, `.ep-card`), used as they are.
+   · Colours, radii, shadows, spacing and type all come from tokens.css. There
+     are no new hex values in this file except the two scrim gradients, which
+     are transparency ramps rather than brand colours.
+
+   Breakpoints match the rest of the site: 1199 / 991 / 767 / 575.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1 · HERO
+   Photograph, dark scrim, headline bottom-left, form card floating right.
+
+   The card overlaps the photo on desktop and drops below it on tablet. The
+   grid is 1fr + a fixed-ish column rather than two halves, because the form is
+   a fixed-width object and the headline should take whatever is left.
+   -------------------------------------------------------------------------- */
+.hl-hero {
+  position: relative;
+  isolation: isolate;                 /* keeps the scrim off the sticky header */
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(560px, 62vw, 760px);
+  padding-block: clamp(48px, 6vw, 96px) clamp(40px, 5vw, 72px);
+  overflow: hidden;
+}
+
+/* The source page floats a transparent header over the photo. This site's
+   header is `position: sticky` with an opaque background and is shared by
+   seventeen other pages, so it is left exactly as it is and the photo starts
+   below it — the brief's "use the existing website header" outranks the
+   source's chrome. No nav-height offset is needed for the same reason: the
+   header occupies its own space in flow rather than covering this section. */
+
+.hl-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+/* The <picture> wrapper is inline by default, which leaves a descender gap
+   under the image and shows a strip of page background at the bottom edge. */
+.hl-hero__media picture { display: block; height: 100%; }
+
+.hl-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* Two ramps, not one flat overlay: the headline sits bottom-left and needs
+   contrast there, while the top of the photo only needs enough darkening for
+   the header's white nav to stay legible over it. */
+.hl-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, .78) 0%, rgba(0, 0, 0, .35) 42%, rgba(0, 0, 0, .12) 70%),
+    linear-gradient(to bottom, rgba(0, 0, 0, .45) 0%, rgba(0, 0, 0, 0) 34%);
+}
+
+.hl-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+  align-items: end;
+  gap: clamp(28px, 4vw, 64px);
+  width: 100%;
+}
+
+/* NOT a `ch` measure. `ch` resolves against the element's OWN font-size, and
+   this container inherits 16px while the headline inside it is 60px — 40ch
+   computed to 381px and wrapped a four-word headline onto six lines. */
+.hl-hero__copy { max-width: min(100%, 660px); }
+
+.hl-hero__title {
+  margin: 0;
+  color: var(--ep-white);
+  font-size: clamp(34px, 4.4vw, 60px);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--fw-semibold);
+  text-wrap: balance;
+}
+
+.hl-hero__text {
+  margin: clamp(14px, 1.6vw, 22px) 0 0;
+  color: rgba(255, 255, 255, .9);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+/* --- the lead-capture card ----------------------------------------------- */
+.hl-form-card {
+  background: var(--ep-white);
+  border-radius: var(--radius-panel);
+  padding: clamp(20px, 2.4vw, 32px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.hl-form-card__title {
+  margin: 0 0 clamp(14px, 1.6vw, 20px);
+  color: var(--ep-ink);
+  font-size: clamp(19px, 1.5vw, 24px);
+  line-height: 1.25;
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--fw-semibold);
+  text-wrap: balance;
+}
+
+.hl-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* .ep-field already carries the site's bottom margin; the grid gap would
+   double it on the paired row. */
+.hl-form__row .ep-field { margin-bottom: 0; }
+.hl-form .ep-field { margin-bottom: 12px; }
+
+.hl-form__message { min-height: 104px; resize: vertical; }
+
+.hl-form__submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.hl-form__flash { margin-bottom: 14px; }
+
+.hl-form__flash-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-sm);
+}
+
+/* --------------------------------------------------------------------------
+   2 · WHO WE SERVE
+   Copy left, four icon rows right, on the site's soft tint.
+   -------------------------------------------------------------------------- */
+.hl-serve { background: var(--ep-green-tint-soft); }
+
+.hl-serve__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 4vw, 72px);
+  align-items: center;
+}
+
+.hl-serve__copy h2 { margin: 0; }
+
+.hl-serve__text {
+  margin: clamp(12px, 1.4vw, 18px) 0 0;
+  color: var(--ep-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+  max-width: 34ch;
+}
+
+.hl-serve__actions { margin: clamp(20px, 2.4vw, 30px) 0 0; }
+
+.hl-serve__list {
+  display: grid;
+  gap: clamp(14px, 1.6vw, 22px);
+}
+
+.hl-serve__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  color: var(--ep-body);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+.hl-serve__ico {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-btn);
+  background: var(--ep-white);
+  color: var(--ep-green-text);
+  border: 1px solid var(--ep-green-line);
+}
+
+/* --------------------------------------------------------------------------
+   3 · WHY AUTHORS CHOOSE US
+   Photo left, six-point list right.
+   -------------------------------------------------------------------------- */
+.hl-why {
+  padding-block: var(--space-section);
+  background: var(--ep-bg);
+}
+
+.hl-why__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(28px, 4.5vw, 76px);
+  align-items: center;
+}
+
+.hl-why__media picture { display: block; }
+
+.hl-why__img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-panel);
+}
+
+.hl-why__copy h2 { margin: 0; }
+
+.hl-why__text {
+  margin: clamp(12px, 1.4vw, 18px) 0 clamp(20px, 2.4vw, 30px);
+  color: var(--ep-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+/* --- the check list, shared with section 7 -------------------------------- */
+.hl-checks { display: grid; gap: 14px; }
+
+.hl-check {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  color: var(--ep-body);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+}
+
+.hl-check__mark {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--ep-green);
+  color: var(--ep-on-green);
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   4 · OUR AUTHOR SERVICES
+   Centred intro, then the ten service cards.
+   -------------------------------------------------------------------------- */
+.hl-services__head {
+  max-width: 78ch;
+  margin: 0 auto clamp(32px, 4vw, 56px);
+  text-align: center;
+}
+
+.hl-services__head h2 { margin: 6px 0 0; }
+
+.hl-services__lead {
+  margin: clamp(16px, 2vw, 24px) 0 0;
+  color: var(--ep-ink);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-h5);
+  font-weight: var(--fw-semibold);
+}
+
+.hl-services__para {
+  margin: 12px 0 0;
+  color: var(--ep-muted);
+  font-size: var(--fs-base);
+  line-height: 1.7;
+}
+
+/* No `align-items: start` here. The <li> is the grid item and the card inside
+   it is `height: 100%`; starting the items stops them stretching to the row,
+   which leaves 100% resolving against nothing and gives every card its own
+   height. Default `stretch` is what makes a row of cards line up and what puts
+   every "Read More" on the same baseline. */
+.hl-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--ep-gutter);
+}
+
+.hl-cards > li { display: flex; }
+
+.hl-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+@media (hover: hover) {
+  .hl-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+.hl-card__media picture { display: block; }
+
+.hl-card__img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.hl-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: clamp(18px, 1.8vw, 26px);
+}
+
+.hl-card__title { margin: 0; }
+
+/* The whole card is not a link — the <details> inside it must stay clickable
+   without navigating — so only the title is, and it is given a hit area
+   rather than a full-card overlay. */
+.hl-card__link {
+  color: var(--ep-ink);
+  text-decoration: none;
+}
+.hl-card__link:hover,
+.hl-card__link:focus-visible { color: var(--ep-green-text); }
+
+.hl-card__text {
+  margin: 10px 0 0;
+  color: var(--ep-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+/* --- <details> disclosure ------------------------------------------------- */
+.hl-card__more { margin-top: auto; padding-top: 14px; }
+
+.hl-card__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--ep-green-text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  list-style: none;              /* Firefox */
+  border-radius: var(--radius-xs);
+}
+
+/* Safari/Chrome draw their own triangle through a pseudo-element. */
+.hl-card__summary::-webkit-details-marker { display: none; }
+.hl-card__summary::marker { content: ''; }
+
+.hl-card__summary:focus-visible {
+  outline: 2px solid var(--ep-green);
+  outline-offset: 3px;
+}
+
+/* The label text is in CSS rather than in the markup so the open and closed
+   states can differ without a line of JavaScript. Both strings come from
+   data/home.php via the data- attributes, so they stay translatable and
+   stay out of the stylesheet. */
+.hl-card__more-label::before { content: attr(data-more); }
+.hl-card__more[open] .hl-card__more-label::before { content: attr(data-less); }
+
+.hl-card__chev { transition: transform var(--dur) var(--ease); }
+.hl-card__more[open] .hl-card__chev { transform: rotate(180deg); }
+
+.hl-card__detail {
+  margin: 12px 0 0;
+  color: var(--ep-body);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.hl-services__foot {
+  margin: clamp(32px, 4vw, 52px) 0 0;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   5 · STAY IN CONTROL
+   Two-column head, three tiles, centred button — on a rounded tint band, the
+   same treatment the site already gives its process section.
+   -------------------------------------------------------------------------- */
+.hl-control {
+  padding-block: var(--space-section);
+  background: var(--ep-green-tint-band);
+}
+
+.hl-control__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 56px);
+  align-items: center;
+  margin-bottom: clamp(30px, 3.6vw, 52px);
+}
+
+.hl-control__head h2 { margin: 0; }
+
+.hl-control__text {
+  margin: 0;
+  color: var(--ep-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+.hl-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--ep-gutter);
+}
+
+.hl-tile {
+  background: var(--ep-white);
+  border: 1px solid var(--ep-green-line);
+  border-radius: var(--radius-card);
+  padding: clamp(20px, 2.2vw, 30px);
+}
+
+.hl-tile__ico {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-btn);
+  background: var(--ep-green-tint-soft);
+  color: var(--ep-green-text);
+}
+
+.hl-tile__title { margin: 0; }
+
+.hl-tile__text {
+  margin: 8px 0 0;
+  color: var(--ep-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+.hl-control__foot {
+  margin: clamp(30px, 3.6vw, 48px) 0 0;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   6 · DARK PHOTO BAND
+   -------------------------------------------------------------------------- */
+.hl-band {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: clamp(260px, 26vw, 380px);
+  padding-block: clamp(48px, 6vw, 84px);
+  overflow: hidden;
+  text-align: center;
+}
+
+.hl-band__media { position: absolute; inset: 0; z-index: -2; }
+.hl-band__media picture { display: block; height: 100%; }
+
+.hl-band__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+.hl-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, .58);
+}
+
+.hl-band__title {
+  margin: 0;
+  color: var(--ep-white);
+  text-wrap: balance;
+}
+
+.hl-band__actions { margin: clamp(20px, 2.4vw, 30px) 0 0; }
+
+/* --------------------------------------------------------------------------
+   7 · PUBLISHING AND PROMOTION
+   -------------------------------------------------------------------------- */
+.hl-promote__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(28px, 4.5vw, 72px);
+  align-items: center;
+}
+
+.hl-promote__copy h2 { margin: 0; }
+
+.hl-promote__intro {
+  margin: clamp(12px, 1.4vw, 18px) 0 clamp(20px, 2.4vw, 28px);
+  color: var(--ep-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+.hl-promote__sub {
+  margin: clamp(24px, 2.8vw, 34px) 0 0;
+  color: var(--ep-ink);
+}
+
+.hl-promote__para {
+  margin: 12px 0 0;
+  color: var(--ep-body);
+  font-size: var(--fs-base);
+  line-height: 1.7;
+}
+
+.hl-promote__actions { margin: clamp(24px, 2.8vw, 34px) 0 0; }
+
+.hl-promote__media picture { display: block; }
+
+.hl-promote__img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-panel);
+}
+
+/* --------------------------------------------------------------------------
+   8 · CLOSING BAND
+   The panel itself is `.cta-green` from main.css — background, centring, the
+   white heading and the action row all come from there, unchanged. The only
+   thing this adds is collapsing the heading's default top margin, which is
+   otherwise visible as uneven padding when the panel carries no intro
+   paragraph (the source's closing band has a heading and a button, nothing
+   between them).
+   -------------------------------------------------------------------------- */
+.hl-close__panel > h2 { margin-top: 0; }
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+/* --- <= 1199: the hero card narrows before it drops ---------------------- */
+@media (max-width: 1199px) {
+  .hl-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); }
+  .hl-serve__grid,
+  .hl-why__grid,
+  .hl-promote__grid { gap: clamp(24px, 3.4vw, 48px); }
+}
+
+/* --- <= 991: everything goes to one column ------------------------------- */
+@media (max-width: 991px) {
+  .hl-hero {
+    align-items: stretch;
+    min-height: 0;
+    padding-block: clamp(36px, 6vw, 56px) clamp(32px, 5vw, 56px);
+  }
+
+  .hl-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(24px, 4vw, 36px);
+  }
+
+  .hl-hero__copy { max-width: none; }
+
+  .hl-serve__grid,
+  .hl-why__grid,
+  .hl-control__head,
+  .hl-promote__grid { grid-template-columns: minmax(0, 1fr); }
+
+  .hl-serve__text { max-width: none; }
+
+  /* Photo above copy on both two-column blocks — the source page does the
+     same thing at this width, and a decorative image below the text it
+     illustrates reads as an orphan. */
+  .hl-why__media  { order: -1; }
+  .hl-promote__media { order: -1; }
+
+  .hl-why { padding-block: var(--space-section-sm); }
+  .hl-control { padding-block: var(--space-section-sm); }
+}
+
+/* --- <= 767: tighten type and stack the paired inputs -------------------- */
+@media (max-width: 767px) {
+  .hl-hero__title { font-size: clamp(30px, 7.4vw, 40px); }
+  .hl-hero__text  { font-size: var(--fs-base); line-height: var(--lh-base); }
+
+  .hl-form__row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .hl-form__row .ep-field { margin-bottom: 12px; }
+
+  .hl-serve__item { font-size: var(--fs-base); line-height: var(--lh-base); gap: 12px; }
+  .hl-serve__ico { width: 40px; height: 40px; }
+
+  .hl-services__lead { font-size: var(--fs-h4); line-height: var(--lh-h4); }
+
+  .hl-why__img,
+  .hl-promote__img { aspect-ratio: 3 / 2; }
+}
+
+/* --- <= 575: single-column cards ----------------------------------------- */
+@media (max-width: 575px) {
+  .hl-cards { grid-template-columns: minmax(0, 1fr); }
+  .hl-tiles { grid-template-columns: minmax(0, 1fr); }
+  .hl-form-card { border-radius: var(--radius-card); }
+}
+
+/* --------------------------------------------------------------------------
+   MOTION
+   tokens.css already collapses --dur to 1ms under prefers-reduced-motion, so
+   the transitions above stop with it. The card lift is a transform, which is
+   the one thing that still needs saying explicitly.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .hl-card:hover { transform: none; }
+}

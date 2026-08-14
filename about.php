@@ -35,7 +35,7 @@ $values = [
     [
         'icon'  => 'shield',
         'title' => 'Uncompromising Standards',
-        'text'  => 'We treat every manuscript with the rigorous care of a top-tier manuscript publisher.',
+        'text'  => 'We treat every manuscript with the same rigorous care at each stage of production.',
     ],
     [
         'icon'  => 'eye',
@@ -49,7 +49,7 @@ $reasons = [
     ['title' => '100% Ownership Rights',
      'text'  => 'Keep full control and rights of your book at all times.'],
     ['title' => 'Experienced Publishing Team',
-     'text'  => 'Work with experts who know the publishing industry inside out.'],
+     'text'  => 'Work with a team that handles editing, design, publishing and marketing.'],
     ['title' => 'Fast Turnaround Time',
      'text'  => 'Get your book from idea to launch without unnecessary delays.'],
     ['title' => 'End-to-End Solutions',
@@ -86,11 +86,11 @@ $reasons = [
         without giving up their creative freedom or royalties.
       </p>
       <p>
-        We are a premier team of editors, graphic artists, literary marketers, and publishing
+        We are a team of editors, graphic artists, literary marketers, and publishing
         strategists dedicated to helping writers navigate the modern literary market. Whether
         you want to publish your book for the first time or scale your existing author brand,
-        our end-to-end self-publishing packages provide the exact support, expertise, and
-        distribution network you need to succeed.
+        our end-to-end self-publishing packages cover the editing, design, production and
+        distribution your book needs to reach readers.
       </p>
       <p class="about-story__actions">
         <a class="ep-btn ep-btn--green" href="<?= esc(url(ep_page_url('contact'))) ?>">
