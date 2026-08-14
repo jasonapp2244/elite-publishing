@@ -9,9 +9,10 @@ declare(strict_types=1);
  * press-logo marquee and the book strip — none of which this page ever
  * included, which is why its slider and logo row appeared to be missing.
  *
- * Preserved unchanged so it can still be viewed and compared. It is noindex,
- * for the same reason home-classic.php was: two near-identical pages competing
- * for the same searches is worse than one.
+ * Preserved unchanged so it can still be viewed and compared. It is noindex:
+ * two near-identical pages competing for the same searches is worse than one.
+ * It is also absent from the navigation, the footer and sitemap.php —
+ * reachable by URL, not advertised.
  *
  * TO SWITCH BACK TO IT: copy this file over index.php, change $pageKey to
  * 'home' and delete the $pageNoIndex line below.
@@ -19,11 +20,11 @@ declare(strict_types=1);
  * ---------------------------------------------------------------------------
  * WHAT THIS REPLACED
  * ---------------------------------------------------------------------------
- * The sixteen-section home page is unchanged and still live, as a page of its
- * own at /home-classic (home-classic.php). It is noindex and is not in the
- * navigation or the sitemap; see the notes at the top of that file, including
- * how to switch back to it. assets/css/p-home.css and assets/js/p-home.js are
- * untouched on disk and are still what it needs.
+ * The sixteen-section home page, which is index.php again. It used to be kept
+ * alongside it as home-classic.php; that copy is gone, because once index.php
+ * became the same layout again the two files were the same page at two URLs —
+ * exactly the duplicate the paragraph above is about. It is in the history if
+ * it is ever wanted: `git show 1f4a95a:home-classic.php`.
  *
  * ---------------------------------------------------------------------------
  * SECTION ORDER (from lp/index.html)
