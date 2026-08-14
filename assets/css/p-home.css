@@ -61,6 +61,33 @@
 }
 .home-hero__stars { display: inline-flex; gap: 6px; color: var(--ep-ink); }
 
+/* On a phone the hero ran 708px before the cover band even started, which put
+   the covers off the bottom of a 360x640 screen entirely.
+
+   Almost all of that was the headline. The global h1 floor is 38px, and at
+   38px in a 360px column each of the three designed lines wraps in half — six
+   lines, 260px. The wrap is a cliff, not a slope: 28px still gives five lines
+   at 160px, and 26px gives three at 89px, because that is where
+   "Professionally Published Book" finally fits on one line. So this drops
+   under the cliff and the headline reads as the three lines it was written as
+   (see ep_lines in index.php) instead of six ragged ones. 171px, and the
+   design gets more faithful rather than less.
+
+   The rest is rhythm: every gap tightened a few pixels, nothing resized. */
+@media (max-width: 575.98px) {
+  .home-hero { padding-block: 20px 28px; }
+  .home-hero__title {
+    /* 6.4vw, not the 6.9vw that only just clears the cliff: the fit depends on
+       the rendered width of one string, so it needs slack for a device whose
+       font metrics differ a little from this one's. */
+    font-size: clamp(21px, 6.4vw, 30px);
+    line-height: 1.14;
+    margin-bottom: 16px;
+  }
+  .home-hero__text { margin-bottom: 18px; }
+  .home-hero__actions { margin-bottom: 20px; }
+}
+
 /* ==========================================================================
    6 — Why Us  (green panel, 45/55, staggered glass tiles)
    ========================================================================== */
