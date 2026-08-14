@@ -40,11 +40,20 @@ $books = ep_data('books');
 <section class="section" aria-labelledby="collection-h" data-scroller>
   <div class="container-ep">
 
+    <?php /* Was "Our Published Books Collection" over "books we've helped
+             authors turn from ideas into professionally published titles". The
+             covers below are real commercial titles from other houses — see
+             data/books.php, every row is 'placeholder' => true — so both lines
+             claimed work this company did not do. The section now presents them
+             as what they are while the placeholder catalogue stands: examples of
+             the kinds of book the service covers. Replacing data/books.php with
+             the real catalogue is what lets this go back to naming them as ours;
+             it is flagged in the handover report. */ ?>
     <div class="books-head">
-      <h2 id="collection-h"><?= ep_lines("Our Published Books\nCollection") ?></h2>
+      <h2 id="collection-h"><?= ep_lines("The Kinds Of Book\nWe Work On") ?></h2>
       <p class="books-head__aside">
-        A collection of books we've helped authors turn from ideas into professionally
-        published titles.
+        Examples of the formats and genres our editing, design, publishing and distribution
+        services cover, from children's picture books to full-length fiction.
       </p>
     </div>
 

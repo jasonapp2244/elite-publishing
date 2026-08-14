@@ -60,14 +60,17 @@ return [
                 'slug'  => 'book-marketing',
                 'title' => "Book\nMarketing",
                 'icon'  => 'megaphone',
-                'text'  => 'Publishing your book is only the first step; reaching readers is where the real work begins. Our marketing specialists build the launch plan, the campaigns, and the reviews that put your title in front of buyers.',
+                /* Was "…the campaigns, and the reviews that put your title in
+                   front of buyers" — reviews are not ours to produce, and
+                   reaching buyers was stated as a result rather than an aim. */
+                'text'  => 'Publishing your book is only the first step; reaching readers is where the next stage of work begins. Our marketing team builds the launch plan, runs the campaigns, and handles the review outreach agreed for your title.',
                 'draft' => true,
             ],
             [
                 'slug'  => 'blog-article-writing',
                 'title' => "Blog Article\nWriting",
                 'icon'  => 'browser',
-                'text'  => 'Build long-term organic traffic to your author website. Our content strategists write SEO-optimized blog articles that answer the questions your readers are already searching for.',
+                'text'  => 'Give your author website something to publish between books. Our writers research and write blog articles around the subjects your readers search for, structured and optimized for search.',
                 'draft' => true,
             ],
             [
@@ -88,22 +91,25 @@ return [
         'steps'   => [
             [
                 'title' => 'Share Your Idea',
-                'text'  => 'Tell us your vision and goals, so we can plan the perfect strategy for your book.',
+                /* "the perfect strategy" promised an outcome nobody can
+                   promise; the step is a briefing conversation, so it now says
+                   that. Same reasoning for the three below. */
+                'text'  => 'Tell us your goals for the book and your readers, and we agree the scope and schedule together.',
                 'icon'  => 'lightbulb',
             ],
             [
                 'title' => 'Writing & Development',
-                'text'  => 'Our writers work your outline up into a complete, polished manuscript.',
+                'text'  => 'Our writers work your outline up into a complete manuscript, sent to you in stages so you can steer it.',
                 'icon'  => 'hand-pen',
             ],
             [
                 'title' => 'Design & Formatting',
-                'text'  => 'Stunning cover designs and reader-friendly layouts that make your book stand out.',
+                'text'  => 'Cover artwork and interior layouts designed together, for print, eBook and store thumbnails.',
                 'icon'  => 'palette',
             ],
             [
                 'title' => 'Publishing & Launch',
-                'text'  => 'We handle distribution on major platforms and help you promote your book worldwide.',
+                'text'  => 'We set up the retail listings, distribute to the major platforms, and run the launch activity agreed for your book.',
                 'icon'  => 'paper-plane',
             ],
         ],
@@ -209,8 +215,16 @@ return [
     'stories' => [
         'eyebrow' => 'AUTHOR STORIES',
         'heading' => "What Our\nAuthors Say",
-        'intro'   => 'Discover the inspiring journeys of authors who placed their trust in us, turning their manuscripts into finished, professionally published books. Each story is a testament to the power of collaboration, creativity, and dedication.',
-        'cta'     => 'Watch More Stories',
+        /* Was "Discover the inspiring journeys of authors who placed their
+           trust in us … Each story is a testament to the power of
+           collaboration". Two problems: it described results for authors the
+           site cannot name, and it promised stories the section does not
+           contain — the cards are static images, and the CTA said "Watch More
+           Stories" with nothing to watch (see components/author-stories.php).
+           It now describes the working relationship, which is what the section
+           and the reviews under it actually show. */
+        'intro'   => 'Authors work directly with the editors, designers and project managers assigned to their book, and approve the work at each stage. The reviews below are from authors who have been through that process with us.',
+        'cta'     => 'See the Genres We Work In',
         'cards'   => [
             ['name' => 'Clara Wen', 'title' => 'Everything Remembered', 'img' => 'img/story-1.jpg', 'placeholder' => true],
             ['name' => 'Clara Wen', 'title' => 'Everything Remembered', 'img' => 'img/story-2.jpg', 'placeholder' => true],
@@ -219,8 +233,26 @@ return [
     ],
 
     // ------------------------------------------------------------ testimonials
-    // SPEC §D.2 "Testimonial marquee". Trailing commas on the names and the
-    // card 4 = card 1 duplication are both in the design (DECISIONS §11, 10/11).
+    /**
+     * SPEC §D.2 "Testimonial marquee". Trailing commas on the names are in the
+     * design (DECISIONS §11).
+     *
+     * The design supplied TWO quotes across four cards. Card 4 repeated card 1
+     * word for word under the same name, which is only a repetition — but card
+     * 3 repeated card 2 word for word under a DIFFERENT name and role, which
+     * credits one person's review to another. That is the one thing in here
+     * that was not merely redundant, and writing a third review to replace it
+     * would have been inventing a customer.
+     *
+     * So the two real quotes now alternate A-B-A-B, each with its own name,
+     * role, platform badge and avatar. Nothing was added, nothing attributed to
+     * anyone who did not say it, and the track still carries four cards — the
+     * marquee duplicates it again for the loop, and a shorter track would leave
+     * a visible gap at the seam on a wide screen.
+     *
+     * Replace these with the real review set when it arrives; the count is free
+     * to grow, only the emptiness of the array matters to the component.
+     */
     'testimonials' => [
         [
             'quote' => '"If you want to hire a book publisher that actually respects your creative vision, look no further. The audiobook narration they arranged was Broadway-quality, and my royalties go straight to me."',
@@ -237,18 +269,18 @@ return [
             'img'   => 'img/avatar-2.jpg',
         ],
         [
-            'quote' => '"As a first-time writer looking for reliable book publishing services, I was terrified of making costly mistakes. Elite Publishing guided me step-by-step through manuscript formatting, editing, and launch marketing."',
-            'name'  => 'David K.,',
-            'role'  => 'Children\'s Book Author',
-            'badge' => 'mark',
-            'img'   => 'img/avatar-3.jpg',
-        ],
-        [
             'quote' => '"If you want to hire a book publisher that actually respects your creative vision, look no further. The audiobook narration they arranged was Broadway-quality, and my royalties go straight to me."',
             'name'  => 'Marcus Vance,',
             'role'  => 'Author of Shadows Over Orion',
             'badge' => 'trustpilot',
-            'img'   => 'img/avatar-4.jpg',
+            'img'   => 'img/avatar-1.jpg',
+        ],
+        [
+            'quote' => '"As a first-time writer looking for reliable book publishing services, I was terrified of making costly mistakes. Elite Publishing guided me step-by-step through manuscript formatting, editing, and launch marketing."',
+            'name'  => 'Elena Rostova,',
+            'role'  => 'Author of The Botanical Table',
+            'badge' => 'google',
+            'img'   => 'img/avatar-2.jpg',
         ],
     ],
 
@@ -266,45 +298,19 @@ return [
      * dropped. The other three are small marks on transparency and need the
      * plate behind them.
      */
-    'platforms' => [
-        [
-            'name'      => 'Trustpilot',
-            'score'     => '4.9',
-            'reviews'   => 'Based on 1,247 reviews',
-            'link'      => 'View on Trustpilot',
-            'href'      => '#',
-            'style'     => 'squares',
-            'icon'      => 'img/platforms/trustpilot.png',
-            'icon_fill' => true,
-        ],
-        [
-            'name'    => 'Google Reviews',
-            'score'   => '4.8',
-            'reviews' => 'Based on 892 reviews',
-            'link'    => 'View on Google',
-            'href'    => '#',
-            'style'   => 'stars',
-            'icon'    => 'img/platforms/google.png',
-        ],
-        [
-            'name'    => 'Reviews.io',
-            'score'   => '4.8',
-            'reviews' => 'Based on 634 reviews',
-            'link'    => 'View on Reviews.io',
-            'href'    => '#',
-            'style'   => 'stars',
-            'icon'    => 'img/platforms/reviews-io.png',
-        ],
-        [
-            'name'    => 'Sitejabber',
-            'score'   => '4.9',
-            'reviews' => 'Based on 634 reviews',
-            'link'    => 'View on Sitejabber',
-            'href'    => '#',
-            'style'   => 'stars',
-            'icon'    => 'img/platforms/sitejabber.png',
-        ],
-    ],
+    /* EMPTIED IN THE CONTENT PASS — the four cards published a rating and a
+       review count for each platform: 4.9/5 from 1,247 Trustpilot reviews,
+       4.8/5 from 892 on Google, and two more. None of it came from the
+       platforms. Every "View on …" link pointed at '#', so a visitor could not
+       check a single figure, and nothing in the project measures them.
+       Published review scores are the most checkable claim on a site and the
+       most damaging one to get wrong, so they are out.
+
+       index.php renders this section only when the array is non-empty, so the
+       block disappears cleanly and comes back the moment there is something
+       true to put in it: fill in each card's real 'score' and 'reviews', and
+       point 'href' at the actual profile page rather than '#'. */
+    'platforms' => [],
 
     // --------------------------------------------------------------------- FAQ
     // SPEC §D.2 "FAQ". Answer 1 is verbatim, spaces before the commas included
@@ -315,7 +321,12 @@ return [
         'items'   => [
             [
                 'q'     => 'What genres do you work with?',
-                'a'     => 'Fiction, non-fiction, romance , christian , self-help, children\'s, poetry, & academic — we match your project with a writer who specializes in your genre.',
+                /* The stray spaces before the commas in "romance , christian ,"
+                   and the ampersand mid-sentence were transcribed from the
+                   design (DECISIONS §11 bug 1) and reproduced deliberately. The
+                   content pass asks for correct grammar, so they are corrected
+                   here — the wording and the genre list are untouched. */
+                'a'     => 'Fiction, non-fiction, romance, Christian, self-help, children\'s, poetry and academic — we match your project with a writer who specializes in your genre.',
                 'draft' => false,
             ],
             [
@@ -465,7 +476,10 @@ return [
     'service_why' => [
         'eyebrow' => 'WHY US',
         'heading' => 'Why Authors Trust Us',
-        'text'    => 'We help you build more than just a book—we help shape your author identity. Every project is crafted with care, clarity, and full confidentiality while staying true to your voice. Our focus is to deliver a professionally written, market-ready book that creates real impact.',
+        /* Was "…a professionally written, market-ready book that creates real
+           impact." The last clause promised a result; the rest of the sentence
+           already says what is delivered, so it ends there. */
+        'text'    => 'We help you build more than just a book—we help shape your author identity. Every project is handled with care, clarity, and full confidentiality while staying true to your voice. Our focus is a professionally written book, prepared to the standard the retailers and print partners require.',
         'chips'   => [
             '100% Confidential Process',
             'Your Voice, Your Style',

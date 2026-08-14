@@ -276,7 +276,13 @@ require __DIR__ . '/includes/components/services-carousel.php';
     <div class="section-head home-rail__head">
       <div class="section-head__text">
         <p class="eyebrow">GENRES</p>
-        <h2 id="genres-title">Books We Help Publish</h2>
+        <?php /* Was "Books We Help Publish", which claims involvement in the
+                 covers below it — and those are real commercial titles from
+                 other houses (data/books.php). The filter under this heading is
+                 by genre, so naming the genres is both accurate and what the
+                 section actually does. Same reasoning as "Selected Titles"
+                 below. */ ?>
+        <h2 id="genres-title">Genres We Work In</h2>
       </div>
 
       <div class="genre-tabs" role="group" aria-label="Filter books by genre" data-genre-tabs>

@@ -8,11 +8,12 @@ declare(strict_types=1);
  * shared Publishing Journey -> "Why Authors Choose Us" -> shared FAQ ->
  * shared CTA + wizard -> footer.
  *
- * Two copy bugs from the design are reproduced deliberately (DECISIONS §11):
- *   - the hero paragraph ends mid-sentence on a comma;
- *   - the first body paragraph runs "Our Story Elite Publishing was founded…"
- *     with no heading break.
- * Do not "fix" either; both are logged in docs/CLIENT-QUESTIONS.md.
+ * Two copy bugs from the design were reproduced deliberately (DECISIONS §11):
+ * the hero paragraph ended mid-sentence on a comma, and the first body
+ * paragraph ran "Our Story Elite Publishing was founded…" with no heading
+ * break. The content pass asks for correct grammar, so both are now fixed —
+ * the hero sentence is completed and "Our Story" is dropped rather than
+ * promoted to a heading, since the section already has one.
  */
 
 require_once __DIR__ . '/includes/config.php';
@@ -34,8 +35,11 @@ $values = [
     ],
     [
         'icon'  => 'shield',
-        'title' => 'Uncompromising Standards',
-        'text'  => 'We treat every manuscript with the same rigorous care at each stage of production.',
+        /* "Uncompromising" claimed a standard nobody outside the company can
+           check. "Consistent" is the thing the sentence beneath it describes
+           and the thing an author can actually hold us to. */
+        'title' => 'Consistent Standards',
+        'text'  => 'We treat every manuscript with the same care at each stage of production, whatever its length or genre.',
     ],
     [
         'icon'  => 'eye',
@@ -50,8 +54,10 @@ $reasons = [
      'text'  => 'Keep full control and rights of your book at all times.'],
     ['title' => 'Experienced Publishing Team',
      'text'  => 'Work with a team that handles editing, design, publishing and marketing.'],
-    ['title' => 'Fast Turnaround Time',
-     'text'  => 'Get your book from idea to launch without unnecessary delays.'],
+    /* Was "Fast Turnaround Time" — a speed claim with no figure behind it. The
+       schedule the client actually receives is the substance, so it says that. */
+    ['title' => 'A Schedule You Can Plan Around',
+     'text'  => 'You get a dated stage-by-stage schedule at the start, and progress against it as the work runs.'],
     ['title' => 'End-to-End Solutions',
      'text'  => 'From writing, design, publishing, to marketing — everything under one roof.'],
     ['title' => 'Transparent Process',
@@ -64,7 +70,8 @@ $reasons = [
     <h1 id="about-hero-h"><?= ep_lines("About Our\nCompany") ?></h1>
     <p class="lead page-hero__intro">
       We are a professional book writing and publishing company helping authors turn their
-      ideas into published books. From writing and editing to design and publishing,
+      ideas into published books. From writing and editing to design, publishing and
+      distribution, one team handles every stage.
     </p>
   </div>
 </section>
@@ -81,9 +88,9 @@ $reasons = [
     <div class="about-story__body">
       <h2 id="story-h"><?= ep_lines("Championing Independent\nVoices Worldwide") ?></h2>
       <p>
-        Our Story Elite Publishing was founded on a simple principle: every author deserves
-        access to the same high-caliber production quality as traditional publishing houses
-        without giving up their creative freedom or royalties.
+        Elite Publishing was founded on a simple principle: an independent author should be
+        able to reach a professional standard of production without signing away creative
+        control or a share of the royalties.
       </p>
       <p>
         We are a team of editors, graphic artists, literary marketers, and publishing
@@ -135,9 +142,12 @@ $reasons = [
       <div class="section-head section-head--split why-head">
         <h2 id="why-h"><?= ep_lines("Why Authors\nChoose Us") ?></h2>
         <div class="why-head__aside">
+          <?php /* Was "…save time, maximize impact, and help your book succeed
+                   globally" — three promises, none of them measurable. What the
+                   service actually removes is the coordination, so it says that. */ ?>
           <p>
-            We provide end-to-end publishing solutions that save time, maximize impact, and
-            help your book succeed globally.
+            We provide end-to-end publishing solutions, so you brief one team instead of
+            coordinating an editor, a designer, a printer and a distributor yourself.
           </p>
           <p class="why-head__actions">
             <a class="ep-btn ep-btn--green" href="<?= esc(url('services/books-publishing')) ?>">

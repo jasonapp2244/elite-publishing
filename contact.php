@@ -72,9 +72,12 @@ require __DIR__ . '/includes/components/cta-wizard.php';
   <div class="container-ep">
     <div class="cta-green">
       <h2 id="contact-cta-h"><?= ep_lines("Your Story Deserves To\nBe Published.") ?></h2>
+      <?php /* "into a professionally published success" promised the outcome.
+               The service ends at a professionally published book; what happens
+               to it after that is not ours to guarantee. */ ?>
       <p class="cta-green__intro">
-        Take the next step in your author journey. Our team is ready to turn your idea into a
-        professionally published success.
+        Take the next step in your author journey. Tell us about your manuscript and our team
+        will come back with a scope, a schedule and a quote.
       </p>
       <p class="cta-green__actions">
         <a class="ep-btn ep-btn--white" href="<?= esc(url(ep_page_url('contact'))) ?>"
