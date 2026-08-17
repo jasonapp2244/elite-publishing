@@ -8,10 +8,11 @@ declare(strict_types=1);
  * WHERE THIS CAME FROM, AND WHY THE WORDS ARE NOT THE SOURCE'S
  * ---------------------------------------------------------------------------
  * The brief supplied a landing page in lp/ and asked for it to become the home
- * page. lp/index.html is not a design export — it is a complete saved copy of
- * twinepublishing.com, a different and real company: its logo files, its phone
- * number, its info@ address, its photography and its copyright line are all in
- * that folder.
+ * page. lp/index.html was not a design export — it was a complete saved copy of
+ * ANOTHER PUBLISHING COMPANY'S LIVE WEBSITE: its logo files, its phone number,
+ * its info@ address, its photography and its copyright line were all in that
+ * folder. (The company is not named here because the codebase no longer carries
+ * any other brand's name; the source folder is in the project history.)
  *
  * The LAYOUT is what was taken: section order, the hero with a lead form
  * floating over a photo, "Who We Serve", the six-point why-us list, the
@@ -27,8 +28,9 @@ declare(strict_types=1);
  * publishing, claims access to Inspire Media Group's email lists, and quotes
  * that company's terms.
  *
- * If Elite Publishing does hold rights to the Twine content, every string on
- * the home page is in this one file and swapping it in touches nothing else.
+ * If Elite Publishing does turn out to hold rights to that source content, every
+ * string on the home page is in this one file and swapping it in touches
+ * nothing else.
  *
  * ---------------------------------------------------------------------------
  * CLAIMS
