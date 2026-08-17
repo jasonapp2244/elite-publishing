@@ -5763,9 +5763,12 @@ Headline for slide 2
       </div>
 
       <footer style="margin-top:48px;padding:18px 0 24px;text-align:center;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--ink-faint)">
-        © <span class="copy-year">2026</span> Elite Publishing &nbsp;·&nbsp; All Rights Reserved &nbsp;·&nbsp;
-        <a href="terms.html" style="color:var(--ink-soft);text-decoration:underline">Terms of Service</a> &nbsp;·&nbsp;
-        <a href="privacy.html" style="color:var(--ink-soft);text-decoration:underline">Privacy Policy</a>
+        <?php /* The Terms of Service and Privacy Policy links that sat here were
+                 removed with the ones in the shared LP footer. They were broken
+                 in any case: they pointed at terms.html and privacy.html
+                 relative to /lp3/, and neither file exists — the real pages are
+                 /terms-conditions and /privacy-policy at the site root. */ ?>
+        © <span class="copy-year">2026</span> Elite Publishing &nbsp;·&nbsp; All Rights Reserved
       </footer>
     </main>
   </div>

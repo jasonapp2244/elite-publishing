@@ -176,12 +176,22 @@
   .ep-footer--lp a:hover { opacity: .68; }
 }
 
-/* Three columns rather than a flex row with space-between, so the links sit
-   where the design puts them regardless of how wide the copyright line renders
-   in a given browser. */
+/* Logo left, copyright right.
+
+   This was three columns — logo, links, copyright — when the footer carried the
+   Privacy Policy / Terms of Service / Contact row. That row was removed, and
+   `auto 1fr auto` with nothing in the middle would have left the empty 1fr
+   sitting between them: the copyright would still be pushed to the right edge,
+   but the gap either side of a column that renders nothing is dead space the
+   design does not call for.
+
+   `auto 1fr` keeps the logo at its intrinsic width and lets the copyright take
+   the remaining track, so `justify-self: end` still puts it hard right. If the
+   links come back, restore `auto 1fr auto` here and uncomment the nav in
+   components/lp-chrome-footer.php. */
 .ep-footer__inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 20px 40px;
 }

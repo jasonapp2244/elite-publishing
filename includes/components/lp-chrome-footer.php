@@ -56,11 +56,18 @@ $lpDomain = strtolower((string) substr(strrchr(EP_EMAIL, '@') ?: '@elitepublishi
            width="452" height="360" loading="lazy" decoding="async">
     </a>
 
-    <nav class="ep-footer__nav" aria-label="Legal and contact">
-      <a href="<?= esc(url(ep_page_url('privacy-policy'))) ?>">Privacy Policy</a>
-      <a href="<?= esc(url(ep_page_url('terms-conditions'))) ?>">Terms of Service</a>
-      <a href="<?= esc(url(ep_page_url('contact'))) ?>">Contact</a>
-    </nav>
+    <?php /* The Privacy Policy / Terms of Service / Contact row was removed on
+             request. The markup is kept here, commented, because the pages it
+             pointed at still exist and ad networks routinely require a privacy
+             link on a paid landing page — restoring it is uncommenting three
+             lines, and the grid in lp-chrome.css still has a column for it.
+
+      <nav class="ep-footer__nav" aria-label="Legal and contact">
+        <a href="<?= esc(url(ep_page_url('privacy-policy'))) ?>">Privacy Policy</a>
+        <a href="<?= esc(url(ep_page_url('terms-conditions'))) ?>">Terms of Service</a>
+        <a href="<?= esc(url(ep_page_url('contact'))) ?>">Contact</a>
+      </nav>
+    */ ?>
 
     <p class="ep-footer__copy">
       &copy; <?= esc(date('Y')) ?> <?= esc($lpDomain) ?>
