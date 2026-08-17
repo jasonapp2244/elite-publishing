@@ -192,7 +192,11 @@ $lpFlash = ep_lp_flash();
       <h1>Sell more books.<br>Spend less time on <em>marketing.</em></h1>
       <p>Elite Publishing is a complete promotion toolkit — book descriptions, press releases, social posts, trailers, email campaigns, and event tools — without becoming a full-time marketer.</p>
       <div class="hero-ctas">
-        <button class="btn btn-green btn-lg" onclick="openSiteTour()">✨ See what your author website can look like</button>
+        <?php /* The "See what your author website can look like" button was
+                 removed on request. It called openSiteTour(), which is defined
+                 nowhere in this page or in assets/js/app.js — clicking it threw
+                 a ReferenceError and did nothing, as the primary call to action
+                 in the hero. */ ?>
         <button class="btn btn-outline btn-lg" onclick="document.getElementById('tour').scrollIntoView({behavior:'smooth'})">Take the tour</button>
         <button class="btn btn-outline btn-lg" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">See pricing</button>
       </div>
@@ -270,13 +274,19 @@ $lpFlash = ep_lp_flash();
       <!-- Swapped in by submitEnquiry() once the form validates. -->
       <div class="enquiry-success" id="enquiry-success" style="display:none">
         <h3>Thanks<span id="enquiry-success-name"></span> — manuscript received</h3>
-        <p>We've got your details and will reply within one business day. In the meantime, the free demo below tours every feature.</p>
+        <?php /* Was "In the meantime, the free demo below tours every feature."
+                 The demo link directly beneath this line was removed with the
+                 hero button, so that sentence pointed at nothing — a promise
+                 made to someone who has just submitted a manuscript, with no
+                 way to act on it. */ ?>
+        <p>We've got your details and will reply within one business day.</p>
       </div>
 
-      <div class="auth-demo-cta">
-        Want to look around first?
-        <a href="api/demo_login.php">✨ Try the demo →</a>
-      </div>
+      <?php /* The "Want to look around first? / Try the demo" row was removed on
+               request. Its link pointed at api/demo_login.php, which does not
+               exist in this folder and returns 404 on the live site, so it sent
+               anyone who clicked it — immediately after submitting a manuscript
+               — to an error page. */ ?>
     </div>
   </div>
 
