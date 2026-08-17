@@ -33,6 +33,9 @@ if (!array_key_exists($slug, EP_SERVICES) || empty($services[$slug])) {
     $pageTitle       = 'Service not found';
     $pageDescription = 'That service page does not exist. Browse the ten publishing services we offer.';
     $pageCss         = ['css/p-service.css'];
+    /* This branch answers 404. Without it head.php would publish a canonical
+       for a URL that does not exist and leave the miss indexable. */
+    $pageNoIndex     = true;
 
     require __DIR__ . '/includes/head.php';
     ?>
@@ -70,7 +73,12 @@ $pageTitle       = $svc['title'] ?? EP_SERVICES[$slug];
 $pageDescription = $svc['meta_desc'] ?? EP_TAGLINE;
 $pageCss         = ['css/p-service.css'];
 $pageCanonical   = 'services/' . $slug;                // not derivable from the filename
-$ogImage         = ($hero['image'] ?? 'img/og-default') . '-1280.jpg';
+/* Every service ships a -1280.jpg hero, so the first branch is what runs. The
+   fallback names the site's default card WITHOUT the size suffix: og-default is
+   a single 1200x628 file and there is no og-default-1280.jpg, so the old
+   expression produced a 404 for any service that ever lost its hero. */
+$ogImage         = isset($hero['image']) ? $hero['image'] . '-1280.jpg' : 'img/og-default.jpg';
+$ogImageAlt      = $hero['alt'] ?? ($pageTitle . ' — ' . EP_NAME);
 
 // Drives the dark navbar variant (SPEC §B.1) from CSS — see p-service.css.
 $bodyClass = 'page-service';

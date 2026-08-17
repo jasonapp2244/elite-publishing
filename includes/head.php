@@ -9,6 +9,7 @@ declare(strict_types=1);
  *   $pageDescription string  meta description, ~150 chars
  *   $pageCss         array   extra stylesheet paths relative to assets/, optional
  *   $ogImage         string  path relative to assets/, optional
+ *   $ogImageAlt      string  alt text for the share card, optional
  *   $bodyClass       string  optional
  */
 
@@ -20,6 +21,21 @@ $pageDescription = $pageDescription ?? EP_TAGLINE;
 $pageCss         = $pageCss         ?? [];
 $bodyClass       = $bodyClass       ?? '';
 $ogImage         = $ogImage         ?? 'img/og-default.jpg';
+$ogImageAlt      = $ogImageAlt      ?? $pageTitle;
+
+/**
+ * Real pixel dimensions of the share image.
+ *
+ * og:image:width/height are what let Facebook, LinkedIn and Slack lay the card
+ * out on FIRST share, before they have fetched the image. Without them the
+ * first person to post a link gets a small thumbnail or no image at all, and
+ * the large card only appears once the scraper has caught up — by which time
+ * the post is already out. Measured rather than hardcoded, because $ogImage
+ * differs per page (each service page ships its own hero) and a declared size
+ * that disagrees with the file is worse than declaring nothing.
+ */
+$ogImageFile = EP_ROOT . '/assets/' . ltrim($ogImage, '/');
+$ogImageSize = is_file($ogImageFile) ? @getimagesize($ogImageFile) : false;
 
 /**
  * Start the session here, before a single byte of output.
@@ -59,6 +75,12 @@ $canonical = EP_ORIGIN . url($pageCanonical);
          point them at a URL that legitimately returns 404. */ ?>
 <?php if (($pageNoIndex ?? false) === false): ?>
 <link rel="canonical" href="<?= esc($canonical) ?>">
+<?php /* max-image-preview:large is what permits a full-width image in a Google
+         result and in Discover. The default is a 128px thumbnail, which for a
+         publisher — a business judged on how its covers look — is the wrong
+         default to accept silently. index/follow is Google's default anyway and
+         is stated only so the whole policy reads in one line. */ ?>
+<meta name="robots" content="index, follow, max-image-preview:large">
 <?php else: ?>
 <meta name="robots" content="noindex, follow">
 <?php endif; ?>
@@ -67,11 +89,22 @@ $canonical = EP_ORIGIN . url($pageCanonical);
 <!-- Open Graph / Twitter -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="<?= esc(EP_NAME) ?>">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="<?= esc($fullTitle) ?>">
 <meta property="og:description" content="<?= esc($pageDescription) ?>">
 <meta property="og:url" content="<?= esc($canonical) ?>">
 <meta property="og:image" content="<?= esc(EP_ORIGIN . asset($ogImage)) ?>">
+<?php if ($ogImageSize !== false): ?>
+<meta property="og:image:width" content="<?= esc((string) $ogImageSize[0]) ?>">
+<meta property="og:image:height" content="<?= esc((string) $ogImageSize[1]) ?>">
+<?php endif; ?>
+<meta property="og:image:alt" content="<?= esc($ogImageAlt) ?>">
+<?php /* twitter:title/description/image are deliberately absent: X falls back
+         to the og:* tags above when they are, and duplicating them is two more
+         places for the same sentence to go stale. twitter:image:alt has no og
+         equivalent, so it is stated. */ ?>
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="<?= esc($ogImageAlt) ?>">
 
 <!-- Fonts: preload the two weights used above the fold.
      No ?v= cache-buster here: tokens.css resolves its @font-face src relative

@@ -6,4 +6,7 @@ Disallow: /tools/
 Disallow: /_figma-ref/
 Disallow: /forms/
 
-Sitemap: /sitemap.xml
+# The Sitemap directive is the one line in this file that must be a fully
+# qualified URL — the spec requires it and crawlers discard a relative path, so
+# "/sitemap.xml" meant the sitemap was never discovered from here at all.
+Sitemap: https://elitepublishing.co/sitemap.xml
