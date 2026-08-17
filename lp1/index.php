@@ -1226,10 +1226,19 @@ $lpFlash = ep_lp_flash();
                         </p>
 
                         <ul class="contact-list">
-                            <li>
+                            <?php /* The phone row is removed. It read
+                                     "+1 (000) 123-4567", a placeholder that does
+                                     not ring, and a tel: link a visitor actually
+                                     taps is worse than no number at all. The
+                                     schema block at the top of this file dropped
+                                     its telephone for the same reason — restore
+                                     both together once there is a real number.
+
+                              <li>
                                 <img src="images/svg/icon-phone.svg" alt="" width="24" height="24" />
                                 <a href="tel:+10001234567">+1 (000) 123-4567</a>
-                            </li>
+                              </li>
+                            */ ?>
                             <li>
                                 <img src="images/svg/icon-web.svg" alt="" width="24" height="24" />
                                 <a href="https://elitepublishing.co">ElitePublishing.co</a>
