@@ -338,8 +338,8 @@ $lpFlash = ep_lp_flash();
                                     <path d="M4.5 15v3.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V15"/>
                                 </svg>
                             </span>
-                            <input type="file" id="manuscript" name="manuscript" accept=".doc,.docx,.pdf,.rtf,.txt,.epub" aria-describedby="manuscriptHint">
-                            <span class="visually-hidden" id="manuscriptHint">Accepted formats: DOC, DOCX, PDF, RTF, TXT, EPUB. Maximum 25 MB.</span>
+                            <input type="file" id="manuscript" name="manuscript" accept=".doc,.docx,.pdf,.rtf,.odt,.epub" aria-describedby="manuscriptHint">
+                            <span class="visually-hidden" id="manuscriptHint">Accepted formats: DOC, DOCX, PDF, RTF, ODT, EPUB. Maximum 25 MB.</span>
                             <span class="field__error" data-error-for="manuscript"></span>
                         </div>
 

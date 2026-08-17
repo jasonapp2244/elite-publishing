@@ -69,11 +69,28 @@ const EP_LP_UPLOAD_TYPES = [
     'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'pdf'  => 'application/pdf',
     'rtf'  => 'application/rtf',
-    'txt'  => 'text/plain',
     'epub' => 'application/epub+zip',
     'odt'  => 'application/vnd.oasis.opendocument.text',
     'pages' => 'application/x-iwork-pages-sffpages',
 ];
+
+/*
+ * 'txt' => 'text/plain' is deliberately NOT in that list.
+ *
+ * The mail filter in front of info@elitepublishing.co silently drops any
+ * message carrying a text/plain attachment, and it drops the WHOLE message —
+ * so the enquiry disappears too, not just the file. The author sees the
+ * thank-you screen, the server reports the mail as sent, and nothing arrives.
+ *
+ * Established by elimination against the live site, not guessed: the same LP
+ * form with no attachment arrived, with a PDF attached arrived, and with a .txt
+ * attached did not, three times over.
+ *
+ * Accepting a format whose enquiries are guaranteed to vanish is worse than
+ * refusing it, because refusing it tells the author to send another format
+ * while they are still on the page. If the filter is ever changed to allow
+ * text/plain, add the line back and this comment with it.
+ */
 
 /**
  * The four pages, and the extra fields each one collects beyond the shared
@@ -303,7 +320,14 @@ function ep_lp_upload(string $key): array
 
     $ext = strtolower((string) pathinfo($original, PATHINFO_EXTENSION));
     if (!isset(EP_LP_UPLOAD_TYPES[$ext])) {
-        return [null, 'Please upload a DOC, DOCX, PDF, RTF, TXT, ODT or EPUB file.'];
+        /* Built from the allow-list rather than typed out again. The two had
+           already drifted — the list accepted .pages while the message never
+           mentioned it — and dropping 'txt' would have left the message telling
+           authors to send the one format that is refused. */
+        $accepted = array_map('strtoupper', array_keys(EP_LP_UPLOAD_TYPES));
+        $last     = array_pop($accepted);
+
+        return [null, 'Please upload a ' . implode(', ', $accepted) . ' or ' . $last . ' file.'];
     }
 
     $content = @file_get_contents($tmp);

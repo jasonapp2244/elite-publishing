@@ -251,12 +251,12 @@ $lpFlash = ep_lp_flash();
                visitor who only wanted to ask a question could not send the
                form at all. enquiry-form.js no longer demands one either. -->
           <input type="file" id="enq-file" name="manuscript" class="file-input"
-                 accept=".doc,.docx,.pdf,.rtf,.txt,.odt,.epub">
+                 accept=".doc,.docx,.pdf,.rtf,.odt,.epub">
           <div class="file-control" id="enq-file-control">
             <button type="button" class="file-btn" id="enq-file-btn">Upload Manuscript</button>
             <span class="file-name" id="enq-file-name">No file chosen</span>
           </div>
-          <div class="file-hint">Accepted formats: DOC, DOCX, PDF, RTF, TXT, EPUB. Maximum 25&nbsp;MB.</div>
+          <div class="file-hint">Accepted formats: DOC, DOCX, PDF, RTF, ODT, EPUB. Maximum 25&nbsp;MB.</div>
         </div>
 
         <div class="field">

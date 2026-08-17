@@ -1302,10 +1302,10 @@ $lpFlash = ep_lp_flash();
                                         Manuscript <span class="field__optional">(optional)</span>
                                     </label>
                                     <input id="cf-manuscript" name="manuscript" type="file"
-                                           accept=".doc,.docx,.pdf,.rtf,.txt,.odt,.epub"
+                                           accept=".doc,.docx,.pdf,.rtf,.odt,.epub"
                                            aria-describedby="cf-manuscript-error cf-manuscript-hint" />
                                     <span class="field__hint" id="cf-manuscript-hint">
-                                        DOC, DOCX, PDF, RTF, TXT, ODT or EPUB. Up to 25&nbsp;MB.
+                                        DOC, DOCX, PDF, RTF, ODT or EPUB. Up to 25&nbsp;MB.
                                     </span>
                                     <span class="field__error" id="cf-manuscript-error" role="alert"></span>
                                 </p>

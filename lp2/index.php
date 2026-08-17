@@ -229,7 +229,7 @@ $lpFlash = ep_lp_flash();
                         type="file"
                         id="manuscript"
                         name="manuscript"
-                        accept=".doc,.docx,.pdf,.rtf,.txt,.epub"
+                        accept=".doc,.docx,.pdf,.rtf,.odt,.epub"
                         aria-describedby="manuscript-hint"
                         data-file-input
                       />
@@ -241,7 +241,7 @@ $lpFlash = ep_lp_flash();
                       >
                     </div>
                     <p class="form__hint" id="manuscript-hint">
-                      Accepted formats: DOC, DOCX, PDF, RTF, TXT, EPUB. Maximum
+                      Accepted formats: DOC, DOCX, PDF, RTF, ODT, EPUB. Maximum
                       25&nbsp;MB.
                     </p>
                     <span class="form__error" data-error-for="manuscript"></span>
