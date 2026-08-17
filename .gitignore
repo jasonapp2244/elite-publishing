@@ -15,6 +15,10 @@ data/mail-outbox/
 # Scratch output from browser-automation tooling used during QA
 .playwright-mcp/
 
+# Per-machine agent tooling settings. Local by definition — committing it pushes
+# one developer's permissions and paths onto everyone else.
+.claude/
+
 # OS / editor noise
 Thumbs.db
 desktop.ini
