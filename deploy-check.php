@@ -237,7 +237,14 @@ if ($code === 0) {
     // The landing pages.
     foreach (['lp1', 'lp2', 'lp3', 'lp4'] as $lp) {
         [$c, $body] = fetchSelf(EP_BASE . $lp . '/');
-        $hasChrome = str_contains($body, 'class="ep-header"') && str_contains($body, 'class="ep-footer"');
+        /* Match the class as a word, not as the whole attribute. The landing
+           pages render class="ep-header ep-header--lp", so looking for the
+           literal 'class="ep-header"' never matched the closing quote and
+           reported all four pages as missing their chrome when every one of
+           them had it — a false alarm on a correct deploy, which is worse than
+           no check at all. */
+        $hasChrome = preg_match('/class="[^"]*\bep-header\b/', $body) === 1
+            && preg_match('/class="[^"]*\bep-footer\b/', $body) === 1;
         line(
             $c === 200 && $hasChrome ? 'OK' : 'BAD',
             "Landing page /$lp/ serves with shared chrome",
