@@ -12,19 +12,6 @@ data/mail-outbox/
 *.local.php
 .env
 
-# LP1's hero video, 51.6 MB — deliberately NOT in git.
-#
-# Git keeps every version of a binary forever and cannot delta-compress video,
-# so committing this would add ~52 MB to the repository permanently and to every
-# clone after it, and it is over GitHub's 50 MB warning threshold. Removing it
-# from history later means a rewrite; adding it later is one command. So it is
-# excluded until someone decides otherwise.
-#
-# CONSEQUENCE: a deploy made by cloning this repository will NOT contain the
-# video and LP1's video section will 404. Upload it alongside the deploy, or
-# switch it to Git LFS and delete these lines.
-lp1/videos/intro.mp4
-
 # Scratch output from browser-automation tooling used during QA
 .playwright-mcp/
 
