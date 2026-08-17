@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * LP2 — standalone campaign landing page.
  *
