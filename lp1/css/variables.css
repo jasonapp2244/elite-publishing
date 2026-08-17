@@ -1,0 +1,130 @@
+/* ==========================================================================
+   Design tokens — extracted verbatim from the Figma file
+   "Elite Publishing / Children's Book Publishing" (node 412:11912).
+   Every value below appears in the source design; nothing is invented.
+   ========================================================================== */
+
+:root {
+    /* ---- Brand colours ---------------------------------------------------- */
+    --color-primary: #005eda; /* section blue, ticks, play button      */
+    --color-primary-alt: #0071e2; /* "Rejection-proof launch" icon chip    */
+    --color-accent: #fbbf4a; /* CTA pills, FAQ rows, card borders     */
+    --color-accent-dark: #efb624; /* "100% royalty-free" icon chip         */
+    --color-navy: #013870; /* hero H1, headings on tinted panels    */
+    --color-navy-deep: #00113d; /* logo wordmark                         */
+    --color-green: #60c489; /* footer band                           */
+    --color-green-logo: #41b270; /* logo mark + logo underline            */
+    --color-green-dot: #2f950a; /* online dot on "Consult Our Expert"    */
+    --color-coral: #ff6b5e; /* "Best Value" badge, no-hidden-charges */
+    --color-orange: #ee4f2e; /* final CTA button                      */
+    --color-violet: #8790dc; /* "Worldwide readership" icon chip      */
+    --color-indigo: #27224e; /* "24/7 client support" icon chip       */
+    --color-teal: #037c7c; /* phone icon in the contact modal       */
+
+    /* ---- Neutrals --------------------------------------------------------- */
+    --color-text: #2b2a28; /* default body + heading colour         */
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-alt: #e0f0f5; /* tinted band behind carousel/FAQ/quote */
+    --color-field: #fbfbfb; /* modal input background                */
+    --color-border: #dbdbdb; /* modal input border                    */
+    --color-border-subtle: rgba(0, 0, 0, 0.1); /* FAQ + modal card hairline  */
+    --color-stroke-icon: #212529; /* FAQ chevron stroke                    */
+
+    /* Figma applies 80% layer opacity to supporting copy rather than a tint. */
+    --text-muted-opacity: 0.8;
+
+    /* ---- Gradient (hero + modal primary button) --------------------------- */
+    --gradient-cta: linear-gradient(
+        90deg,
+        #338b95 0%,
+        #6d428d 33%,
+        #b20058 66%,
+        #cd9327 100%
+    );
+
+    /* ---- Type families ---------------------------------------------------- */
+    --font-heading: "Urbanist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    /* ---- Type scale (desktop 1920 reference) ------------------------------ */
+    --fs-h1: 70px;
+    --lh-h1: 75px;
+    --ls-h1: -1.4px;
+
+    --fs-h2: 60px;
+    --lh-h2: 70px;
+    --ls-h2: -1.5px;
+
+    --fs-h3: 40px; /* modal + final CTA headline            */
+    --lh-h3: 48px;
+    --ls-h3: -1px;
+
+    --fs-card-title: 32px; /* pricing card title                    */
+    --lh-card-title: 38px;
+
+    --fs-h4: 28px; /* feature / step card title             */
+    --lh-h4: 34px;
+    --ls-h4: -0.28px;
+
+    --fs-quote: 28px; /* testimonial                           */
+    --lh-quote: 38px;
+
+    --fs-lead: 20px; /* section intro copy, footer links      */
+    --lh-lead: 27px;
+
+    --fs-body: 18px;
+    --lh-body: 24px;
+
+    --fs-list: 18px; /* pricing feature rows                  */
+    --lh-list: 27px;
+
+    --fs-btn: 18px;
+    --lh-btn: 22px;
+    --ls-btn: -0.54px;
+
+    --fs-eyebrow: 18px;
+    --lh-eyebrow: 22px;
+    --ls-eyebrow: 1.44px;
+
+    --fs-label: 18px; /* genre caption                         */
+    --lh-label: 22px;
+    --ls-label: -0.18px;
+
+    --fs-small: 16px;
+    --lh-small: 22px;
+
+    /* ---- Layout ----------------------------------------------------------- */
+    --container-width: 1420px;
+    --page-width: 1920px;
+    --gutter: 24px;
+    --section-gap: 100px; /* root auto-layout gap in Figma         */
+
+    /* ---- Radii ------------------------------------------------------------ */
+    --radius-sm: 10px; /* modal inputs                          */
+    --radius-md: 12px; /* book covers, FAQ rows                 */
+    --radius-lg: 25px; /* media panels, modal card              */
+    --radius-xl: 40px; /* pricing cards                         */
+    --radius-modal: 50px; /* modal shell                           */
+    --radius-pill: 100px;
+
+    /* ---- Motion (durations & easings read from the prototype) ------------- */
+    --dur-fast: 0.3s; /* buttons, FAQ                          */
+    --dur-slide: 0.6s; /* book carousel                         */
+    --dur-quote: 1s; /* testimonial carousel                  */
+    --dur-marquee: 2s; /* client-logo strip step                */
+
+    --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1); /* Figma EASE_IN_AND_OUT */
+    --ease-out: cubic-bezier(0, 0, 0.58, 1); /* Figma EASE_OUT             */
+
+    /* ---- Elevation --------------------------------------------------------
+       The page itself uses no shadows at all. The single drop shadow in the
+       file belongs to the contact card inside the modal.                     */
+    --shadow-modal-card: 0 0 6px rgba(0, 0, 0, 0.1);
+
+    /* ---- Z-index ---------------------------------------------------------- */
+    --z-wave: 2;
+    --z-header: 100;
+    --z-modal: 1000;
+}

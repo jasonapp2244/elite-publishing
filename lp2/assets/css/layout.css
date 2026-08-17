@@ -1,0 +1,338 @@
+/* ==========================================================================
+   layout.css — container, grid, page sections, header, footer
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Container & grid primitives
+   -------------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: 960px;
+}
+
+.grid {
+  display: grid;
+  gap: var(--gutter);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Asymmetric split used by the "Why Elite" and "Publishing & Promotion" rows. */
+.grid--media-text {
+  grid-template-columns: 2fr 3fr;
+  align-items: stretch;
+}
+
+.grid--text-media {
+  grid-template-columns: 3fr 2fr;
+  align-items: stretch;
+}
+
+.grid--center {
+  align-items: center;
+}
+
+@media (max-width: 980px) {
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid--2,
+  .grid--media-text,
+  .grid--text-media {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Sections
+   -------------------------------------------------------------------------- */
+
+.section {
+  position: relative;
+  padding-block: var(--section-py);
+  background-color: var(--color-white);
+}
+
+.section--cream {
+  background-color: var(--color-cream);
+}
+
+.section--cream-soft {
+  background-color: var(--color-cream-soft);
+}
+
+/* Sections whose background is a photograph. */
+.section--photo {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.section--paper {
+  background-image: url("../img/paper-background-2.jpg");
+}
+
+/* Decorative floral motif anchored to the bottom-left corner. */
+.section--flower {
+  background-image: url("../img/flower-bg1.svg");
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-size: 10% auto;
+}
+
+.section--cta-book {
+  background-color: var(--overlay-cta);
+  background-image: url("../img/Ready-to-talk-about-your-Book-BG.jpg");
+  background-blend-mode: multiply;
+}
+
+.section--cta-talk {
+  background-image: url("../img/Lets-Talk-About-Your-Book-BG.jpg");
+}
+
+.section__header {
+  max-width: 900px;
+  margin-inline: auto;
+  margin-bottom: var(--space-xl);
+  text-align: center;
+}
+
+/* Left-aligned, full-width variant used by "Who We Serve". */
+.section__header--start {
+  max-width: none;
+  margin-inline: 0;
+  text-align: left;
+}
+
+.section__header--flush {
+  margin-bottom: 0;
+}
+
+.section__title {
+  font-size: var(--fs-section);
+}
+
+.section__title--alt {
+  font-size: var(--fs-section-alt);
+}
+
+.section__title--light {
+  color: var(--color-white);
+}
+
+.section__lead {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.section__actions {
+  margin-top: var(--space-xl);
+  text-align: center;
+}
+
+.section__header .section__actions {
+  margin-top: var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   3. Site header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  padding-block: var(--space-sm);
+  transition: background-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+}
+
+.site-header.is-stuck {
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-header);
+}
+
+.site-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-lg);
+  border: 0.6px solid var(--glass-border);
+  border-radius: 64px;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+}
+
+.site-header.is-stuck .site-header__bar {
+  border-color: transparent;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.site-header__logo img {
+  width: auto;
+  height: 56px;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 1100px) {
+  .site-header__bar {
+    padding-inline: var(--space-md);
+  }
+}
+
+@media (max-width: 980px) {
+  .site-header__logo img {
+    height: 44px;
+  }
+
+  .site-header__actions .button {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  padding-top: calc(var(--header-height) + var(--space-2xl));
+  padding-bottom: var(--space-2xl);
+  background-color: var(--overlay-hero);
+  background-image: url("../img/Christian-Book-Publishing-That-Brings-Your-Message-to-Life.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+.hero__title {
+  color: var(--color-white);
+  font-size: var(--fs-hero);
+}
+
+/* Soft curve that transitions the hero into the cream section below. */
+.hero__divider {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 25px;
+  color: var(--color-cream);
+}
+
+@media (max-width: 980px) {
+  .hero__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+
+  .hero__title {
+    text-align: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Site footer
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  padding-top: var(--section-py);
+  background-color: var(--color-white);
+}
+
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+}
+
+.site-footer__logo {
+  margin-bottom: var(--space-md);
+}
+
+.site-footer__logo img {
+  /* Sized by height, not width. The footer used a 234x75 horizontal wordmark;
+     the site's own logo is close to square, so pinning the width would render
+     it 186px tall and swamp the column. Height-first keeps it the weight the
+     footer was designed around whatever the source aspect ratio is. */
+  width: auto;
+  height: 84px;
+  max-width: 100%;
+}
+
+.site-footer__heading {
+  margin-bottom: var(--space-md);
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+}
+
+.site-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  padding-block: var(--space-md);
+  border-top: 1px solid var(--color-rule);
+  font-size: var(--fs-small);
+}
+
+.site-footer__bottom p {
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .site-footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer__bottom {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+}

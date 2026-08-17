@@ -15,28 +15,37 @@ DirectoryIndex index.php
   # Generated sitemap, served at the conventional path
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-  # Retired campaign landing pages -> home, permanently.
+  # Campaign landing pages.
   #
-  # lp1-lp4 and their whole stack were deleted. Live ads and any indexed link
-  # still point at these URLs, so they must land somewhere rather than 404.
-  # 301 (not 302) so Google folds the old pages' equity into the home page and
-  # eventually drops them from the index.
+  # lp1-lp4 are now self-contained directories, each with its own index.php,
+  # so /lp1/ .. /lp4/ are served by DirectoryIndex and need no rule at all.
+  # A request for /lp1 (no slash) is redirected to /lp1/ by mod_dir, and the
+  # extensionless and 404 rules below both skip real directories.
   #
-  # Matches with and without the .php, with or without a trailing slash. This
-  # sits ABOVE the extensionless rule on purpose: that rule only rewrites when
-  # a matching .php file exists, which it no longer does, so without this the
-  # request would fall through to the 404 handler at the bottom.
+  # This REPLACES a `RewriteRule ^lp[1-4](\.php)?/?$ / [R=301,L]` that sent
+  # every one of these URLs to the home page. It was correct while the pages
+  # were deleted and it is wrong now — with it in place the landing pages are
+  # unreachable, and a 301 is cached hard by browsers, so anyone who hit an LP
+  # URL while that rule was live keeps getting bounced to the home page until
+  # their cache expires. Test in a private window.
   #
-  # Keep this block until the ad campaigns are repointed and Search Console
-  # shows the old URLs gone — it costs nothing to leave in place.
+  # The old flat URLs (/lp1.php, and /lp1 as it was published before the pages
+  # became directories) still exist in live ads and in the index, so they are
+  # forwarded to the directory rather than dropped.
   #
-  # The target is written for a domain root, which is where this site deploys.
-  # A relative target is NOT the portable fix here: without a RewriteBase,
-  # mod_rewrite resolves it against the filesystem directory and emits the
-  # server path in the Location header. If this ever runs from a
-  # sub-directory, set RewriteBase to that directory rather than editing this
-  # line.
-  RewriteRule ^lp[1-4](\.php)?/?$ / [R=301,L]
+  # The target is root-absolute because this site deploys to a domain root. A
+  # relative target is NOT the portable fix, and this was re-tested rather than
+  # assumed: without a RewriteBase, mod_rewrite resolves `lp$1/` against the
+  # filesystem directory and emits
+  # "http://host/F:/xampp/htdocs/Elite Publishing/lp1/" in the Location header.
+  # If this ever runs from a sub-directory, set RewriteBase to that directory
+  # rather than editing this line.
+  #
+  # Consequence worth knowing while testing locally under XAMPP: /lp1.php
+  # redirects to /lp1/ at the server root, which is a 404 there. The
+  # directories themselves (/Elite Publishing/lp1/) work correctly, and on the
+  # live domain both forms are right.
+  RewriteRule ^lp([1-4])\.php$ /lp$1/ [R=301,L]
 
   # The one page whose spec'd URL differs from its filename (SPEC §F.3).
   # The generic extensionless rule below only finds same-named files, so
@@ -63,7 +72,39 @@ DirectoryIndex index.php
 </IfModule>
 
 # --- Caching --------------------------------------------------------------
-# Assets are requested with a ?v=<mtime> query string, so a long max-age is safe.
+# MAIN-SITE assets are requested with a ?v=<mtime> query string (see asset() in
+# includes/functions.php), so a long max-age is safe for them: the URL changes
+# whenever the file does.
+#
+# The landing pages USED to be the exception. They arrived as standalone
+# projects and linked their own CSS and JS with plain relative paths —
+# "assets/css/landing.css" with no version — so their URLs never changed when
+# the file did. Serving those as immutable for a year means a fixed stylesheet
+# never reaches anyone who has already visited: their browser has been told,
+# truthfully, that it need not ask again until 2027. That is not hypothetical —
+# it hid a footer fix during testing, and later a pricing-card fix, in both
+# cases until the cache was bypassed by hand.
+#
+# The short cache below was the mitigation. The cure is ep_lp_asset() in
+# includes/lp-bootstrap.php, which the four pages now use for every stylesheet
+# and script: it appends the file's mtime, so the URL changes whenever the file
+# does, exactly as asset() has always done for the main site.
+#
+# The 3600 is therefore no longer load-bearing and could be deleted — the URLs
+# are self-versioning now. It is kept as a belt-and-braces guard for any asset
+# under lp1..lp4 that is still referenced with a bare path: the LP stylesheets
+# reference their own images and fonts by relative URL from inside the CSS, and
+# those are not rewritten by anything. An hour is a reasonable ceiling on how
+# long a swapped hero image can stay stale.
+#
+# The SetEnvIf below tags LP assets and the second Header line in the
+# mod_headers block overrides the immutable one for anything tagged. Both Header
+# lines sit in the SAME container on purpose: a later directive only reliably
+# overrides an earlier one within one container.
+<IfModule mod_setenvif.c>
+  SetEnvIf Request_URI "(^|/)lp[1-4]/" EP_LP_ASSET=1
+</IfModule>
+
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresDefault                          "access plus 1 month"
@@ -81,6 +122,8 @@ DirectoryIndex index.php
 <IfModule mod_headers.c>
   <FilesMatch "\.(css|js|woff2|avif|webp|png|jpe?g|svg|ico)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
+    # Landing page assets carry no ?v= in their URLs — see the note above.
+    Header set Cache-Control "public, max-age=3600" env=EP_LP_ASSET
   </FilesMatch>
   <FilesMatch "\.php$">
     Header set Cache-Control "no-cache, must-revalidate"
@@ -114,6 +157,18 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
   RewriteRule ^(includes|data|docs|tools|_figma-ref)/ - [F,L]
   RewriteRule ^Elite\ Publishing\ -fgma-images/ - [F,L]
+
+  # The landing pages arrived as standalone project folders, so each one
+  # carries its own build scaffolding: lp4/tools/ (a Node build script and its
+  # lockfile), lp4/docs/, and the .claude/ and .editorconfig files the pages
+  # were authored with. None of it is needed to serve a page and none of it
+  # should be readable. The root rules above only match at the root, so the
+  # same folders one level down need saying again.
+  RewriteRule ^lp[1-4]/(tools|docs|\.claude)/ - [F,L]
+
+  # Any dotfile, at any depth — .gitignore, .editorconfig, .env, and anything
+  # else that starts with a dot and was never meant to be fetched.
+  RewriteRule (^|/)\.(?!well-known/) - [F,L]
 </IfModule>
 
 # --- 404 ------------------------------------------------------------------

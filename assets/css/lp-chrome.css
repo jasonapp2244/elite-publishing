@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Elite Publishing — chrome for the landing pages
+   ==========================================================================
+
+   The header and footer that lp1..lp4 render. Markup:
+     includes/components/lp-chrome-header.php
+     includes/components/lp-chrome-footer.php
+
+   THIS FILE IS LOADED BY LANDING PAGES ONLY
+   ---------------------------------------------------------------------------
+   ep_lp_chrome_styles() in includes/lp-bootstrap.php emits the two <link> tags
+   that pull it in, and only an LP calls that. Main-site pages load
+   assets/css/main.css through includes/head.php and never see this file. So a
+   selector here cannot affect the main site no matter what it is named — which
+   is what makes the `ep-*` names below safe to reuse for a different design.
+
+   WHY THE NAMES ARE STILL ep-header / ep-footer / ep-btn
+   ---------------------------------------------------------------------------
+   Not laziness. lp3/assets/css/landing.css guards its own abandoned dark footer
+   with `#landing footer:not(.ep-footer)` selectors, at id specificity (1,0,1).
+   Rename the class and those rules stop being excluded: they capture this
+   footer, repaint the green field near-black, and collapse its grid into a flex
+   row. That exact breakage happened once already and the guard is what fixed
+   it. The names stay.
+
+   WHY NOT JUST LOAD main.css
+   ---------------------------------------------------------------------------
+   Unchanged from before: main.css opens with global `*`, `html` and `body`
+   rules that would retypeset each landing page, and two of them (LP2, LP3)
+   never restate `body`, so they would silently take the main site's font and
+   colour. Everything below is scoped to .ep-header, .ep-footer or
+   .container-ep. There is not one global selector in this file.
+
+   assets/css/tokens.css is loaded alongside it and is safe for the same reason
+   as before: @font-face rules and :root custom properties only. A custom
+   property styles nothing until a rule asks for one, and no LP declares an
+   --ep-* name.
+
+   NO LONGER A DUPLICATE OF main.css
+   ---------------------------------------------------------------------------
+   This file used to be a hand-copied subset of main.css — nav, dropdown,
+   burger, drawer, social chips, five-column footer grid, tilted book band —
+   carrying a warning that the two had to be edited in step. They no longer
+   describe the same thing, so that coupling is gone: the landing pages have
+   their own design and it is defined here, once. Editing the main site's header
+   or footer no longer requires touching this file, and vice versa.
+   ========================================================================== */
+
+/* Only inside the chrome. Left global it would re-box every LP that does not
+   already set it, which is the kind of silent layout change this file exists to
+   avoid. */
+.ep-header, .ep-header *, .ep-header *::before, .ep-header *::after,
+.ep-footer, .ep-footer *, .ep-footer *::before, .ep-footer *::after {
+  box-sizing: border-box;
+}
+
+/* The LPs set their own body font, so the chrome states its own rather than
+   inheriting whatever the page happens to use. */
+.ep-header,
+.ep-footer {
+  font-family: var(--ep-font);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  text-align: left;
+}
+
+.ep-header a,
+.ep-footer a { text-decoration: none; }
+
+.ep-header p,
+.ep-footer p { margin: 0; }
+
+/* --- Layout --------------------------------------------------------------- */
+.container-ep {
+  --pad: clamp(20px, 4vw, 48px);
+  width: 100%;
+  max-width: calc(var(--ep-container-nav) + var(--pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* --- The one button ------------------------------------------------------- */
+.ep-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--ep-font);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+/* The amber pill from the design. #EFB624 is not invented — it is already in
+   LP1's palette (the royalty tile chip), so the button reads as part of the
+   family rather than as a colour from somewhere else. Ink rather than white on
+   it: black on this amber measures about 10:1, white about 2:1, and the design
+   draws it dark. */
+.ep-btn--cta {
+  --lp-cta: #EFB624;
+  --lp-cta-hover: #E0A916;
+  background: var(--lp-cta);
+  color: var(--ep-ink);
+  padding: 14px 30px;
+  border-radius: 999px;
+}
+@media (hover: hover) {
+  .ep-btn--cta:hover { background: var(--lp-cta-hover); color: var(--ep-ink); transform: translateY(-1px); }
+}
+.ep-btn--cta:active { transform: translateY(0); }
+
+/* Focus is stated rather than left to the UA default: the ring has to be
+   visible against both the white header bar and the amber fill. */
+.ep-header a:focus-visible,
+.ep-footer a:focus-visible {
+  outline: 2px solid var(--ep-ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --- Header --------------------------------------------------------------- */
+/* Sticky, and at the same z-index the previous shared header used. That number
+   is load-bearing on LP1: its enquiry modal is also z-index 1000, and because
+   the modal comes later in the document the tie resolves in the modal's favour
+   and it covers the header. Lower this and the modal still wins; raise it and
+   the header starts drawing on top of an open dialog.
+
+   KNOWN: the header does not actually stick on LP3, and cannot be made to from
+   this file. LP3 wraps its page in `#landing { overflow-y: auto }`
+   (lp3/assets/css/landing.css:130), which makes #landing a scroll container.
+   Sticky offsets resolve against the nearest scrolling ancestor, and #landing
+   never scrolls internally — it has no fixed height, so it grows to its content
+   and the BODY scrolls instead. The header therefore sits at its normal-flow
+   position and scrolls away. Nothing a descendant selector can do reaches an
+   ancestor's overflow. It renders correctly either way; it just does not follow
+   the visitor down. This was equally true of the header LP3 had before, so it
+   is a carried-over limitation rather than a new one. The fix, if it is wanted,
+   is to drop that one `overflow-y` declaration in LP3's own stylesheet — which
+   belongs to a change to LP3's layout, not to the chrome. */
+.ep-header--lp {
+  position: sticky; top: 0; z-index: 1000;
+  background: var(--ep-white);
+  color: var(--ep-ink);
+  border-bottom: 1px solid var(--ep-border);
+}
+
+.ep-header__inner {
+  display: flex; align-items: center; gap: 20px;
+  justify-content: space-between;
+  min-height: var(--ep-nav-h);
+}
+
+.ep-logo { flex: 0 0 auto; display: inline-flex; align-items: center; }
+.ep-logo img { height: clamp(46px, 4.4vw, 78px); width: auto; display: block; }
+
+/* No burger, no drawer, no breakpoint that hides the CTA. The old header hid
+   its CTA below 1200px and needed a second copy inside the drawer to compensate;
+   with two elements in the bar there is nothing to collapse, so the button is
+   present at every width and only its padding tightens. */
+@media (max-width: 767.98px) {
+  .ep-header__inner { min-height: var(--ep-nav-h-sm); gap: 12px; }
+  .ep-btn--cta { padding: 12px 20px; font-size: var(--fs-sm); }
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.ep-footer--lp {
+  background: var(--ep-green);
+  color: var(--ep-ink);
+  padding-block: clamp(28px, 3.4vw, 44px);
+}
+.ep-footer--lp a { color: var(--ep-ink); transition: opacity var(--dur) var(--ease); }
+@media (hover: hover) {
+  .ep-footer--lp a:hover { opacity: .68; }
+}
+
+/* Three columns rather than a flex row with space-between, so the links sit
+   where the design puts them regardless of how wide the copyright line renders
+   in a given browser. */
+.ep-footer__inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px 40px;
+}
+
+.ep-footer__logo { display: inline-flex; align-items: center; }
+.ep-footer__logo img { height: clamp(48px, 4.6vw, 72px); width: auto; display: block; }
+
+.ep-footer__nav {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 12px clamp(20px, 3vw, 46px);
+}
+.ep-footer__nav a {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  /* WCAG 2.5.8 — padding grows the hit area to 24px without moving the row. */
+  display: inline-block;
+  padding-block: 4px;
+  min-height: 24px;
+}
+
+.ep-footer__copy {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  justify-self: end;
+  text-align: right;
+}
+
+/* One column, centred, once three across stops fitting. The copyright is last
+   in the DOM and stays last, so the reading order does not change. */
+@media (max-width: 991.98px) {
+  .ep-footer__inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 18px;
+    text-align: center;
+  }
+  .ep-footer__nav { justify-content: center; }
+  .ep-footer__copy { justify-self: center; text-align: center; }
+}

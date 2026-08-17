@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Reset, design tokens and shared utilities
+   Elite Publishing
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #1C1917;
+  --ink-mid:    #57534E;
+  --ink-soft:   #44403C;
+  --ink-faint:  #E7E5E4;
+  --paper:      #FAFAF9;
+  --paper-soft: #D1D5DB; /* gray test (was undefined, falling back to transparent) */
+  --white:      #FFFFFF;
+  /* Accent palette switched from green to blue 2026-05-16 as a test.
+     --accent / -mid / -dark form the primary-action family. --accent-lt
+     stays green so important callouts still pop against the blue UI. */
+  --accent:     #336699;
+  --accent-mid: #4F94CC;
+  --accent-lt:  #EEF4E8;
+  --accent-dark:#295680;
+  --gold:       #92741A;
+  --gold-lt:    #FBF5E6;
+  --danger:     #991B1B;
+  --danger-lt:  #FEF2F2;
+  --radius:     10px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --sidebar:    220px;
+  --topbar:     72px;
+  --font-body:  'DM Sans', sans-serif;
+  --font-serif: 'Lora', serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ════════════════════════════════════════
+   SHARED UTILITIES
+════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+  border: none;
+}
+.btn-green  { background: var(--accent); color: var(--white); }
+.btn-green:hover  { background: var(--accent-mid); }
+.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink-faint); }
+.btn-outline:hover { border-color: var(--ink-soft); background: var(--white); }
+.btn-white  { background: var(--white); color: var(--accent); }
+.btn-white:hover  { background: var(--accent-lt); }
+.btn-sm     { padding: 7px 14px; font-size: 13px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }

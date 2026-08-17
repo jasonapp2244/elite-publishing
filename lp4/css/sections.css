@@ -1,0 +1,279 @@
+/* ==========================================================================
+   Sections — page-level composition
+   ========================================================================== */
+
+/* ---- 1. Hero ------------------------------------------------------------ */
+.hero {
+    position: relative;
+    isolation: isolate;
+    /* 1150 px tall on the 1920 artboard, held proportional below that. */
+    min-height: clamp(600px, 60vw, 1150px);
+    display: flex;
+    align-items: center;
+    padding-top: calc(var(--header-h) + clamp(1.5rem, 3vw, 4rem));
+    padding-bottom: clamp(3rem, 5vw, 6rem);
+    background-color: var(--color-primary-deep);
+    color: var(--color-on-dark);
+    overflow: hidden;
+}
+
+.hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+}
+
+.hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Navy wash: opaque on the left where the copy sits, clearing to the right. */
+.hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(90deg,
+            var(--color-primary-deep) 0%,
+            rgba(2, 16, 61, 0.92) 18%,
+            rgba(2, 16, 61, 0.58) 38%,
+            rgba(2, 16, 61, 0.2) 62%,
+            rgba(2, 16, 61, 0.08) 100%),
+        linear-gradient(180deg,
+            rgba(2, 16, 61, 0.55) 0%,
+            rgba(2, 16, 61, 0) 26%);
+}
+
+.hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+}
+
+/* Line breaks come from .br-lg in the markup, matching the frame exactly. */
+.hero__title {
+    color: var(--color-on-dark);
+    font-weight: 500;
+}
+
+.hero__text {
+    max-width: 43em;
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.hero__actions {
+    margin-top: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* The covers are cut out of the shelf photo, so the cluster carries only its
+   own shadow — the hero backdrop shows through everywhere else. */
+.hero__books {
+    justify-self: end;
+    width: 100%;
+    max-width: 790px;                       /* the cluster's own pixel width */
+    /* The cluster bleeds past the container edge, as it does in the frame. */
+    margin-right: calc(var(--gutter) * -1);
+}
+
+.hero__books .book-cluster {
+    filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.5));
+}
+
+/* ---- 3. Pricing row ----------------------------------------------------- */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 0.6rem + 1vw, 1.5rem);
+    align-items: stretch;
+}
+
+/* The featured plan sits proud of its neighbours, as in the Figma frame — 13 px
+   above them on the artboard, the rest of its extra height coming from the
+   fifth feature row. */
+.pricing-grid .price-card--featured {
+    margin-block: clamp(-0.8125rem, -0.68vw, 0rem);
+}
+
+/* ---- 4. CTA + form ------------------------------------------------------ */
+.cta-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 3vw, 4rem);
+    align-items: start;
+}
+
+.cta-split__title {
+    max-width: 18ch;
+}
+
+.cta-split__text {
+    margin-top: 1.25rem;
+    max-width: 60ch;
+}
+
+.expect-title {
+    margin-top: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-size: var(--fs-card-title);
+    font-weight: 500;
+}
+
+.expect-list {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.75rem;
+    max-width: 60ch;
+}
+
+.expect-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-body);
+}
+
+.expect-list li::before {
+    content: "";
+    position: absolute;
+    left: 0.25rem;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-ink);
+}
+
+.cta-split__actions {
+    margin-top: clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem);
+}
+
+/* ---- 5. Stats bento -----------------------------------------------------
+   Cells are placed explicitly to match the frame: three stats across the top,
+   the gold arrow filling the lower-left across both remaining rows, the black
+   book under "Publishing Services", and the two dark cards stacked right. */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2.4vw, 4rem) clamp(1.5rem, 1rem + 2vw, 3.5rem);
+    align-items: start;
+}
+
+.stats-grid > :nth-child(1) { grid-area: 1 / 1; }
+.stats-grid > :nth-child(2) { grid-area: 1 / 2; }
+.stats-grid > :nth-child(3) { grid-area: 1 / 3; }
+.stats-grid > :nth-child(4) { grid-area: 2 / 1 / span 2 / span 1; }   /* arrow  */
+.stats-grid > :nth-child(5) { grid-area: 2 / 2; }
+.stats-grid > :nth-child(6) { grid-area: 2 / 3; }
+.stats-grid > :nth-child(7) { grid-area: 3 / 2; }                     /* book   */
+.stats-grid > :nth-child(8) { grid-area: 3 / 3; }
+
+.stats-art {
+    width: 100%;
+    height: auto;
+    align-self: end;
+}
+
+.stats-art--arrow {
+    max-width: 545px;
+}
+
+.stats-art--book {
+    max-width: 361px;
+    justify-self: start;
+}
+
+/* ---- 6 & 9. Split sections with book clusters --------------------------- */
+.split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 5rem);
+}
+
+.split--media-left .split__media {
+    order: -1;
+}
+
+/* Wide enough to hold the frame's longest hand-set line — "Why Elite
+   Publishing Is The" — before .br-lg takes over. */
+.split__title {
+    max-width: 30ch;
+}
+
+.split__text {
+    margin-top: 1.25rem;
+    max-width: 70ch;                        /* the frame runs these to the column */
+}
+
+.split__text + .split__text {
+    margin-top: 1rem;
+}
+
+.split__actions {
+    margin-top: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+}
+
+.section--navy .split__text {
+    color: rgba(255, 255, 255, 0.86);
+}
+
+/* ---- 7. Services -------------------------------------------------------- */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+/* ---- 8. Process --------------------------------------------------------- */
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+    align-items: stretch;
+}
+
+/* ---- 10. Go Pro --------------------------------------------------------- */
+.pro-list {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+/* ---- 11. Testimonials --------------------------------------------------- */
+.testimonials {
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonials .carousel {
+    position: relative;
+    z-index: 1;
+}
+
+/* Navy plate behind the focused card: in the frame it bleeds a little past the
+   card on both sides and stops short of it top and bottom. Tying it to the
+   active slide keeps that relationship at every width. */
+.testimonials .carousel__slide {
+    position: relative;
+}
+
+.testimonials .carousel--focus .carousel__slide.is-active::before {
+    content: "";
+    position: absolute;
+    inset: 13% -18px 11% -18px;
+    z-index: -1;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-lg);
+    pointer-events: none;
+}
+
+/* ---- 12. FAQ ------------------------------------------------------------ */
+.faq-list {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    border-top: 1px solid var(--color-divider);
+}

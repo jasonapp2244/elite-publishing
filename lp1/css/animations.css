@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Animations
+
+   Two groups live here:
+
+   1. Behaviour taken straight from the Figma prototype — button glare + weight
+      swap, FAQ open/close, the three timed carousels and the
+      modal dissolve. Durations and easings match the file exactly.
+
+   2. Scroll-entrance reveals. The Figma prototype defines no load-time or
+      scroll triggers, so these follow the brief's own architecture (§5-§7)
+      rather than the file. They are deliberately restrained — opacity plus a
+      small translate — so they never fight the design.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Scroll reveals
+   -------------------------------------------------------------------------- */
+[data-animation] {
+    opacity: 0;
+    will-change: opacity, transform;
+    transition:
+        opacity 0.7s var(--ease-out),
+        transform 0.7s var(--ease-out);
+}
+
+[data-animation="fade"] {
+    transform: none;
+}
+
+[data-animation="fade-up"] {
+    transform: translateY(32px);
+}
+
+[data-animation="fade-down"] {
+    transform: translateY(-24px);
+}
+
+[data-animation="fade-left"] {
+    transform: translateX(40px);
+}
+
+[data-animation="fade-right"] {
+    transform: translateX(-40px);
+}
+
+[data-animation="zoom"] {
+    transform: scale(0.94);
+}
+
+/* Restore the element's designed opacity (80% for .muted copy), never a flat 1. */
+[data-animation].is-visible {
+    opacity: var(--own-opacity, 1);
+    transform: none;
+}
+
+/* Once a reveal has played there is nothing left to optimise for. */
+[data-animation].is-settled {
+    will-change: auto;
+}
+
+/* Stagger — the index is set once by JS as --i, so no long selector chains. */
+/* Editing the duration, easing or delay below? There is a second copy of them.
+   The hero cover fan needs a hover lift as well as this entrance, and a single
+   `transition` declaration has to carry both — so `.hero__books .hero__book` in
+   sections.css restates these two properties, delay included, and appends
+   translate and box-shadow. Keep the two in step or the fan's entrance will
+   drift away from every other staggered group on the page. */
+[data-stagger] > * {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity 0.6s var(--ease-out),
+        transform 0.6s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+[data-stagger].is-visible > * {
+    opacity: var(--own-opacity, 1);
+    transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes
+   -------------------------------------------------------------------------- */
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        /* The track holds the logo set twice; half a loop is seamless. */
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float-soft {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-14px);
+    }
+}
+
+/* The loose doodles drift gently; they are decorative in the file too. */
+.doodle--swirl {
+    animation: float-soft 9s var(--ease-in-out) infinite;
+}
+
+.doodle--dashes {
+    animation: float-soft 11s var(--ease-in-out) infinite 0.8s;
+}
+
+.doodle--starburst {
+    animation: float-soft 10s var(--ease-in-out) infinite 0.4s;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — kill movement, keep every state reachable and legible.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Content must never stay hidden just because the reveal was disabled. */
+    [data-animation],
+    [data-stagger] > * {
+        opacity: var(--own-opacity, 1) !important;
+        transform: none !important;
+    }
+
+    .marquee__track {
+        animation: none;
+        transform: none;
+    }
+
+    .doodle {
+        animation: none;
+    }
+
+    /* The glare sweep is pure decoration — drop it entirely. */
+    .btn::before {
+        display: none;
+    }
+
+    .pricing-card,
+    .tile__chip,
+    .carousel__btn {
+        transition: none;
+    }
+}

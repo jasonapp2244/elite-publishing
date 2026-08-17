@@ -1,0 +1,832 @@
+/* ==========================================================================
+   Components — buttons, cards, covers, carousels, accordion, modal, forms
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Neutralise Bootstrap's same-named component classes.
+
+   Bootstrap ships `.container` and `.btn` as components, and this page uses
+   those names for its own. Loading order settles the properties we declare,
+   but anything we *don't* declare still leaks through — Bootstrap's
+   `max-width: 1320px` on .container silently rebuilt the whole page 100px
+   narrower than the 1420 design, and its `border: 1px` made buttons 58px tall
+   instead of 56. Reset the leaks explicitly (brief §20).
+   -------------------------------------------------------------------------- */
+.container {
+    max-width: none;
+    padding-inline: 0;
+}
+
+.btn {
+    --bs-btn-border-width: 0;
+    border: 0;
+    vertical-align: baseline;
+    text-transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   Every CTA in the file is a 2-variant component. Hover swaps Default →
+   Variant2 with a 0.3s EASE_IN_AND_OUT smart-animate. Across the variants
+   two things change: the blurred white "glare" bar travels from just off the
+   left edge to past the right edge, and the label goes 600 → 700.
+   -------------------------------------------------------------------------- */
+.btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 36px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: var(--fs-btn);
+    line-height: var(--lh-btn);
+    letter-spacing: var(--ls-btn);
+    text-align: center;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+        background-color var(--dur-fast) var(--ease-in-out),
+        color var(--dur-fast) var(--ease-in-out),
+        border-color var(--dur-fast) var(--ease-in-out);
+}
+
+/* The glare. 39x81 white rectangle, 14.3px layer blur — straight from Figma. */
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -70px;
+    z-index: -1;
+    width: 39px;
+    height: 81px;
+    translate: 0 -50%;
+    background: var(--color-white);
+    filter: blur(14.3px);
+    opacity: 0.75;
+    transition: transform var(--dur-fast) var(--ease-in-out);
+    will-change: transform;
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+    /* 480px clears the widest button in the design (353px) end to end. */
+    transform: translateX(480px);
+}
+
+/* Reserve the bold width up-front so the hover weight change cannot reflow. */
+.btn__label {
+    display: grid;
+    transition: font-weight var(--dur-fast) var(--ease-in-out);
+}
+
+.btn__label::after {
+    content: attr(data-text);
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: 700;
+    pointer-events: none;
+}
+
+.btn:hover .btn__label,
+.btn:focus-visible .btn__label {
+    font-weight: 700;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Fixed-size glyphs. The global `img { height: auto }` would otherwise let an
+   icon's intrinsic aspect drive the button's height. */
+.btn svg,
+.btn img {
+    flex: none;
+    width: 24px;
+    height: 24px;
+}
+
+.btn--orange img {
+    width: 18px;
+    height: 20px;
+}
+
+/* -- Variants -------------------------------------------------------------- */
+.btn--accent {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+.btn--gradient {
+    background-image: var(--gradient-cta);
+    color: var(--color-white);
+}
+
+/* "Consult Our Expert": Variant2 drops the white fill for a white hairline.
+   Drawn as an inset ring, not a border — Figma's stroke is INSIDE, so it must
+   not add 2px to the button box. */
+.btn--ghost {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    box-shadow: inset 0 0 0 1px transparent;
+    transition:
+        background-color var(--dur-fast) var(--ease-in-out),
+        color var(--dur-fast) var(--ease-in-out),
+        box-shadow var(--dur-fast) var(--ease-in-out);
+}
+
+.btn--ghost::before {
+    background: var(--color-black);
+    opacity: 0.35;
+}
+
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--color-white);
+    color: var(--color-white);
+}
+
+.btn--ghost:hover::before,
+.btn--ghost:focus-visible::before {
+    background: var(--color-white);
+}
+
+.btn--ghost:hover .icon-chat-dot,
+.btn--ghost:focus-visible .icon-chat-dot {
+    filter: brightness(0) invert(1);
+}
+
+/* Final CTA — square-cornered orange bar with a play glyph. */
+.btn--orange {
+    background-color: var(--color-orange);
+    color: var(--color-white);
+    border-radius: 0;
+    padding: 16px 33px;
+    text-transform: uppercase;
+}
+
+.btn--block {
+    display: flex;
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Book covers
+   The artwork fills its frame and stays put — no hover movement.
+
+   One exception, and it is deliberate: the nine covers in the hero fan
+   (.cover.hero__book) lift under the pointer. They are the only covers that
+   overlap each other and the only ones partly hidden behind the wave, so the
+   lift is what separates the one you are pointing at from the eight behind it.
+   That rule lives with the rest of the hero in sections.css. Covers in the
+   carousel, the genre rail and anywhere else still do not move.
+   -------------------------------------------------------------------------- */
+.cover {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-alt);
+}
+
+.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   Carousels (book slider, genre rail, testimonial, logo marquee)
+   -------------------------------------------------------------------------- */
+.carousel {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    /* The parent is a centred flex column, so without this the carousel
+       shrink-wraps to the track instead of filling the 1570 rail. */
+    width: 100%;
+}
+
+.carousel__viewport {
+    flex: 1;
+    /* Without this the item's automatic minimum size is its content width, so
+       the viewport grows to the full track and nothing ever clips. */
+    min-width: 0;
+    overflow: hidden;
+}
+
+.carousel__track {
+    display: flex;
+    gap: 30px;
+    transition: transform var(--dur-slide) var(--ease-out);
+    will-change: transform;
+}
+
+.carousel__slide {
+    flex: none;
+}
+
+.carousel__btn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-navy);
+    transition:
+        background-color var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+.carousel__btn:hover,
+.carousel__btn:focus-visible {
+    background-color: var(--color-primary);
+    transform: scale(1.08);
+}
+
+.carousel__btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Dots (testimonial)
+   The dot itself stays the 10px mark from the design; the button around it is
+   grown to 24x24 so the control meets WCAG 2.2 target size (2.5.8). Centres
+   sit 24px apart so neighbouring targets never overlap. */
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    /* The enlarged hit area is invisible padding — pull it back out of the
+       flow so the row still occupies the 10px the design allots it. */
+    margin-block: -7px;
+}
+
+.dots button {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    background: none;
+    opacity: 1;
+}
+
+.dots button::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-primary);
+    opacity: 0.2;
+    transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.dots button[aria-current="true"]::before {
+    opacity: 1;
+}
+
+.dots button:hover::before {
+    opacity: 0.6;
+}
+
+.dots button[aria-current="true"]:hover::before {
+    opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Pricing card
+   -------------------------------------------------------------------------- */
+.pricing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    width: 433px;
+    /* Figma's 8px stroke is INSIDE the 433x554 box and its 40px padding is
+       measured from the outer edge, so the border eats into the padding. */
+    padding: 32px;
+    background-color: var(--color-white);
+    border: 8px solid var(--color-accent);
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.pricing-card__icon {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+}
+
+.pricing-card__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: var(--fs-card-title);
+    line-height: var(--lh-card-title);
+    color: var(--color-text);
+    min-height: 76px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.pricing-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 308px;
+    text-align: left;
+}
+
+.pricing-card__list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--fs-list);
+    line-height: var(--lh-list);
+}
+
+.pricing-card__list li img {
+    width: 24px;
+    height: 24px;
+    flex: none;
+}
+
+/* Figma keeps two rows at 0 opacity in the Basic card so all three cards
+   share one height. Hidden from assistive tech, but the space is kept. */
+.pricing-card__list li[data-spacer] {
+    visibility: hidden;
+}
+
+.pricing-card .btn {
+    margin-top: auto;
+    align-self: stretch;
+}
+
+.badge-best-value {
+    position: absolute;
+    top: 27px;
+    right: -8px;
+    width: 114px;
+    height: 31px;
+}
+
+/* --------------------------------------------------------------------------
+   Feature / step tiles
+   -------------------------------------------------------------------------- */
+.tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    width: 440px;
+    text-align: center;
+}
+
+.tile__art {
+    width: 189px;
+    height: 104px;
+    object-fit: contain;
+}
+
+.tile__chip {
+    display: grid;
+    place-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: var(--radius-pill);
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.tile:hover .tile__chip {
+    transform: translateY(-6px) scale(1.06);
+}
+
+.tile__chip img {
+    width: 32px;
+    height: 32px;
+}
+
+.tile__body {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* --------------------------------------------------------------------------
+   Genre card
+   -------------------------------------------------------------------------- */
+.genre {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 212px;
+    /* Figma's frame is 328 tall and lets the caption's descenders spill 3px. */
+    height: 328px;
+    flex: none;
+}
+
+.genre__caption {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: var(--fs-label);
+    line-height: var(--lh-label);
+    letter-spacing: var(--ls-label);
+    text-align: center;
+    color: var(--color-white);
+}
+
+/* --------------------------------------------------------------------------
+   FAQ accordion
+   Click toggles the row between the 65px closed variant and the 119px open
+   variant over 0.3s EASE_OUT, and the chevron flips.
+   -------------------------------------------------------------------------- */
+.faq {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 1089px;
+}
+
+.faq__item {
+    position: relative;
+    background-color: var(--color-accent);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+/* Closed the row is 65px (the 33px chevron is the tallest thing in it); open
+   it is 119px (question + 12 + answer). Taking the chevron out of flow lets
+   both land exactly, because it then never drives the row height. */
+.faq__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    width: 100%;
+    min-height: 63px;
+    /* 1px inside stroke + 15/19 padding reproduces Figma's 16/20 from the
+       outer edge, keeping the closed row at exactly 65px. */
+    padding: 15px 60px 15px 19px;
+    text-align: left;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+    color: var(--color-text);
+}
+
+.faq__icon {
+    position: absolute;
+    top: 15px;
+    right: 19px;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    transition: rotate var(--dur-fast) var(--ease-out);
+}
+
+/* Open: the question no longer needs the chevron's height reserved beneath it,
+   and the 12px gap to the answer comes from the panel. */
+.faq__item.is-open .faq__trigger {
+    min-height: 0;
+    padding-bottom: 0;
+}
+
+.faq__icon img {
+    width: 33px;
+    height: 33px;
+}
+
+.faq__trigger[aria-expanded="true"] .faq__icon {
+    rotate: 180deg;
+}
+
+/* 0fr → 1fr gives a real height transition without measuring in JS. */
+.faq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur-fast) var(--ease-out);
+}
+
+.faq__item.is-open .faq__panel {
+    grid-template-rows: 1fr;
+}
+
+.faq__panel > div {
+    overflow: hidden;
+}
+
+.faq__answer {
+    padding: 12px 19px 15px; /* 12px is Figma's gap between question and answer */
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--color-black);
+}
+
+/* --------------------------------------------------------------------------
+   Modal — opens from "Submit Your Book", DISSOLVE 0.3s EASE_OUT
+   -------------------------------------------------------------------------- */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: grid;
+    place-items: center;
+    padding: var(--gutter);
+    background-color: rgba(0, 17, 61, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    /* Visibility must flip instantly on open — transitioning it leaves the
+       dialog unfocusable for the length of the fade — and only step back to
+       hidden once the fade out has finished. */
+    transition:
+        opacity var(--dur-fast) var(--ease-out),
+        visibility 0s linear var(--dur-fast);
+}
+
+.modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition:
+        opacity var(--dur-fast) var(--ease-out),
+        visibility 0s linear 0s;
+}
+
+/* .modal sets display:grid, which would otherwise beat the hidden attribute. */
+.modal[hidden] {
+    display: none;
+}
+
+.modal__dialog {
+    position: relative;
+    width: min(1620px, 100%);
+    max-height: calc(100dvh - (var(--gutter) * 2));
+    overflow-y: auto;
+    padding: 83px 100px;
+    border-radius: var(--radius-modal);
+    background: url("../images/hero-bg.webp") 0 0 / 100% 100% no-repeat,
+        var(--color-surface-alt);
+    scale: 0.97;
+    transition: scale var(--dur-fast) var(--ease-out);
+}
+
+.modal.is-open .modal__dialog {
+    scale: 1;
+}
+
+.modal__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    place-items: center;
+    width: 61px;
+    height: 61px;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface-alt);
+    transition:
+        background-color var(--dur-fast) var(--ease-out),
+        rotate var(--dur-fast) var(--ease-out);
+}
+
+.modal__close:hover,
+.modal__close:focus-visible {
+    background-color: var(--color-accent);
+    rotate: 90deg;
+}
+
+.modal__close img {
+    width: 24px;
+    height: 24px;
+}
+
+.modal__grid {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.modal__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 650px;
+    flex: none;
+}
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-list img {
+    width: 24px;
+    height: 24px;
+    flex: none;
+}
+
+.modal__card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 30px;
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal-card);
+}
+
+/* --------------------------------------------------------------------------
+   Form
+   -------------------------------------------------------------------------- */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field {
+    position: relative;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: var(--color-field);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: -0.36px;
+    color: var(--color-black);
+    transition:
+        border-color var(--dur-fast) var(--ease-out),
+        background-color var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.field textarea {
+    min-height: 138px;
+    resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+    color: var(--color-black);
+    opacity: 0.55;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    background-color: var(--color-white);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 94, 218, 0.15);
+}
+
+.field.is-invalid input,
+.field.is-invalid textarea {
+    border-color: var(--color-orange);
+    background-color: #fff7f5;
+}
+
+.field__error {
+    display: block;
+    min-height: 0;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--color-orange);
+}
+
+/* Button loading + result states for the contact form. */
+.btn.is-loading {
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+.btn.is-loading .btn__label {
+    visibility: hidden;
+}
+
+.btn.is-loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+}
+
+.form__status {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+}
+
+.form__status[data-state="success"] {
+    color: #1c7a44;
+}
+
+.form__status[data-state="error"] {
+    color: var(--color-orange);
+}
+
+/* ---------------------------------------------------------------------------
+   Optional manuscript upload
+   Added when the enquiry form was wired to the live handler. It reuses the
+   .field shell above so the control matches the text inputs it sits under;
+   only the parts a file input does differently are declared here.
+   --------------------------------------------------------------------------- */
+.field--file {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field__file-label {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-black);
+}
+
+.field__optional {
+    font-weight: 400;
+    opacity: 0.6;
+}
+
+.field input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: var(--color-field);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--color-black);
+    cursor: pointer;
+}
+
+.field input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.field input[type="file"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 94, 218, 0.15);
+}
+
+.field__hint {
+    font-family: var(--font-body);
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--color-black);
+    opacity: 0.6;
+}

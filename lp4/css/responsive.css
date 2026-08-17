@@ -1,0 +1,199 @@
+/* ==========================================================================
+   Responsive — the layout is rebuilt per band, not scaled down.
+   Bands: ≥1400 · 1200 · 992 · 768 · 576 · 400
+   ========================================================================== */
+
+/* ---- Large desktop ------------------------------------------------------ */
+@media (max-width: 1399.98px) {
+    .hero__grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+
+    .services-grid {
+        gap: 12px;
+    }
+}
+
+/* ---- Small desktop / large tablet --------------------------------------- */
+@media (max-width: 1199.98px) {
+    .services-grid,
+    .process-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    /* Two columns: drop the explicit placement and let the cells flow. */
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stats-grid > * {
+        grid-area: auto !important;
+    }
+
+    .stats-art--arrow {
+        max-width: 340px;
+    }
+
+    .stats-art--book {
+        max-width: 220px;
+    }
+
+    .carousel__slide {
+        --slide-basis: 50%;
+    }
+}
+
+/* ---- Tablet ------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    /* Splits stack, artwork first */
+    .hero {
+        min-height: 0;
+        text-align: left;
+    }
+
+    .hero__grid,
+    .split,
+    .cta-split {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero__title,
+    .split__title,
+    .cta-split__title {
+        max-width: 24ch;
+    }
+
+    .hero__books {
+        justify-self: center;
+        margin-top: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .split--media-left .split__media,
+    .split .split__media {
+        order: -1;
+    }
+
+    .split__media {
+        margin-inline: auto;
+        max-width: 640px;
+    }
+
+    /* Hero wash flips to vertical so the copy keeps its contrast */
+    .hero__scrim {
+        background:
+            linear-gradient(180deg,
+                var(--color-primary-deep) 0%,
+                rgba(2, 16, 61, 0.9) 45%,
+                rgba(2, 16, 61, 0.55) 100%);
+    }
+
+    .pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pricing-grid .price-card--featured {
+        margin-block: 0;
+    }
+
+    .pro-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+/* ---- Small tablet / large phone ----------------------------------------- */
+@media (max-width: 767.98px) {
+    .formats-grid,
+    .services-grid,
+    .process-grid,
+    .pricing-grid,
+    .stats-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .stats-art {
+        margin-inline: auto;
+    }
+
+    .carousel__slide {
+        --slide-basis: 100%;
+    }
+
+    .carousel--focus .carousel__slide:not(.is-active) {
+        opacity: 1;
+        filter: none;
+        transform: none;
+    }
+
+    /* One card at a time below this width, so the focus plate has nothing to
+       sit behind. */
+    .testimonials .carousel--focus .carousel__slide.is-active::before {
+        display: none;
+    }
+
+    .site-footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+}
+
+/* ---- Phone -------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+    .price-card__top {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .testimonial__head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .faq-item__trigger {
+        gap: 1rem;
+    }
+
+    .faq-item__icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-lp {
+        width: 100%;
+    }
+
+    .hero__actions .btn-lp,
+    .split__actions .btn-lp,
+    .cta-split__actions .btn-lp {
+        width: auto;
+        min-width: min(100%, 220px);
+    }
+
+    /* The header pill keeps its intrinsic width — it shares the row with the
+       logo, so it must not stretch. */
+    .site-header__inner .btn-lp {
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* ---- Narrow phone (320) ------------------------------------------------- */
+@media (max-width: 399.98px) {
+    :root {
+        --gutter: 1rem;
+    }
+
+    .price-card__inner,
+    .format-card,
+    .service-card {
+        padding-inline: 1.1rem;
+    }
+}
+
+/* Nothing moves on hover anywhere in this build — the frame's hover states are
+   colour changes only — so there is no transform left to neutralise on coarse
+   pointers. The colour inversions that would stick after a tap are gated behind
+   `@media (hover: hover)` where they are declared. */

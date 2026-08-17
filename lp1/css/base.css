@@ -1,0 +1,274 @@
+/* ==========================================================================
+   Base — fonts, resets, typography primitives, layout shell
+   ========================================================================== */
+
+/* ---- Self-hosted fonts (only the weights the design actually uses) ------- */
+@font-face {
+    font-family: "Urbanist";
+    src: url("../fonts/urbanist-600.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Urbanist";
+    src: url("../fonts/urbanist-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("../fonts/satoshi-400.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("../fonts/satoshi-500.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Satoshi";
+    src: url("../fonts/satoshi-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---- Reset / normalise --------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--color-text);
+    background-color: var(--color-white);
+    /* The 1920 frame is the design width; wider viewports letterbox the page. */
+    max-width: var(--page-width);
+    margin-inline: auto;
+    overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+video {
+    display: block;
+    max-width: 100%;
+}
+
+img {
+    height: auto;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    background: none;
+    border: 0;
+    /* The UA's 1px 6px shrinks the content box, and `img { max-width: 100% }`
+       then squeezes any glyph sized to the button itself. Every button here
+       sets its own padding or a fixed size, so zero is the safe default. */
+    padding: 0;
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+    margin: 0;
+}
+
+/* ---- Accessibility helpers ---------------------------------------------- */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% -120%;
+    z-index: calc(var(--z-modal) + 1);
+    padding: 12px 24px;
+    background: var(--color-navy);
+    color: var(--color-white);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    transition: translate 0.2s var(--ease-out);
+}
+
+.skip-link:focus-visible {
+    translate: -50% 0;
+}
+
+/* A single, consistent focus ring across the whole page. */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-navy);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* ---- Layout shell -------------------------------------------------------- */
+.container {
+    width: min(var(--container-width), 100% - (var(--gutter) * 2));
+    margin-inline: auto;
+}
+
+/* Figma's root frame is a vertical auto-layout with a 100px gap.
+   Items stretch so full-bleed sections fill the page; the .container children
+   size themselves and centre with their own auto margins. Centring here
+   instead would shrink-wrap every section to its content. */
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--section-gap);
+}
+
+/* ---- Typography primitives ---------------------------------------------- */
+/* Bootstrap styles the .h1-.h6 *classes* as well as the elements, and its
+   `margin-bottom: .5rem` out-specifies an element-level reset. Zero it here or
+   every heading in the page runs 8px tall. */
+.h1,
+.h2,
+.h3,
+.h4 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.h1 {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    letter-spacing: var(--ls-h1);
+    text-transform: capitalize; /* Figma textCase: TITLE */
+}
+
+.h2 {
+    font-size: var(--fs-h2);
+    line-height: var(--lh-h2);
+    letter-spacing: var(--ls-h2);
+    text-transform: capitalize; /* Figma textCase: TITLE */
+}
+
+.h3 {
+    font-size: var(--fs-h3);
+    line-height: var(--lh-h3);
+    letter-spacing: var(--ls-h3);
+    text-transform: capitalize; /* Figma textCase: TITLE */
+}
+
+.h4 {
+    font-size: var(--fs-h4);
+    line-height: var(--lh-h4);
+    letter-spacing: var(--ls-h4);
+}
+
+.eyebrow {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: var(--fs-eyebrow);
+    line-height: var(--lh-eyebrow);
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.lead {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+}
+
+/* Figma expresses secondary copy as an 80% layer opacity, not a lighter hex.
+   --own-opacity is the element's *designed* opacity; the scroll-reveal in
+   animations.css restores this value rather than forcing a flat 1. */
+.muted {
+    --own-opacity: var(--text-muted-opacity);
+    opacity: var(--own-opacity);
+}
+
+.text-white {
+    color: var(--color-white);
+}
+
+.text-navy {
+    color: var(--color-navy);
+}
+
+/* ---- Shared section head ------------------------------------------------- */
+.section-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    text-align: center;
+}
+
+/* Each headline is measured to a specific width in Figma, which is what makes
+   it break where it does. --head-w carries that per-section measurement. */
+.section-head .h2 {
+    max-width: var(--head-w, 1420px);
+}
+
+.section-head--narrow {
+    --head-w: 1047px;
+}
+
+.section-head--wide {
+    --head-w: 1370px;
+}
+
+.section-head .lead {
+    max-width: 918px;
+}

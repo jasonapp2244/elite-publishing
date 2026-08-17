@@ -1,0 +1,1226 @@
+/* ==========================================================================
+   Public marketing page: nav through footer
+   Elite Publishing
+   ========================================================================== */
+
+/* ════════════════════════════════════════
+   LANDING NAVIGATION
+════════════════════════════════════════ */
+#landing-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 76px;
+  background: rgba(250,250,249,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ink-faint);
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 32px;
+  z-index: 200;
+}
+
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+}
+.nav-logo em { color: var(--accent); font-style: italic; }
+.nav-logo img { height: 64px; width: auto; display: block; }
+
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.12s;
+}
+.nav-links a:hover { color: var(--ink); }
+
+.nav-actions { display: flex; gap: 10px; }
+
+/* Default desktop: wrapper is layout-transparent so nav-links and nav-actions
+   sit as direct flex children of #landing-nav (matching the original layout). */
+.nav-menu { display: contents; }
+
+#landing-hamburger {
+  display: none;
+  background: transparent; border: 1px solid var(--ink-faint);
+  border-radius: 6px;
+  width: 40px; height: 40px; padding: 0;
+  align-items: center; justify-content: center;
+  color: var(--ink-mid); cursor: pointer;
+  flex-shrink: 0; margin-left: auto;
+}
+#landing-hamburger:hover { background: var(--paper); }
+#landing-hamburger svg { width: 20px; height: 20px; }
+
+/* Mobile + tablet landing nav — hamburger replaces inline links.
+   The breakpoint is 920px, not 720px: the inline nav (logo, demo pill, three
+   links and two buttons) already needed ~755px with the old button labels, so
+   the 721–920px range overflowed the bar. The hero stacks at the same width —
+   see the rules at the end of this block. */
+@media (max-width: 920px) {
+  #landing-nav {
+    padding: 0 14px;
+    gap: 10px;
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(76px + env(safe-area-inset-top, 0px));
+  }
+  .nav-logo { font-size: 17px; white-space: nowrap; margin-right: 0; }
+  #landing-hamburger { display: inline-flex; }
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--ink-faint);
+    padding: 18px 20px 20px;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  }
+  #landing-nav.open .nav-menu { display: flex; }
+  .nav-links { flex-direction: column; gap: 14px; align-items: stretch; }
+  .nav-links a { font-size: 15px; padding: 4px 0; }
+  .nav-actions { flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--ink-faint); }
+  .nav-actions .btn { width: 100%; }
+  /* Stack the hero. Two columns need ~900px: below that the CTA row's
+     min-content (the long "See what your author website…" button — .btn is
+     white-space:nowrap) exceeds the column, and because grid items are
+     min-width:auto the column grew past the viewport, where .hero's
+     overflow:hidden clipped the right edge off the manuscript panel.
+     Scoped to #landing for specificity: the base `.hero` rule appears LATER
+     in the stylesheet, so an unscoped `.hero` here loses the source-order tie
+     and the desktop two-column layout wrongly wins. */
+  #landing .hero { grid-template-columns: 1fr; gap: 36px; }
+  #landing .hero > * { min-width: 0; }        /* let the column shrink */
+  #landing .hero-ctas .btn {
+    max-width: 100%;
+    white-space: normal;                      /* long labels wrap instead */
+    text-align: center;
+    justify-content: center;
+  }
+  /* Stacked, the panel would run the full width of a tablet; keep it readable. */
+  #landing .auth-panel { max-width: 560px; margin-left: auto; margin-right: auto; }
+}
+
+/* Phones. */
+@media (max-width: 720px) {
+  /* Tighten the hero so the H1 doesn't tuck under the fixed nav. */
+  #landing .hero { padding: calc(110px + env(safe-area-inset-top, 0px)) 18px 60px; gap: 32px; }
+  #landing .hero-left h1 { font-size: clamp(32px, 9vw, 44px); }
+  #landing .hero-ctas { width: 100%; }
+  #landing .auth-panel { padding: 26px 20px; }
+
+  /* The phone sizing of the form controls themselves lives with the rest of
+     the #enquiry-panel rules further down — those are id-scoped too, so an
+     override up here would lose the source-order tie to them. */
+}
+
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+#landing {
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.hero {
+  padding: 140px 40px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.hero-left {}
+
+.hero-eyebrow {
+  display: inline-block;
+  background: var(--accent-lt);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero-left h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+.hero-left h1 em { color: var(--accent); font-style: italic; }
+
+.hero-left p {
+  font-size: 17px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 480px;
+}
+
+.hero-ctas { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+.hero-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 14px;
+}
+
+/* Auth panel in hero */
+.auth-panel {
+  background: var(--white);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.auth-panel.flash {
+  animation: authFlash 0.9s ease;
+}
+@keyframes authFlash {
+  0%   { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: scale(1); }
+  35%  { box-shadow: 0 12px 36px rgba(45,80,22,0.32), 0 0 0 4px rgba(45,80,22,0.18); transform: scale(1.015); }
+  100% { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: scale(1); }
+}
+
+.auth-panel-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.auth-panel-sub {
+  font-size: 13px;
+  color: var(--ink-mid);
+  margin-bottom: 24px;
+}
+
+/* Enquiry panel — replaces the retired sign-in / sign-up forms in the
+   hero. Reuses .auth-panel, .field and .auth-btn so the panel looks
+   unchanged; everything below is scoped to #enquiry-panel so it cannot
+   affect the identically-named classes used inside the app screen. */
+#enquiry-panel textarea,
+#enquiry-panel select {
+  width: 100%;
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+#enquiry-panel textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+#enquiry-panel textarea:focus,
+#enquiry-panel select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.1);
+  background: var(--white);
+}
+#enquiry-panel .optional {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+#enquiry-panel .enquiry-note {
+  margin: -4px 0 20px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+/* Manuscript upload — the native file input is visually hidden (still
+   focusable and still in the tab order) and .file-control is the visible
+   control, so the field matches the text inputs above it. */
+#enquiry-panel .file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+#enquiry-panel .file-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 6px;
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+/* :focus-within covers the hidden input; .focus is set by the script when
+   the keyboard lands on it, for browsers without :focus-within. */
+#enquiry-panel .file-control.focus,
+#enquiry-panel .field:focus-within .file-control {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.1);
+  background: var(--white);
+}
+#enquiry-panel .file-btn {
+  flex: 0 0 auto;
+  padding: 7px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+#enquiry-panel .file-btn:hover { border-color: var(--ink-soft); }
+/* flex-basis 120px is the wrap trigger: the filename keeps its row while at
+   least 120px is left beside the button, and drops to its own line below that,
+   so the control adapts to the panel width without a breakpoint. */
+#enquiry-panel .file-name {
+  flex: 1 1 120px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#enquiry-panel .file-name.has-file { color: var(--ink); font-weight: 500; }
+#enquiry-panel .file-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+/* Phone sizing for the controls. iOS zooms the page whenever a focused field's
+   font-size is under 16px and leaves the zoom behind, and the extra padding
+   takes each control to a ~44px tap target. Must sit after the base
+   #enquiry-panel rules above: same specificity, so source order decides. */
+@media (max-width: 720px) {
+  #enquiry-panel .field input,
+  #enquiry-panel textarea,
+  #enquiry-panel .file-btn,
+  #enquiry-panel .auth-btn { font-size: 16px; }
+  #enquiry-panel .field input,
+  #enquiry-panel textarea { padding: 12px 13px; }
+  #enquiry-panel .auth-btn { padding: 14px; }
+  /* Full-width button with the filename beneath it: on a phone the two never
+     share a row comfortably, and a half-width button next to empty space
+     reads as unfinished. */
+  #enquiry-panel .file-btn { width: 100%; padding: 11px 14px; }
+  #enquiry-panel .file-name { font-size: 14px; padding: 0 2px; }
+}
+
+#enquiry-panel .enquiry-success {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+}
+#enquiry-panel .enquiry-success h3 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: #065F46;
+  margin: 0 0 8px;
+}
+#enquiry-panel .enquiry-success p {
+  font-size: 14px;
+  color: #065F46;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 5px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.field input {
+  width: 100%;
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45,80,22,0.1);
+  background: var(--white);
+}
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.auth-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14.5px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+.auth-btn:hover { background: var(--accent-mid); }
+.auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.auth-error {
+  background: var(--danger-lt);
+  color: var(--danger);
+  border: 1px solid #FECACA;
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
+}
+
+/* ════════════════════════════════════════
+   FEATURE STRIP
+════════════════════════════════════════ */
+.feature-strip {
+  background: var(--ink);
+  color: var(--white);
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+.feature-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.85);
+}
+.strip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-mid);
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════
+   HOW IT WORKS
+════════════════════════════════════════ */
+.section {
+  padding: 90px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-eyebrow {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  margin-bottom: 16px;
+}
+.section-title em { color: var(--accent); font-style: italic; }
+
+.section-sub {
+  font-size: 16px;
+  color: var(--ink-mid);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+/* Stack the steps on phones. repeat(3,1fr) can't shrink below each card's
+   min-content, so three-across spills off-screen on mobile. Scoped to #landing
+   and placed after the base rule so it wins the source-order tie. */
+@media (max-width: 720px) {
+  #landing .steps { grid-template-columns: 1fr; gap: 20px; }
+}
+
+.step {
+  background: var(--white);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  position: relative;
+}
+
+.step-num {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--accent-lt);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.step h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+
+.step-features {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.step-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-mid);
+}
+.step-feature::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════
+   FEATURES GRID
+════════════════════════════════════════ */
+.features-section {
+  background: var(--white);
+  padding: 90px 40px;
+  border-top: 1px solid var(--ink-faint);
+  border-bottom: 1px solid var(--ink-faint);
+}
+.features-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  padding: 24px;
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.feature-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(45,80,22,0.08);
+}
+
+.feature-icon {
+  width: 40px; height: 40px;
+  background: var(--accent-lt);
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+
+.feature-card h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.feature-card p {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+.feature-tag {
+  display: inline-block;
+  background: var(--accent-lt);
+  color: var(--accent);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* ════════════════════════════════════════
+   PROBLEM SECTION
+════════════════════════════════════════ */
+.problem-section {
+  background: #F5EFE6;
+  padding: 90px 40px;
+}
+.problem-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.problem-section .section-eyebrow,
+.problem-section .section-title { text-align: center; }
+.problem-section .section-title { margin: 0 auto 28px; }
+.problem-body {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink-mid);
+}
+.problem-body p { margin-bottom: 18px; }
+.problem-body p:last-child { margin-bottom: 0; }
+.problem-body strong { color: var(--ink); font-weight: 600; }
+.problem-body .pull {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+  padding: 8px 0 8px 24px;
+  margin: 28px 0;
+}
+
+/* ════════════════════════════════════════
+   TOUR
+════════════════════════════════════════ */
+.tour-rows { display: flex; flex-direction: column; gap: 80px; margin-top: 16px; }
+.tour-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.tour-row.reverse { direction: rtl; }
+.tour-row.reverse > * { direction: ltr; }
+.tour-text h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.tour-text p {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-mid);
+  margin-bottom: 16px;
+}
+.tour-text ul.tour-list { padding-left: 0; list-style: none; margin-top: 18px; }
+.tour-text ul.tour-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.tour-text ul.tour-list li svg { color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+.tour-visual {
+  background: var(--white);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  padding: 22px;
+  min-height: 260px;
+}
+.tour-visual .header-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ink-faint);
+}
+.tour-visual .header-bar span { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-faint); }
+.tour-visual .header-bar span:first-child { background: #E89A8E; }
+.tour-visual .header-bar span:nth-child(2) { background: #E8C97D; }
+.tour-visual .header-bar span:nth-child(3) { background: var(--accent-mid); }
+/* When the header-bar is wired as a cover picker (data-cover-target),
+   each dot is also a clickable swap button. Hover scales + cursor; the
+   active dot gets a thin ring so users can tell which cover is shown. */
+.tour-visual .header-bar[data-cover-target] span {
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.tour-visual .header-bar[data-cover-target] span:hover { transform: scale(1.35); }
+.tour-visual .header-bar[data-cover-target] span:focus-visible {
+  outline: none; box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--accent);
+}
+.tour-visual .header-bar[data-cover-target] span.active {
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 3px var(--ink-mid);
+}
+.tour-visual .mock-row {
+  background: var(--paper);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tour-visual .mock-row .pdot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-mid); flex-shrink: 0; }
+.tour-visual .mock-row strong { color: var(--ink); font-weight: 500; }
+.tour-visual .mock-block {
+  background: var(--accent-lt);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--accent);
+  line-height: 1.5;
+  font-style: italic;
+}
+.tour-visual .mock-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+/* ════════════════════════════════════════
+   PRICING
+════════════════════════════════════════ */
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+.price-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-faint);
+  border-radius: var(--radius-lg);
+  padding: 32px 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.price-card.featured {
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(45,80,22,0.08);
+  transform: scale(1.02);
+}
+.price-card .tier-badge {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(45,80,22,0.25);
+  z-index: 2;
+}
+.price-card h3 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.price-card .pitch {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  margin-bottom: 24px;
+  min-height: 40px;
+  line-height: 1.5;
+}
+.price-card .price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.price-card .price {
+  font-family: var(--font-serif);
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.price-card .per { font-size: 13px; color: var(--ink-mid); }
+.price-card .annual-note {
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+.price-card ul.price-list { list-style: none; padding: 0; margin: 0 0 26px; flex: 1; }
+.price-card ul.price-list li {
+  font-size: 13.5px;
+  color: var(--ink);
+  padding: 7px 0;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+.price-card ul.price-list li svg { color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+.price-card .btn { width: 100%; justify-content: center; display: flex; }
+.pricing-foot {
+  text-align: center;
+  margin-top: 36px;
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+.pricing-foot strong { color: var(--ink); font-weight: 500; }
+
+/* ════════════════════════════════════════
+   BTN-LG
+════════════════════════════════════════ */
+.btn-lg { padding: 13px 26px; font-size: 15px; }
+
+/* ════════════════════════════════════════
+   DEMO CTAs
+════════════════════════════════════════ */
+.nav-links a.demo-link {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #FAF1E2 0%, #F5E6CC 100%);
+  color: #946F38;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid #E8D9B8;
+  transition: all 0.16s ease;
+}
+.nav-links a.demo-link:hover {
+  background: linear-gradient(135deg, #F5E6CC 0%, #ECD9B0 100%);
+  color: #6F4F1E;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184,150,90,0.18);
+}
+
+.auth-demo-cta {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--ink-faint);
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink-mid);
+}
+.auth-demo-cta a {
+  display: inline-block;
+  margin-left: 6px;
+  color: #946F38;
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-demo-cta a:hover { color: #6F4F1E; text-decoration: underline; }
+/* Demo lesson lock-out card (truncated education lessons in demo mode) */
+.demo-lesson-lock {
+  margin-top: 28px;
+  padding: 24px 20px;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-lt);
+  text-align: center;
+}
+.demo-lesson-lock .lock-eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.demo-lesson-lock h4 { margin: 0 0 8px; font-size: 17px; }
+.demo-lesson-lock p  { margin: 0 0 14px; font-size: 13.5px; color: var(--ink-mid); }
+/* Demo-only strip on creation pages: where the finished asset can be posted */
+.demo-platform-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: -6px 0 16px;
+  padding: 10px 14px;
+  background: var(--accent-lt);
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  color: var(--ink-mid);
+}
+.demo-platform-strip .dps-label { font-weight: 600; color: var(--accent); }
+.demo-platform-strip .dps-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid var(--ink-faint);
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.demo-platform-strip .dps-chip .pdot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+
+/* ════════════════════════════════════════
+   VISUAL ENHANCEMENTS — COLOR & DECORATION
+════════════════════════════════════════ */
+
+/* Hero — colorful gradient background + floating decorations */
+.hero {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 90% 10%, rgba(159,200,122,0.28), transparent 55%),
+    radial-gradient(ellipse at 10% 90%, rgba(184,150,90,0.18), transparent 50%),
+    linear-gradient(180deg, var(--paper) 0%, #F5EFE6 100%);
+  overflow: hidden;
+}
+.hero > * { position: relative; z-index: 1; }
+.hero-decor { position: absolute; pointer-events: none; z-index: 0; }
+
+.hero-decor.book {
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(28,25,23,0.18);
+}
+.hero-decor.book::before, .hero-decor.book::after {
+  content: ""; position: absolute; left: 6px; right: 6px; height: 1px;
+  background: rgba(250,250,249,0.35);
+}
+.hero-decor.book::before { top: 14px; }
+.hero-decor.book::after { bottom: 14px; }
+.hero-decor.book.gold {
+  width: 64px; height: 86px;
+  background: linear-gradient(160deg, #B8965A 0%, #946F38 100%);
+  top: 95px; left: 28px; transform: rotate(-12deg); opacity: 0.55;
+}
+.hero-decor.book.green {
+  width: 56px; height: 76px;
+  background: linear-gradient(160deg, #2D5016 0%, #1F3810 100%);
+  bottom: 70px; right: 38px; transform: rotate(8deg); opacity: 0.5;
+}
+.hero-decor.book.coral {
+  width: 50px; height: 68px;
+  background: linear-gradient(160deg, #C26045 0%, #8E3F2C 100%);
+  top: 220px; left: 80px; transform: rotate(15deg); opacity: 0.4;
+}
+
+.hero-decor.sparkle {
+  width: 14px; height: 14px;
+  color: #B8965A;
+}
+.hero-decor.sparkle-1 { top: 60px; right: 90px; opacity: 0.55; }
+.hero-decor.sparkle-2 { bottom: 110px; left: 110px; opacity: 0.5; transform: scale(0.8); }
+.hero-decor.sparkle-3 { top: 250px; right: 30px; opacity: 0.6; transform: scale(1.2); }
+.hero-decor.sparkle-4 { bottom: 200px; right: 250px; opacity: 0.45; }
+
+.hero-decor.dot { border-radius: 50%; }
+.hero-decor.dot-1 { top: 140px; left: 180px; width: 7px; height: 7px; background: #9FC87A; opacity: 0.6; }
+.hero-decor.dot-2 { bottom: 240px; right: 180px; width: 5px; height: 5px; background: #B8965A; opacity: 0.7; }
+.hero-decor.dot-3 { top: 320px; left: 50px; width: 6px; height: 6px; background: #C26045; opacity: 0.5; }
+
+/* Feature card icon color variants */
+.feature-card { transition: border-color 0.15s, box-shadow 0.15s, transform 0.18s; }
+.feature-card:hover { transform: translateY(-2px); }
+.feature-icon { transition: transform 0.18s; }
+.feature-card:hover .feature-icon { transform: scale(1.06) rotate(-3deg); }
+.feature-icon.gold  { background: #FAF1E2; color: #946F38; }
+.feature-icon.coral { background: #FDEAE3; color: #B85838; }
+.feature-icon.blue  { background: #E4EDF5; color: #2C5680; }
+.feature-icon.teal  { background: #DDEDEB; color: #2A6B62; }
+
+.feature-tag.gold  { background: #FAF1E2; color: #946F38; }
+.feature-tag.coral { background: #FDEAE3; color: #B85838; }
+
+/* Step numbers — alternate colors for depth */
+.steps .step:nth-child(1) .step-num { color: #9FC87A; }
+.steps .step:nth-child(2) .step-num { color: #B8965A; }
+.steps .step:nth-child(3) .step-num { color: #C26045; }
+
+/* Tour panel — colorful mini book covers */
+.book-mini {
+  position: relative;
+  width: 44px; height: 60px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(28,25,23,0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 9px;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  padding: 4px;
+  line-height: 1.15;
+}
+.book-mini::before, .book-mini::after {
+  content: ""; position: absolute; left: 4px; right: 4px; height: 1px;
+  background: rgba(255,255,255,0.3);
+}
+.book-mini::before { top: 8px; }
+.book-mini::after  { bottom: 8px; }
+.book-mini.green { background: linear-gradient(160deg, #2D5016 0%, #1F3810 100%); }
+.book-mini.gold  { background: linear-gradient(160deg, #B8965A 0%, #946F38 100%); }
+.book-mini.coral { background: linear-gradient(160deg, #C26045 0%, #8E3F2C 100%); }
+.book-mini.navy  { background: linear-gradient(160deg, #2C5680 0%, #1A3958 100%); }
+
+/* Landing tour trailer mock — play badge fades out once the video is playing,
+   leaving the trailer to fill the frame cleanly. Returns on pause. */
+.trailer-mock.is-playing .trailer-play-badge { opacity: 0; }
+
+/* Real-cover variant for the landing tour mockups. Larger than .book-mini
+   because we're hosting an actual AI-generated cover and the user should
+   be able to read titles and see detail at landing-page glance distance. */
+.book-cover-mini {
+  width: 80px; height: 120px;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(28,25,23,0.22);
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.tour-visual .mock-row.with-book {
+  padding: 10px 12px; gap: 14px; align-items: center;
+}
+.tour-visual .mock-row.with-book .book-meta {
+  display: flex; flex-direction: column; gap: 2px;
+  font-size: 12.5px; line-height: 1.35;
+}
+.tour-visual .mock-row.with-book .book-meta .genre { font-size: 11px; color: var(--ink-soft); }
+
+/* Pricing — featured tier with gradient stripe */
+.price-card.featured {
+  background: linear-gradient(180deg, var(--white) 0%, var(--accent-lt) 100%);
+}
+.price-card.featured::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2D5016 0%, #9FC87A 50%, #B8965A 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Final CTA — richer background with subtle glow */
+.cta-section {
+  background:
+    radial-gradient(ellipse at 25% 50%, rgba(159,200,122,0.20), transparent 55%),
+    radial-gradient(ellipse at 75% 60%, rgba(184,150,90,0.15), transparent 55%),
+    var(--ink) !important;
+}
+
+/* ════════════════════════════════════════
+   DUAL PATH — author control reassurance
+════════════════════════════════════════ */
+.dual-path {
+  max-width: 920px;
+  margin: 0 auto 56px;
+}
+.dual-path-intro {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 24px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+}
+.dual-path-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.dual-card {
+  border-radius: var(--radius-lg);
+  padding: 28px 26px 26px;
+  border: 1px solid var(--ink-faint);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+.dual-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.dual-card.author-side {
+  background: linear-gradient(180deg, #FAF1E2 0%, #F5E6CC 100%);
+  border-color: #E8D9B8;
+}
+.dual-card.author-side::before { background: linear-gradient(90deg, #B8965A, #946F38); }
+.dual-card.ai-side {
+  background: linear-gradient(180deg, var(--accent-lt) 0%, #DDEDD3 100%);
+  border-color: #C7E0B8;
+}
+.dual-card.ai-side::before { background: linear-gradient(90deg, var(--accent), var(--accent-mid)); }
+.dual-card-ico {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.dual-card h4 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.dual-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-mid);
+  margin: 0;
+}
+.dual-path-coda {
+  text-align: center;
+  margin-top: 26px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media (max-width: 920px) {
+  .tour-row { grid-template-columns: 1fr; gap: 28px; }
+  .tour-row.reverse { direction: ltr; }
+  .price-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+  .price-card.featured { transform: none; }
+  .hero-decor.book.coral, .hero-decor.dot-3, .hero-decor.sparkle-2 { display: none; }
+  .dual-path-cards { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════
+   CTA SECTION
+════════════════════════════════════════ */
+.cta-section {
+  background: var(--ink);
+  padding: 90px 40px;
+  text-align: center;
+}
+
+.cta-inner { max-width: 600px; margin: 0 auto; }
+
+.cta-section h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.cta-section h2 em { color: #9FC87A; font-style: italic; }
+
+.cta-section p {
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 32px;
+  line-height: 1.65;
+}
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+/* These styled this page's ORIGINAL dark footer, which has been replaced by the
+   shared Elite Publishing footer (includes/components/site-footer.php).
+ *
+ * `:not(.ep-footer)` is not cosmetic — without it these rules capture the
+ * shared footer and break it. "#landing footer" is specificity (1,0,1): one id
+ * plus one element. The shared footer is styled by ".ep-footer" in
+ * lp-chrome.css, which is (0,1,0) — a single class. The id wins on every
+ * declaration they both set, so the mint-green field was being painted
+ * `var(--ink)` and, worse, `display: flex` was collapsing the footer's whole
+ * internal grid into one flex row. The result was near-black text on a
+ * near-black ground.
+ *
+ * The rules are guarded rather than deleted so they still describe the original
+ * footer if it is ever restored. As written they now match nothing. */
+#landing footer:not(.ep-footer) {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+#landing footer:not(.ep-footer) .footer-logo {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
+}
+#landing footer:not(.ep-footer) .footer-logo em { color: #9FC87A; font-style: italic; }
+#landing footer:not(.ep-footer) p {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.4);
+}

@@ -1,0 +1,653 @@
+/* ==========================================================================
+   Responsive
+
+   The 1920 frame is the design reference. Below it the page is rebuilt rather
+   than shrunk: columns stack, rails become swipeable, and type steps down a
+   real scale. The one thing that is scaled proportionally is the hero cover
+   fan — it is a single composed arrangement, so scaling keeps it intact while
+   the outer covers run off both edges, exactly as they do at 1920.
+   ========================================================================== */
+
+.hero {
+    --s: 1; /* hero cover-fan scale   */
+    --bg-h: 765px; /* hero artwork height    */
+    height: calc(var(--bg-h) + 293px * var(--s));
+}
+
+.hero__bg {
+    height: var(--bg-h);
+}
+
+.hero__books {
+    top: calc(var(--bg-h) - 75px * var(--s));
+    left: 50%;
+    width: 1920px;
+    transform: translateX(-50%) scale(var(--s));
+    transform-origin: top center;
+}
+
+.hero__wave {
+    top: calc(var(--bg-h) + 201px * var(--s));
+    left: -27px;
+    width: calc(100% + 54px);
+    height: calc(168px * var(--s));
+    object-fit: fill;
+}
+
+/* ==========================================================================
+   ≤ 1600px
+   ========================================================================== */
+@media (max-width: 1600px) {
+    :root {
+        --fs-h1: 60px;
+        --lh-h1: 66px;
+        --fs-h2: 52px;
+        --lh-h2: 60px;
+        --container-width: 1180px;
+    }
+
+    .hero {
+        --s: 0.82;
+        --bg-h: 700px;
+    }
+
+    .pricing-row {
+        gap: 32px;
+    }
+
+    /* Three fixed 433px cards no longer fit the narrower container, so let
+       them share the row instead of being clipped by the panel. */
+    .pricing-card {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        max-width: 433px;
+        padding: 32px;
+    }
+
+    /* The six-up genre rail is wider than the container from here down. */
+    .genre-rail {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* The platform's default scrollbar is far too heavy for the blue panel.
+       Keep the affordance, but render it as a slim on-brand bar.
+
+       Chrome 121+ ignores ::-webkit-scrollbar as soon as `scrollbar-width` is
+       set, and the standard properties cannot drop the stepper arrows — so the
+       standard route is reserved for engines without the pseudo-element. */
+    @supports not selector(::-webkit-scrollbar) {
+        .genre-rail {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.45) transparent;
+        }
+    }
+
+    .genre-rail::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .genre-rail::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .genre-rail::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.45);
+        border-radius: 999px;
+    }
+
+    .genre-rail::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.65);
+    }
+
+    .genre {
+        scroll-snap-align: start;
+    }
+
+    .tile-row {
+        gap: 32px;
+    }
+
+    .tile {
+        width: 360px;
+    }
+
+    .split__copy,
+    .split__media {
+        width: 560px;
+    }
+
+    .split__media {
+        height: 420px;
+    }
+
+    .split__media--short {
+        height: 400px;
+    }
+
+    .band-tint__inner {
+        width: min(1280px, 100% - (var(--gutter) * 2));
+        padding-bottom: 150px;
+    }
+}
+
+/* ==========================================================================
+   ≤ 1280px
+   ========================================================================== */
+@media (max-width: 1280px) {
+    :root {
+        --fs-h1: 52px;
+        --lh-h1: 58px;
+        --fs-h2: 44px;
+        --lh-h2: 52px;
+        --fs-h3: 34px;
+        --lh-h3: 42px;
+        --fs-card-title: 28px;
+        --lh-card-title: 34px;
+        --fs-h4: 24px;
+        --lh-h4: 30px;
+        --fs-quote: 24px;
+        --lh-quote: 33px;
+        --section-gap: 84px;
+    }
+
+    .hero {
+        --s: 0.72;
+        --bg-h: 620px;
+    }
+
+    .site-header {
+        padding: 24px 0;
+    }
+
+    .site-header__logo {
+        width: 92px;
+        height: 73px;
+    }
+
+    .panel-blue__inner {
+        padding-block: 90px;
+    }
+
+    .pricing-row {
+        flex-wrap: wrap;
+    }
+
+    /* Once the row wraps, go back to intrinsic card widths. */
+    .pricing-card {
+        flex: 0 0 auto;
+        width: min(420px, 100%);
+    }
+
+    .modal__dialog {
+        padding: 56px 48px;
+        border-radius: 32px;
+    }
+
+    .modal__intro {
+        width: 460px;
+    }
+}
+
+/* ==========================================================================
+   ≤ 1024px — columns start stacking
+   ========================================================================== */
+@media (max-width: 1024px) {
+    :root {
+        --fs-h1: 44px;
+        --lh-h1: 50px;
+        --fs-h2: 38px;
+        --lh-h2: 46px;
+        --fs-lead: 18px;
+        --lh-lead: 26px;
+        --section-gap: 72px;
+    }
+
+    .hero {
+        --s: 0.62;
+        --bg-h: 540px;
+    }
+
+    .split {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    /* Keep the picture above the words when the design led with a picture. */
+    .split__copy,
+    .split__media {
+        width: 100%;
+    }
+
+    /* Once these stack they fill the container, so the reveal's resting
+       translateX(±40px) would hang off the page and give the root 24px of
+       horizontal scroll before the section animates in. Reveal upward here. */
+    [data-animation="fade-left"],
+    [data-animation="fade-right"] {
+        transform: translateY(28px);
+    }
+
+    .split__media {
+        height: auto;
+        aspect-ratio: 694 / 488;
+    }
+
+    .split__media--short {
+        height: auto;
+        aspect-ratio: 694 / 481;
+    }
+
+    .tile-row {
+        flex-wrap: wrap;
+    }
+
+    .tile {
+        width: min(340px, 100%);
+    }
+
+    .modal__grid {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 32px;
+    }
+
+    .modal__intro {
+        width: 100%;
+    }
+
+    .modal__dialog {
+        padding: 48px 32px;
+    }
+
+    .band-tint__inner {
+        padding-bottom: 120px;
+    }
+
+    .site-footer__inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 28px;
+        text-align: center;
+    }
+
+    .site-footer__copy {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   ≤ 768px — tablet portrait
+   ========================================================================== */
+@media (max-width: 768px) {
+    :root {
+        --fs-h1: 36px;
+        --lh-h1: 43px;
+        --ls-h1: -0.7px;
+        --fs-h2: 32px;
+        --lh-h2: 39px;
+        --ls-h2: -0.6px;
+        --fs-h3: 28px;
+        --lh-h3: 35px;
+        --fs-h4: 22px;
+        --lh-h4: 28px;
+        --fs-quote: 20px;
+        --lh-quote: 29px;
+        --fs-lead: 17px;
+        --lh-lead: 25px;
+        --fs-body: 16px;
+        --lh-body: 23px;
+        --fs-list: 16px;
+        --lh-list: 24px;
+        --fs-eyebrow: 15px;
+        --ls-eyebrow: 1.1px;
+        --section-gap: 56px;
+        --gutter: 20px;
+    }
+
+    .hero {
+        --s: 0.55;
+        --bg-h: 460px;
+    }
+
+    .hero__content {
+        gap: 22px;
+    }
+
+    .site-header {
+        padding: 16px 0;
+    }
+
+    .site-header__inner {
+        gap: 16px;
+    }
+
+    .site-header__logo {
+        width: 74px;
+        height: 59px;
+    }
+
+    .btn {
+        padding: 13px 24px;
+    }
+
+    .panel-blue__inner {
+        padding-block: 64px;
+    }
+
+    .scallop {
+        height: 48px;
+    }
+
+    .stack {
+        gap: 40px;
+    }
+
+    .tile-row {
+        gap: 36px;
+    }
+
+    .tile {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .pricing-card {
+        width: 100%;
+        max-width: 420px;
+        border-width: 6px;
+        border-radius: 28px;
+    }
+
+    /* The invisible height-matching rows are pointless once cards stack. */
+    .pricing-card__list li[data-spacer] {
+        display: none;
+    }
+
+    .band-tint {
+        padding-top: 48px;
+    }
+
+    .band-tint__inner {
+        gap: 36px;
+        padding-bottom: 90px;
+    }
+
+    .carousel {
+        gap: 12px;
+    }
+
+    .carousel__btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .carousel__btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .quote-band {
+        padding-block: 74px 68px;
+    }
+
+    .wave,
+    .wave--abs {
+        height: 42px;
+    }
+
+    .faq-section {
+        padding-top: 48px;
+    }
+
+    .faq-section__inner {
+        gap: 36px;
+        padding-bottom: 64px;
+    }
+
+    .faq__trigger {
+        gap: 16px;
+        /* The right padding has to keep clearing the absolute chevron. */
+        padding: 14px 50px 14px 16px;
+        min-height: 54px;
+        font-size: 16px;
+        line-height: 23px;
+    }
+
+    .faq__icon {
+        top: 13px;
+        right: 14px;
+        width: 26px;
+        height: 26px;
+    }
+
+    .faq__icon img {
+        width: 26px;
+        height: 26px;
+    }
+
+    .faq__answer {
+        padding: 10px 16px 14px;
+    }
+
+    .faq-section__edge {
+        height: 34px;
+        margin-bottom: -18px;
+    }
+
+    .final-cta {
+        height: auto;
+        padding: 150px 0 56px;
+        /* The desktop crop is tuned to a fixed 580px band; once the section
+           grows with its content, cover is the sane behaviour. */
+        background-size: cover;
+        background-position: center;
+    }
+
+    .final-cta__card {
+        position: static;
+        translate: none;
+        width: min(560px, 100% - (var(--gutter) * 2));
+        margin-inline: auto;
+    }
+
+    .final-cta__icon {
+        top: 90px;
+    }
+
+    .marquee__track {
+        gap: 56px;
+        animation-duration: 22s;
+    }
+
+    .marquee__track img {
+        height: 38px;
+    }
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal__dialog {
+        padding: 56px 20px 28px;
+        border-radius: 24px;
+    }
+
+    .modal__close {
+        top: 12px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .modal__card {
+        padding: 20px;
+    }
+
+    .site-footer {
+        padding: 40px 0;
+    }
+
+    .site-footer__links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 24px;
+    }
+}
+
+/* ==========================================================================
+   ≤ 576px — phones
+   ========================================================================== */
+@media (max-width: 576px) {
+    :root {
+        --fs-h1: 30px;
+        --lh-h1: 37px;
+        --fs-h2: 27px;
+        --lh-h2: 34px;
+        --fs-h3: 24px;
+        --lh-h3: 31px;
+        --fs-btn: 16px;
+        --section-gap: 48px;
+        --gutter: 16px;
+    }
+
+    .hero {
+        --s: 0.46;
+        --bg-h: 400px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+    }
+
+    /* Full-width CTAs read better than centred pills on a narrow screen. */
+    .hero__content .btn,
+    .stack > div > .btn,
+    .split__copy .btn {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .genre-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: min(340px, 100%);
+        margin-inline: auto;
+    }
+
+    .genre .cover {
+        width: 168px;
+        height: 234px;
+    }
+
+    .genre {
+        width: 168px;
+        /* The 328px frame belongs to the 295px desktop cover. Left as-is it
+           strands ~58px of empty panel under every caption at this size. */
+        height: auto;
+    }
+
+    .book-carousel .carousel__slide,
+    .book-carousel .cover {
+        width: 190px;
+    }
+
+    .book-carousel .cover {
+        height: 266px;
+    }
+
+    .carousel__track {
+        gap: 18px;
+    }
+
+    .final-cta {
+        padding-top: 120px;
+    }
+
+    .final-cta__icon {
+        top: 66px;
+        width: 84px;
+        height: 84px;
+    }
+
+    .final-cta__card {
+        padding: 24px 20px;
+        gap: 22px;
+    }
+
+    .final-cta__action,
+    .final-cta__underline {
+        width: 100%;
+    }
+
+    .site-footer__links {
+        gap: 18px;
+    }
+}
+
+/* ==========================================================================
+   ≤ 380px — smallest supported width
+   ========================================================================== */
+@media (max-width: 380px) {
+    :root {
+        --fs-h1: 27px;
+        --lh-h1: 34px;
+        --fs-h2: 24px;
+        --lh-h2: 31px;
+    }
+
+    /* The copy wraps to its tallest here (~372px). At 360 the artwork box is
+       shorter than the copy, so the CTA spilled past the bottom and the cover
+       fan — which starts 75px * --s above it — sat on top of the button. */
+    .hero {
+        --s: 0.4;
+        --bg-h: 460px;
+    }
+
+    .site-header__logo {
+        width: 64px;
+        height: 51px;
+    }
+
+    .btn {
+        padding: 11px 16px;
+        font-size: 15px;
+    }
+}
+
+/* ==========================================================================
+   Print — flatten decoration, keep the content readable
+   ========================================================================== */
+@media print {
+    .hero__books,
+    .hero__wave,
+    .doodle,
+    .scallop,
+    .wave,
+    .carousel__btn,
+    .marquee,
+    .modal {
+        display: none !important;
+    }
+
+    body {
+        color: #000;
+    }
+
+    .panel-blue,
+    .band-tint,
+    .quote-band,
+    .faq-section,
+    .site-footer {
+        background: none !important;
+        color: #000 !important;
+    }
+
+    .faq__panel {
+        grid-template-rows: 1fr !important;
+    }
+}

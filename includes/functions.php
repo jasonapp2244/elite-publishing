@@ -310,6 +310,36 @@ function ep_srcset(string $base, array $widths, string $alt, int $w, int $h, arr
     );
 }
 
+// --- Server limits ----------------------------------------------------------
+
+/**
+ * Turn a php.ini shorthand size ("8M", "512K", "1G") into bytes.
+ *
+ * Needed wherever code has to compare a request against upload_max_filesize or
+ * post_max_size, because those settings are strings in shorthand notation and
+ * comparing them numerically reads "8M" as 8.
+ *
+ * Returns 0 for an unset or unlimited value, which callers should read as
+ * "no limit to enforce" rather than "nothing is allowed".
+ */
+function ep_bytes_from_ini(string $value): int
+{
+    $value = trim($value);
+    if ($value === '' || $value === '-1') {
+        return 0;
+    }
+
+    $unit   = strtolower(substr($value, -1));
+    $number = (int) $value;
+
+    return match ($unit) {
+        'g'     => $number * 1024 * 1024 * 1024,
+        'm'     => $number * 1024 * 1024,
+        'k'     => $number * 1024,
+        default => (int) $value,
+    };
+}
+
 // --- Security ---------------------------------------------------------------
 
 function ep_session_start(): void

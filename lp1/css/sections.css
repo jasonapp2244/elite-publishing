@@ -1,0 +1,779 @@
+/* ==========================================================================
+   Sections — desktop (1920 reference frame). Breakpoints live in responsive.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Header — logo + single CTA. The Figma header has no navigation list, so the
+   page ships without one (nothing invented, nothing omitted).
+   -------------------------------------------------------------------------- */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    padding: 35px 0;
+    background-color: var(--color-white);
+    transition: box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.site-header.is-stuck {
+    box-shadow: 0 2px 18px rgba(0, 17, 61, 0.09);
+}
+
+.site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.site-header__logo {
+    display: block;
+    width: 112px;
+    height: 89px;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.site-header__logo:hover {
+    transform: scale(1.04);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+.hero {
+    position: relative;
+    height: 1058px;
+    overflow: hidden;
+}
+
+.hero__bg {
+    height: 765px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Figma fills this with scaleMode STRETCH, so the artwork fills the box
+       rather than being cropped to cover. */
+    background: url("../images/hero-bg.webp") 0 0 / 100% 100% no-repeat;
+}
+
+.hero__content {
+    position: relative;
+    /* The cover fan is absolutely placed and its cards keep pointer events, so
+       the copy must stay above it — otherwise a card can swallow the CTA. */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    text-align: center;
+}
+
+.hero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero__title {
+    max-width: 1115px;
+    color: var(--color-navy);
+}
+
+.hero__sub {
+    max-width: 1196px;
+}
+
+/* Nine covers, absolutely placed and rotated exactly as in the Figma group. */
+.hero__books {
+    position: absolute;
+    top: 690px;
+    left: 0;
+    width: 100%;
+    height: 405px;
+    pointer-events: none;
+}
+
+.hero__book {
+    position: absolute;
+    width: 257px;
+    height: 362px;
+    margin: -181px 0 0 -128.5px; /* centre the card on its coordinate */
+    pointer-events: auto;
+}
+
+/* The transition for both the entrance reveal AND the hover lift, in one
+   declaration, on a two-class selector.
+   ---------------------------------------------------------------------------
+   It has to be stated together and it has to out-specify, because these covers
+   are inside [data-stagger] and animations.css already claims their transition:
+
+       [data-stagger] > * {
+           transition: opacity 0.6s var(--ease-out),
+                       transform 0.6s var(--ease-out);
+           transition-delay: calc(var(--i, 0) * 90ms);
+       }
+
+   That selector is (0,1,0) and so is a bare `.hero__book`, so on a tie the
+   later file wins — and animations.css loads after this one. A transition
+   declared on .hero__book alone was simply discarded, and the lift snapped.
+
+   Worse than snapping: `transition-delay` is set from --i, the stagger index.
+   Cover five carries --i:4, so had the property survived, every hover would
+   have waited 360ms before starting and again before coming back down.
+
+   `.hero__books .hero__book` is (0,2,0) and wins outright. The two reveal
+   properties are repeated verbatim, delay included, so the staggered entrance
+   is unchanged; translate and box-shadow are appended with no delay so the
+   hover responds immediately.
+
+   NOTE: the opacity/transform halves are a deliberate copy of the rule in
+   animations.css. Change the reveal timing there and change it here too — the
+   pointer at the stagger rule says so as well. */
+.hero__books .hero__book {
+    transition:
+        opacity 0.6s var(--ease-out) calc(var(--i, 0) * 90ms),
+        transform 0.6s var(--ease-out) calc(var(--i, 0) * 90ms),
+        translate var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out);
+}
+
+/* Lift the cover under the pointer.
+   ---------------------------------------------------------------------------
+   The fan is nine overlapping cards, each tilted by its own inline `rotate`
+   and each with its bottom edge tucked under .hero__wave. Raising one is what
+   makes it readable: it clears its neighbours and pulls its bottom out from
+   behind the wave.
+
+   THE LIFT USES `translate`, NOT `transform`, AND THAT IS THE WHOLE TRICK.
+   The tilt is set per-cover as an inline `rotate: -10deg` style. `rotate` and
+   `translate` are independent transform properties, and the browser composes
+   them in a fixed order — translate, then rotate, then scale, then transform.
+
+     translate: 0 -22px   applied BEFORE the rotation, so the card moves
+                          straight up the screen whatever its tilt.
+     transform: translateY(-22px)
+                          applied AFTER the rotation, so "up" means up along
+                          the card's own tilted axis — the card slides up AND
+                          sideways, and the nine of them scatter in nine
+                          different directions.
+
+   Measured on the steepest cover (the -10deg Bunny) at the default fan scale,
+   comparing the two against the same start position:
+
+     translate  ->  dx  0.00px, dy -18.04px
+     transform  ->  dx -3.13px, dy -17.77px
+
+   3.13px is sin(10deg) x 18, which is the drift landing exactly where the
+   composition order predicts. It is small per card and obvious across nine.
+
+   Using `translate` also leaves the inline `rotate` untouched, so no cover
+   needs its angle repeated here.
+
+   No fixed pixel adjustment for small screens: responsive.css scales the whole
+   fan with `transform: scale(var(--s))` on .hero__books, and a child's
+   translate scales with its parent, so the lift shrinks in proportion on its
+   own.
+
+   :focus-visible is included because these are real links to #books — a
+   keyboard user tabbing the fan gets the same affordance as the pointer.
+
+   z-index lifts it over its siblings only. .hero__books carries a transform in
+   responsive.css, which makes it a stacking context, so this cannot rise above
+   .hero__wave (--z-wave) — which is correct: the wave is foreground, and the
+   cover is meant to emerge from behind it, not jump in front of it.
+
+   Movement is dropped automatically under prefers-reduced-motion: the block in
+   animations.css forces transition-duration to ~0 globally, so the cover still
+   lifts and stays reachable, it just does not animate. */
+@media (hover: hover) {
+    .hero__book:hover {
+        translate: 0 -22px;
+        z-index: 2;
+        box-shadow: 0 18px 34px rgba(0, 17, 61, 0.28);
+    }
+}
+
+.hero__book:focus-visible {
+    translate: 0 -22px;
+    z-index: 2;
+    box-shadow: 0 18px 34px rgba(0, 17, 61, 0.28);
+}
+
+/* Decorative divider. Deliberately stretched away from the source artwork's
+   aspect ratio, so it is a background rather than an <img>. */
+.hero__wave {
+    position: absolute;
+    top: 966px;
+    left: -27px;
+    width: 2014px;
+    height: 168px;
+    z-index: var(--z-wave);
+    pointer-events: none;
+    background: url("../images/wave-divider.png") 0 0 / 100% 100% no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   Split (media + copy) sections
+   -------------------------------------------------------------------------- */
+.split {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.split__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 694px;
+    flex: none;
+}
+
+.split__media {
+    position: relative;
+    width: 694px;
+    height: 488px;
+    flex: none;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.split__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.split__media--short {
+    height: 481px;
+}
+
+.split__media video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 20% black wash sits over the video still in the Figma fill stack. It belongs
+   to the poster treatment only — once the film runs it has to clear. */
+.split__media--video::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.split__media--video.is-playing::after {
+    opacity: 0;
+}
+
+.video-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 45px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition:
+        transform var(--dur-fast) var(--ease-out),
+        background-color var(--dur-fast) var(--ease-out),
+        opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Hand the frame over to the native controls once playback starts. */
+.split__media--video.is-playing .video-play {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.video-play img {
+    width: 90px;
+    height: 90px;
+}
+
+.video-play:hover,
+.video-play:focus-visible {
+    transform: scale(1.08);
+    background-color: var(--color-white);
+}
+
+.split__body p + p {
+    margin-top: 1em;
+}
+
+/* --------------------------------------------------------------------------
+   Procedure / Top features — stacked rows of tiles
+   -------------------------------------------------------------------------- */
+.stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+}
+
+.tile-row {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Blue panels (packages + genres)
+   -------------------------------------------------------------------------- */
+.bluewrap {
+    position: relative;
+}
+
+/* The scalloped edges are blue shapes on transparency, so the panel's fill has
+   to live on an inner body — put it on the section and it paints straight
+   through the scallops' gaps and flattens them. The body is also the
+   positioning context the decorative doodles are measured from in Figma. */
+.panel-blue {
+    position: relative;
+}
+
+.panel-blue__body {
+    position: relative;
+    background-color: var(--color-primary);
+    overflow: hidden;
+}
+
+.panel-blue__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    padding-block: 120px;
+}
+
+/* Scalloped edges. The top scallop overlaps the panel by 4px, as in Figma. */
+.scallop {
+    display: block;
+    width: 100%;
+    height: 84px;
+    max-width: none;
+}
+
+.scallop--top {
+    margin-bottom: -4px;
+}
+
+.scallop--bottom {
+    margin-top: -4px;
+}
+
+.pricing-row {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 60px;
+}
+
+/* Loose decorative doodles. Purely ornamental, hidden from assistive tech. */
+.doodle {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.doodle--swirl {
+    top: 0;
+    right: -117px;
+    width: 267px;
+    height: 185px;
+}
+
+.doodle--dashes {
+    top: 920px;
+    left: -77px;
+    width: 240px;
+    height: 185px;
+}
+
+.doodle--starburst {
+    top: 580px;
+    left: -48px;
+    width: 141px;
+    height: 273px;
+}
+
+/* --------------------------------------------------------------------------
+   Book carousel band
+   -------------------------------------------------------------------------- */
+.band-tint {
+    position: relative;
+    background-color: var(--color-surface-alt);
+    padding-block: 70px 0;
+    margin-top: -2px; /* Figma stacks this block on the blue panel with a -2 gap */
+    overflow: hidden;
+}
+
+.band-tint__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    width: min(1570px, 100% - (var(--gutter) * 2));
+    margin-inline: auto;
+    padding-bottom: 187px; /* keeps the wave clear of the slides */
+}
+
+/* Figma measures this headline to 1136px, which is what gives it two lines. */
+.band-tint__inner > .h2 {
+    max-width: 1136px;
+}
+
+.book-carousel .carousel__slide {
+    width: 239px;
+}
+
+.book-carousel .cover {
+    width: 239px;
+    height: 334px;
+}
+
+/* Shared white wave divider (decorative background, see .hero__wave). */
+.wave {
+    display: block;
+    width: 100%;
+    height: 65px;
+    background: url("../images/wave-divider.png") 0 0 / 100% 100% no-repeat;
+}
+
+.wave--flip {
+    transform: scaleY(-1);
+}
+
+.wave--abs {
+    position: absolute;
+    left: 0;
+    z-index: var(--z-wave);
+}
+
+.wave--bottom {
+    bottom: 0;
+}
+
+.wave--top {
+    top: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Genre rail
+   -------------------------------------------------------------------------- */
+.genre-rail {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+}
+
+.genre .cover {
+    width: 212px;
+    height: 295px;
+}
+
+.genre-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+}
+
+/* --------------------------------------------------------------------------
+   Testimonial band
+   -------------------------------------------------------------------------- */
+.quote-band {
+    position: relative;
+    background-color: var(--color-surface-alt);
+    padding-block: 106px 107px;
+    overflow: hidden;
+}
+
+.quote-band__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: min(803px, 100% - (var(--gutter) * 2));
+    margin-inline: auto;
+    text-align: center;
+}
+
+.quote-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    transition:
+        opacity var(--dur-quote) var(--ease-out),
+        transform var(--dur-quote) var(--ease-out);
+}
+
+.quote-slide[hidden] {
+    display: none;
+}
+
+.quote-slide.is-leaving {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.quote-slide.is-entering {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.quote__text {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--fs-quote);
+    line-height: var(--lh-quote);
+    color: var(--color-navy);
+}
+
+/* Name and role stack in the design, so they must not sit on one inline row. */
+.quote__name,
+.quote__role {
+    display: block;
+}
+
+.quote__name {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--color-black);
+}
+
+.quote__role {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--fs-small);
+    line-height: var(--lh-small);
+    color: var(--color-text);
+}
+
+/* --------------------------------------------------------------------------
+   Client logo marquee — Figma steps three variants on a 2s timer; a seamless
+   translate reads the same and never lands mid-logo.
+   -------------------------------------------------------------------------- */
+.marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+        90deg,
+        transparent,
+        #000 6%,
+        #000 94%,
+        transparent
+    );
+    mask-image: linear-gradient(
+        90deg,
+        transparent,
+        #000 6%,
+        #000 94%,
+        transparent
+    );
+}
+
+.marquee__track {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+}
+
+.marquee:hover .marquee__track {
+    animation-play-state: paused;
+}
+
+.marquee__track img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    flex: none;
+}
+
+/* --------------------------------------------------------------------------
+   Closing block — FAQ, final CTA and footer share one 100px gap above.
+   -------------------------------------------------------------------------- */
+.closing {
+    position: relative;
+}
+
+.faq-section {
+    position: relative;
+    z-index: 2;
+    background-color: var(--color-surface-alt);
+    padding: 70px 0 0;
+}
+
+.faq-section__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    width: min(1089px, 100% - (var(--gutter) * 2));
+    margin-inline: auto;
+    padding-bottom: 70px;
+}
+
+/* Scalloped tint that laps over the top of the CTA photograph. */
+.faq-section__edge {
+    display: block;
+    width: 100%;
+    height: 50px;
+    /* Figma laps this scallop 2px over the FAQ panel and 24px over the
+       photograph below it. */
+    margin-top: -2px;
+    margin-bottom: -24px;
+    position: relative;
+    z-index: 2;
+    background: url("../images/wave-divider-thin.png") 0 0 / 100% 100% no-repeat;
+}
+
+.final-cta {
+    position: relative;
+    z-index: 1;
+    height: 580px;
+    /* Figma's fill transform shows the vertical band from 42.4% to 84.9% of
+       the source at full width — reproduced here as an explicit size/offset
+       rather than an approximate `cover`. */
+    background: url("../images/cta-bg.webp") 0% 73.7% / 100% 235.2% no-repeat;
+}
+
+.final-cta__card {
+    position: absolute;
+    top: 247px;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 610px;
+    padding: 29px; /* 29 + 1px inside stroke = Figma's 30 from the outer edge */
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.final-cta__icon {
+    position: absolute;
+    top: 197px;
+    left: 50%;
+    translate: -50% 0;
+    width: 109px;
+    height: 109px;
+}
+
+.final-cta__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* The button carries a hand-drawn underline that tucks under its lower edge. */
+.final-cta__action {
+    position: relative;
+    width: 318px;
+    padding-bottom: 20px;
+}
+
+.final-cta__underline {
+    position: absolute;
+    left: 0;
+    top: 48px;
+    width: 318px;
+    height: 28px;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.site-footer {
+    background-color: var(--color-green);
+    padding: 60px 0;
+}
+
+.site-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.site-footer__logo {
+    width: 112px;
+    height: 89px;
+    flex: none;
+}
+
+.site-footer__links {
+    display: flex;
+    gap: 50px;
+}
+
+.site-footer__links a {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+    color: var(--color-black);
+    opacity: var(--text-muted-opacity);
+    position: relative;
+    transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Underline grows from the left — the only link affordance the design implies. */
+.site-footer__links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.site-footer__links a:hover,
+.site-footer__links a:focus-visible {
+    opacity: 1;
+}
+
+.site-footer__links a:hover::after,
+.site-footer__links a:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.site-footer__copy {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+    color: var(--color-black);
+    opacity: var(--text-muted-opacity);
+    text-align: right;
+}

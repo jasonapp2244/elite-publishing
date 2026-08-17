@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Animations — entrance, scroll reveal, stagger, keyframes
+   Everything animates transform/opacity only, so nothing triggers layout.
+   ========================================================================== */
+
+/* ---- Scroll reveal ------------------------------------------------------ */
+[data-animation] {
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: opacity var(--dur-slow) var(--ease-out),
+                transform var(--dur-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-animation="fade"]       { transform: none; }
+[data-animation="fade-up"]    { transform: translateY(38px); }
+[data-animation="fade-down"]  { transform: translateY(-30px); }
+[data-animation="fade-left"]  { transform: translateX(48px); }
+[data-animation="fade-right"] { transform: translateX(-48px); }
+[data-animation="zoom-in"]    { transform: scale(0.92); }
+[data-animation="blur-in"]    { filter: blur(10px); transition-property: opacity, transform, filter; }
+
+[data-animation].is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+
+/* Once revealed, drop the hint so hover transforms stay cheap. */
+[data-animation].is-visible.is-settled {
+    will-change: auto;
+}
+
+/* ---- Stagger ------------------------------------------------------------ */
+/* Delays are written by JS (`--reveal-delay`) for dynamic groups; these
+   selectors cover the static grids so the first paint is already correct. */
+[data-stagger] > *:nth-child(1) { --reveal-delay: 0ms; }
+[data-stagger] > *:nth-child(2) { --reveal-delay: calc(var(--reveal-step) * 1); }
+[data-stagger] > *:nth-child(3) { --reveal-delay: calc(var(--reveal-step) * 2); }
+[data-stagger] > *:nth-child(4) { --reveal-delay: calc(var(--reveal-step) * 3); }
+[data-stagger] > *:nth-child(5) { --reveal-delay: calc(var(--reveal-step) * 4); }
+[data-stagger] > *:nth-child(6) { --reveal-delay: calc(var(--reveal-step) * 5); }
+
+/* ---- Hero entrance ------------------------------------------------------ */
+.hero__title,
+.hero__text,
+.hero__actions,
+.hero__books,
+.site-header__inner > * {
+    animation: hero-in var(--dur-slow) var(--ease-out) both;
+}
+
+.site-header__inner > *  { animation-delay: 80ms; }
+.hero__title             { animation-delay: 200ms; }
+.hero__text              { animation-delay: 330ms; }
+.hero__actions           { animation-delay: 440ms; }
+.hero__books             { animation-delay: 300ms; animation-name: hero-books-in; }
+
+@keyframes hero-in {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-books-in {
+    from { opacity: 0; transform: translateY(40px) scale(0.94); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ---- Misc keyframes ----------------------------------------------------- */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---- Reduced motion ----------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    [data-animation] {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+
+    .carousel__track {
+        transition: none;
+    }
+}
