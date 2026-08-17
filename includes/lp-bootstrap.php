@@ -213,8 +213,13 @@ function ep_lp_cta(string $lp): array
  */
 function ep_lp_chrome_styles(): string
 {
-    return implode("\n", [
-        '<link rel="stylesheet" href="' . esc(asset('css/tokens.css')) . '">',
-        '<link rel="stylesheet" href="' . esc(asset('css/lp-chrome.css')) . '">',
-    ]);
+    /* lp-chrome.css only. tokens.css used to be emitted alongside it and must
+       not be: it is the main site's token file and it also defines --fs-h1,
+       --fs-h2, --fs-h3, --fs-h4 and their line heights, which LP1 and LP4
+       declare too. Emitted here it lands AFTER each page's own stylesheets and
+       wins on source order, so LP4's responsive
+       `clamp(2rem, 0.5rem + 2.81vw, 3.875rem)` heading became the main site's
+       flat 76px at every width, phones included. lp-chrome.css now declares the
+       fifteen tokens and four @font-face rules it actually needs. */
+    return '<link rel="stylesheet" href="' . esc(asset('css/lp-chrome.css')) . '">';
 }

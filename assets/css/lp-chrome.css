@@ -31,10 +31,31 @@
    colour. Everything below is scoped to .ep-header, .ep-footer or
    .container-ep. There is not one global selector in this file.
 
-   assets/css/tokens.css is loaded alongside it and is safe for the same reason
-   as before: @font-face rules and :root custom properties only. A custom
-   property styles nothing until a rule asks for one, and no LP declares an
-   --ep-* name.
+   WHY tokens.css IS NO LONGER LOADED HERE
+   ---------------------------------------------------------------------------
+   It used to be, and the note justifying it said tokens.css was safe because it
+   holds "@font-face rules and :root custom properties only ... and no LP
+   declares an --ep-* name". The --ep-* part was true and the conclusion was
+   wrong: tokens.css also defines --fs-h1, --lh-h1, --fs-h2, --fs-h3, --fs-h4,
+   --fs-price, --radius-pill and --ease-out, and LP1 and LP4 declare and use
+   those same names in their own variables.css.
+
+   tokens.css was emitted at the END of the head, after each page's own
+   stylesheets, so on equal specificity it won. LP4's
+
+       --fs-h1: clamp(2rem, 0.5rem + 2.81vw, 3.875rem)   /* 32 -> 62px */
+
+   was replaced by the main site's flat `--fs-h1: 76px` at EVERY viewport,
+   including 360px phones. Measured on the live page: 76px at 1280 and at 1920
+   alike, a size the LP's own clamp cannot produce at any width. That is what
+   pushed LP4's hero heading over its column and wrapped "Bring Your Story To
+   Life" onto two lines. Ten variables were affected on LP1, six on LP4.
+
+   So the fifteen tokens this file actually consumes are declared below instead,
+   along with the four Urbanist @font-face rules the chrome needs. None of the
+   fifteen is a name any LP declares — checked against all four variables.css
+   files, not assumed, which is the step that was missed last time. The file is
+   now genuinely self-contained and cannot reach a landing page's typography.
 
    NO LONGER A DUPLICATE OF main.css
    ---------------------------------------------------------------------------
@@ -45,6 +66,49 @@
    their own design and it is defined here, once. Editing the main site's header
    or footer no longer requires touching this file, and vice versa.
    ========================================================================== */
+
+/* The chrome's typeface. Copied from tokens.css rather than linked, so this
+   file carries its own dependencies. Both files sit in assets/css/, so the
+   relative src paths are unchanged. */
+@font-face {
+  font-family: 'Urbanist'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../fonts/urbanist-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Urbanist'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('../fonts/urbanist-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Urbanist'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../fonts/urbanist-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Urbanist'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('../fonts/urbanist-700.woff2') format('woff2');
+}
+
+/* Exactly the tokens the rules below ask for, and nothing else — the whole
+   point of not linking tokens.css. Every name here was checked against
+   lp1..lp4/css/variables.css and none of them collides, so this block cannot
+   restyle a landing page's own headings the way tokens.css did. Adding a token
+   here means checking those four files again. */
+:root {
+  --ep-white: #FFFFFF;
+  --ep-ink: #2B2A28;
+  --ep-green: #60C489;
+  --ep-border: #E6E8E7;
+  --ep-font: 'Urbanist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ep-nav-h: 96px;
+  --ep-nav-h-sm: 76px;
+  --ep-container-nav: 1700px;
+  --fs-base: 16px;
+  --fs-sm: 14px;
+  --lh-base: 24px;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --dur: 200ms;
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
 
 /* Only inside the chrome. Left global it would re-box every LP that does not
    already set it, which is the kind of silent layout change this file exists to
