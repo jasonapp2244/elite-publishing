@@ -123,8 +123,7 @@ $canonical = EP_ORIGIN . url($pageCanonical);
 <link rel="stylesheet" href="<?= esc(asset($css)) ?>">
 <?php endforeach; ?>
 
-<link rel="icon" href="<?= esc(asset('img/favicon.svg')) ?>" type="image/svg+xml">
-<link rel="apple-touch-icon" href="<?= esc(asset('img/apple-touch-icon.png')) ?>">
+<?= ep_favicon_tags() ?>
 
 <?php
 /* Organization structured data. The postal address is only published when

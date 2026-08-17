@@ -137,9 +137,7 @@ $lpFlash = ep_lp_flash();
          response at all. Where a proxy does honour them, they say no-store for
          the document, which is the opposite of what a landing page carrying paid
          traffic wants. The .htaccess policy is the single place this is decided. */ ?>
-<link rel="icon" type="image/png" sizes="32x32" href="<?= esc(asset("img/apple-touch-icon.png")) ?>">
-<link rel="icon" type="image/png" sizes="192x192" href="<?= esc(asset("img/logo.png")) ?>">
-<link rel="apple-touch-icon" href="<?= esc(asset("img/logo.png")) ?>">
+<?= ep_favicon_tags() ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&amp;family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&amp;display=swap">

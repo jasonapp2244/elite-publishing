@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Elite Publishing">
-    <rect width="64" height="64" rx="14" fill="#031351"/>
-    <g fill="#ffffff">
-        <path d="M32 12 50 20 32 28 14 20Z"/>
-        <path d="M14 26 32 34 50 26v5L32 39 14 31Z" opacity=".85"/>
-        <path d="M14 37 32 45 50 37v5L32 50 14 42Z" opacity=".7"/>
-    </g>
-</svg>

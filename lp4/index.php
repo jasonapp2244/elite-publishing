@@ -45,8 +45,7 @@ $lpFlash = ep_lp_flash();
 <meta name="twitter:image" content="https://elitepublishing.co/lp4/assets/img/og-cover.jpg">
 <meta name="twitter:image:alt" content="Elite Publishing audiobook publishing services">
 
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<?= ep_favicon_tags() ?>
 
 <link rel="preload" href="assets/fonts/poppins-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>

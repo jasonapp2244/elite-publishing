@@ -34,6 +34,39 @@ function asset(string $path): string
     return is_file($full) ? $url . '?v=' . filemtime($full) : $url;
 }
 
+/**
+ * The site's favicon tags, for the main site and the landing pages alike.
+ *
+ * One function rather than markup repeated in five heads, because that markup
+ * had drifted: every landing page pointed at a different image. LP1 used its own
+ * logo.svg and a call-to-action icon, LP2 a Favicon.png of its own, LP4 private
+ * copies of the site's two files, and LP3 the real apple-touch-icon declared as
+ * 32x32 when it is 180x180. Four campaigns showed four different icons in the
+ * tab, none of them reliably the company's.
+ *
+ * The paths are absolute via asset(), so these work from /lp1/ as well as from
+ * the site root, and they carry the usual ?v=<mtime> cache-buster — a favicon is
+ * cached unusually hard by browsers, so changing the file without changing the
+ * URL is close to invisible.
+ *
+ * The PNG line is a fallback, not a duplicate: an SVG favicon is ignored by
+ * Safari before 16 and by older Android browsers, which would otherwise show a
+ * blank page icon. Browsers pick the best format they support, so modern ones
+ * still get the vector.
+ */
+function ep_favicon_tags(): string
+{
+    return implode("\n", [
+        '<link rel="icon" href="' . esc(asset('img/favicon.svg')) . '" type="image/svg+xml">',
+        '<link rel="icon" href="' . esc(asset('img/apple-touch-icon.png')) . '" sizes="180x180" type="image/png">',
+        '<link rel="apple-touch-icon" href="' . esc(asset('img/apple-touch-icon.png')) . '">',
+        /* Trailing empty element, so the block ends with a newline. PHP eats the
+           first newline after a closing "?>", which otherwise runs whatever tag
+           follows onto the same line as the last link. */
+        '',
+    ]);
+}
+
 // --- Navigation state -------------------------------------------------------
 
 /** True when $key identifies the page currently being rendered. */

@@ -66,8 +66,7 @@ $lpFlash = ep_lp_flash();
     />
 
     <!-- Icons -->
-    <link rel="icon" href="assets/img/Favicon.png" sizes="any" />
-    <link rel="apple-touch-icon" href="assets/img/Favicon.png" />
+    <?= ep_favicon_tags() ?>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

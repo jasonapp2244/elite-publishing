@@ -84,8 +84,7 @@ $lpFlash = ep_lp_flash();
             content="Illustrated sunrise landscape from the Elite Publishing hero"
         />
 
-        <link rel="icon" href="images/svg/logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="images/cta-icon.png" />
+        <?= ep_favicon_tags() ?>
 
         <!-- Fonts: preload only the two faces used above the fold. -->
         <link
