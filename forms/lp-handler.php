@@ -429,17 +429,19 @@ if (!ep_csrf_valid(isset($_POST['_token']) ? (string) $_POST['_token'] : null)) 
  * The response is the same success + redirect every other outcome gives, so the
  * two remain indistinguishable from outside.
  */
-if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
-    if (EP_DEBUG) {
-        ep_log_submission([
-            'time'    => date('c'),
-            'outcome' => 'honeypot',
-            'form'    => $lp,
-            'ip'      => ep_lp_client_ip(),
-        ]);
-    }
-    ep_lp_finish(true, 'Thank you. Your inquiry is on its way, and we will be in touch within one business day.');
-}
+/* REMOVED ON REQUEST — see the matching note in contact-handler.php. Every
+   submission is sent and every visitor is redirected to the thank-you page.
+
+   Restoring it is uncommenting this:
+
+       if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
+           ep_lp_finish(true, 'Thank you. Your inquiry is on its way...');
+       }
+
+   The hidden ep_hp field is still rendered by ep_lp_hidden_fields(), so the
+   check can go back without touching a template.
+
+   The CSRF token is now the only thing guarding these four forms. */
 
 // ---------------------------------------------------------------------------
 // 5. Rate limit — REMOVED ON REQUEST

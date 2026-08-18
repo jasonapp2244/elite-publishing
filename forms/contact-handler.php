@@ -258,17 +258,24 @@ if (!ep_csrf_valid(isset($_POST['_token']) ? (string) $_POST['_token'] : null)) 
  * It now redirects to the thank-you page like every other outcome, so a bot
  * cannot tell the two apart by the response either.
  */
-if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
-    if (EP_DEBUG) {
-        ep_log_submission([
-            'time'    => date('c'),
-            'outcome' => 'honeypot',
-            'form'    => $isWizard ? 'wizard' : 'contact',
-            'ip'      => ep_client_ip(),
-        ]);
-    }
-    ep_form_thanks();
-}
+/* REMOVED ON REQUEST. Every submission is now sent and every visitor is
+   redirected to the thank-you page, with nothing in between.
+
+   Restoring the trap is uncommenting this:
+
+       if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
+           ep_form_thanks();            // thanked, nothing sent
+       }
+
+   The hidden ep_hp field is still rendered by the forms, so putting the check
+   back needs no template change.
+
+   WHAT IS LEFT GUARDING THIS FORM: the CSRF token, and nothing else. The rate
+   limit went earlier, and this was the last check that cost a real visitor
+   nothing. A script that fetches the page, reads the token and posts will now
+   get through every time, as often as it likes. If the inbox starts filling
+   with junk, put this back first — it is four lines and no visitor ever
+   notices it. */
 
 // ---------------------------------------------------------------------------
 // 4. Rate limit — REMOVED ON REQUEST
