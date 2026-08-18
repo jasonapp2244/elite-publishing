@@ -623,6 +623,11 @@
             submitEnquiry(form)
                 .then(function (body) {
                     form.reset();
+                    /* The handler answers a successful send with where to go next, so the
+                       visitor lands on the thank-you page instead of reading a confirmation
+                       on the form they just left. If that key is ever missing, fall back to
+                       the inline message rather than stranding them here. */
+                    if (body && body.redirect) { window.location.assign(body.redirect); return; }
                     status.textContent = body.message;
                     status.setAttribute("data-state", "success");
                 })

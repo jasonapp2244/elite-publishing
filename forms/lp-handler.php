@@ -167,10 +167,22 @@ function ep_lp_finish(
         http_response_code($ok ? 200 : 422);
         header('Content-Type: application/json; charset=UTF-8');
         header('Cache-Control: no-store');
-        echo json_encode(
-            ['ok' => $ok, 'message' => $message, 'errors' => (object) $errors],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-        );
+
+        /* On success the answer now carries where to go next, so the landing
+           pages send the visitor to the thank-you page instead of swapping in
+           an inline confirmation. The JSON shape is unchanged apart from this
+           one added key, so a page that ignores it still behaves as before.
+
+           The message is still included. A page that has already navigated will
+           never show it, but it is what the non-JavaScript path and any future
+           caller would use, and an API that answers "ok" with no reason is
+           harder to debug than one that says why. */
+        $payload = ['ok' => $ok, 'message' => $message, 'errors' => (object) $errors];
+        if ($ok) {
+            $payload['redirect'] = url('thankyou');
+        }
+
+        echo json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         exit;
     }
 
@@ -419,16 +431,24 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Rate limit
+// 5. Rate limit — REMOVED ON REQUEST
 // ---------------------------------------------------------------------------
-if (ep_lp_rate_limited(ep_lp_client_ip())) {
-    ep_lp_finish(
-        false,
-        'That is a lot of messages in a short time. Please wait a few minutes and try again.',
-        [],
-        $lp
-    );
-}
+/* This refused a sixth submission from one IP inside ten minutes with "That is
+   a lot of messages in a short time. Please wait a few minutes and try again."
+   Removed so that every submission is simply sent.
+
+   ep_lp_rate_limited() is left defined but is no longer called, so restoring
+   this is uncommenting four lines:
+
+       if (ep_lp_rate_limited(ep_lp_client_ip())) {
+           ep_lp_finish(false, 'Please wait a few minutes and try again.', [], $lp);
+       }
+
+   What still stands between this form and a spam flood is the CSRF token and
+   the honeypot. Both are silent and neither ever makes a real author wait, so
+   both stay. Neither stops a script that reads the token from the page first,
+   which the rate limit did — if the inbox starts filling with junk, this is the
+   first thing to put back. */
 
 // ---------------------------------------------------------------------------
 // 6. Read and validate
@@ -524,17 +544,20 @@ $fingerprint = hash('sha256', implode("\0", [
     (string) ($attachment['size'] ?? ''),
 ]));
 
+/* The duplicate guard is REMOVED ON REQUEST.
+
+   It kept a fingerprint of each submission for fifteen minutes and answered an
+   identical one with "We already have your inquiry" instead of sending it, so a
+   double-click produced one email rather than two. Every submission is now
+   sent, which is what was asked for; the cost is that a visitor who clicks
+   twice sends two identical emails.
+
+   The fingerprint above is still computed and still recorded below, so putting
+   this back means restoring the `if (isset($recent[$fingerprint]))` branch and
+   nothing else. */
 $recent = (array) ($_SESSION['ep_lp_recent'] ?? []);
 $cutoff = time() - EP_LP_DUPLICATE_WINDOW;
 $recent = array_filter($recent, static fn($t): bool => (int) $t > $cutoff);
-
-if (isset($recent[$fingerprint])) {
-    $_SESSION['ep_lp_recent'] = $recent;
-    /* Reported as success. The visitor's enquiry did reach us — on the previous
-       click — so telling them it failed would be false, and inviting them to
-       try again is exactly the wrong instruction. */
-    ep_lp_finish(true, 'Thank you. We already have your inquiry and will be in touch within one business day.');
-}
 
 $recent[$fingerprint]      = time();
 $_SESSION['ep_lp_recent']  = $recent;

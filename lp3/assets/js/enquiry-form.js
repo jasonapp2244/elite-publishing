@@ -195,7 +195,10 @@
             return data;
           });
       })
-      .then(function () {
+      .then(function (data) {
+        /* Go to the thank-you page on success. showSuccess() stays as the
+           fallback for a response that carries no redirect. */
+        if (data && data.redirect) { window.location.assign(data.redirect); return; }
         showSuccess(payload);
       })
       .catch(function (err) {

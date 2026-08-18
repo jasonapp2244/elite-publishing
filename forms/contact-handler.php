@@ -256,17 +256,22 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Rate limit
+// 4. Rate limit — REMOVED ON REQUEST
 // ---------------------------------------------------------------------------
-if (ep_rate_limited(ep_client_ip())) {
-    ep_form_finish(
-        'error',
-        'That is a lot of messages in a short time. Please wait a few minutes and try again.',
-        [],
-        [],
-        $fragment
-    );
-}
+/* This refused a sixth submission from one IP inside ten minutes and told the
+   visitor to wait a few minutes. Removed so every submission is simply sent and
+   the visitor goes straight to the thank-you page.
+
+   ep_rate_limited() is left defined but no longer called. Restoring it is
+   uncommenting:
+
+       if (ep_rate_limited(ep_client_ip())) {
+           ep_form_finish('error', 'Please wait a few minutes and try again.', [], [], $fragment);
+       }
+
+   The CSRF token and the honeypot still apply, and neither ever delays a real
+   visitor. Neither stops a script that reads the token from the page first,
+   which is what the rate limit was for. */
 
 // ---------------------------------------------------------------------------
 // 5. Read and validate

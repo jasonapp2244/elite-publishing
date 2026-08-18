@@ -270,6 +270,9 @@
             });
         })
         .then(function (body) {
+          /* Go to the thank-you page on success; the inline confirmation is only
+             the fallback if the handler did not say where to go. */
+          if (body && body.redirect) { window.location.assign(body.redirect); return; }
           onSuccess(body.message);
         })
         .catch(function (error) {

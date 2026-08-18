@@ -360,6 +360,13 @@
                         throw new Error(body?.message || 'We could not send that just now. Please try again.');
                     }
 
+                    /* The handler answers a successful send with where to go next, so the
+                       visitor lands on the thank-you page rather than reading a confirmation
+                       on the form they just left. The inline status is the fallback for a
+                       response that carries no redirect. */
+                    if (body && body.redirect) { window.location.assign(body.redirect); return; }
+
+
                     if (status) {
                         status.className = 'form-status is-success';
                         status.textContent = body.message;
