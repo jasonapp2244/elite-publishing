@@ -96,7 +96,7 @@ function ep_lp_hidden_fields(string $lp): string
         '<input type="hidden" name="_ajax" value="0" data-ajax-flag>',
         ep_csrf_field(),
         '<div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">',
-        '  <label>Do not fill this in<input type="text" name="website" tabindex="-1" autocomplete="off"></label>',
+        '  <label>Do not fill this in<input type="text" name="ep_hp" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other" data-bwignore></label>',
         '</div>',
     ]);
 }

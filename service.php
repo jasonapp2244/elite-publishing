@@ -163,7 +163,7 @@ $old = static fn (string $key): string => (string) ($formOld[$key] ?? '');
 
         <div class="hp-field" aria-hidden="true">
           <label for="svc-website">Leave this field empty</label>
-          <input type="text" id="svc-website" name="website" tabindex="-1" autocomplete="off">
+          <input type="text" id="svc-hp" name="ep_hp" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other" data-bwignore>
         </div>
 
         <?php /* The design shows placeholders only, so every label is visually hidden. */ ?>

@@ -150,7 +150,7 @@ require __DIR__ . '/includes/head.php';
 
         <div class="hp-field" aria-hidden="true">
           <label for="hl-website">Leave this field empty</label>
-          <input type="text" id="hl-website" name="website" tabindex="-1" autocomplete="off">
+          <input type="text" id="hl-hp" name="ep_hp" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other" data-bwignore>
         </div>
 
         <div class="hl-form__row">

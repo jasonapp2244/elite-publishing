@@ -240,10 +240,25 @@ if (!ep_csrf_valid(isset($_POST['_token']) ? (string) $_POST['_token'] : null)) 
 // ---------------------------------------------------------------------------
 // 3. Honeypot
 // ---------------------------------------------------------------------------
-// A bot that fills the hidden `website` field is told the submission worked and
-// nothing is delivered. Never tell it that it was caught — that is free
-// feedback for whoever wrote it.
-if (trim((string) ($_POST['website'] ?? '')) !== '') {
+/* A bot that fills the hidden field is told the submission worked and nothing is
+   delivered. Never tell it that it was caught — that is free feedback for
+   whoever wrote it.
+ *
+ * THE FIELD IS NAMED ep_hp, NOT website.
+ *
+ * It was `website`, and that name is one browsers and password managers fill by
+ * themselves. Being positioned off-screen does not protect it: autofill works
+ * from the name, not from whether a human can see the box. A real visitor whose
+ * browser filled it in was therefore treated as a bot — shown a cheerful
+ * confirmation while the enquiry was silently thrown away. That is the worst
+ * failure this form has: it looks like success to the visitor and like nothing
+ * at all to us. ep_hp matches no autofill heuristic, and the field also carries
+ * the opt-out attributes 1Password, LastPass, Bitwarden and Dashlane honour.
+ *
+ * It now redirects to the thank-you page like every other outcome, so a bot
+ * cannot tell the two apart by the response either.
+ */
+if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
     if (EP_DEBUG) {
         ep_log_submission([
             'time'    => date('c'),
@@ -252,7 +267,7 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
             'ip'      => ep_client_ip(),
         ]);
     }
-    ep_form_finish('ok', 'Thank you. Your message has been sent, and we will be in touch shortly.', [], [], $fragment);
+    ep_form_thanks();
 }
 
 // ---------------------------------------------------------------------------

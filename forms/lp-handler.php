@@ -416,9 +416,20 @@ if (!ep_csrf_valid(isset($_POST['_token']) ? (string) $_POST['_token'] : null)) 
 // ---------------------------------------------------------------------------
 // 4. Honeypot
 // ---------------------------------------------------------------------------
-// A bot that fills the hidden `website` field is thanked and nothing is sent.
-// Never tell it that it was caught.
-if (trim((string) ($_POST['website'] ?? '')) !== '') {
+/* A bot that fills the hidden field is thanked and nothing is sent. Never tell
+   it that it was caught.
+ *
+ * THE FIELD IS NAMED ep_hp, NOT website — see the longer note in
+ * contact-handler.php. Short version: browsers and password managers fill a
+ * field called `website` on their own, off-screen or not, so real visitors were
+ * being classified as bots and their enquiries dropped while they were shown a
+ * confirmation. LP3's own demo script also posts a `website` value of its own
+ * (assets/js/app.js), which would have tripped the same trap.
+ *
+ * The response is the same success + redirect every other outcome gives, so the
+ * two remain indistinguishable from outside.
+ */
+if (trim((string) ($_POST['ep_hp'] ?? '')) !== '') {
     if (EP_DEBUG) {
         ep_log_submission([
             'time'    => date('c'),

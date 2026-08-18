@@ -45,7 +45,7 @@ if (empty($steps)) {
   <input type="hidden" name="_form" value="wizard">
   <div class="hp-field" aria-hidden="true">
     <label for="<?= esc($p) ?>-website">Leave this field empty</label>
-    <input type="text" id="<?= esc($p) ?>-website" name="website" tabindex="-1" autocomplete="off">
+    <input type="text" id="<?= esc($p) ?>-hp" name="ep_hp" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other" data-bwignore>
   </div>
 
   <ol class="wizard__progress list-plain" aria-hidden="true">
