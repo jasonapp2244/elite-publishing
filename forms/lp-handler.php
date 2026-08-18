@@ -415,7 +415,7 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
             'ip'      => ep_lp_client_ip(),
         ]);
     }
-    ep_lp_finish(true, 'Thank you — your enquiry is on its way. We will be in touch within one business day.');
+    ep_lp_finish(true, 'Thank you. Your inquiry is on its way, and we will be in touch within one business day.');
 }
 
 // ---------------------------------------------------------------------------
@@ -495,7 +495,7 @@ $old = [
 if ($errors !== []) {
     ep_lp_finish(
         false,
-        'We could not send that just yet — please check the highlighted fields.',
+        'We could not send that just yet. Please check the highlighted fields.',
         $errors,
         $lp,
         $old
@@ -533,7 +533,7 @@ if (isset($recent[$fingerprint])) {
     /* Reported as success. The visitor's enquiry did reach us — on the previous
        click — so telling them it failed would be false, and inviting them to
        try again is exactly the wrong instruction. */
-    ep_lp_finish(true, 'Thank you — we already have your enquiry and will be in touch within one business day.');
+    ep_lp_finish(true, 'Thank you. We already have your inquiry and will be in touch within one business day.');
 }
 
 $recent[$fingerprint]      = time();
@@ -580,6 +580,6 @@ unset($_SESSION['ep_csrf']);
 ep_lp_finish(
     true,
     $attachment !== null
-        ? 'Thank you — your manuscript is with us. We will be in touch within one business day.'
-        : 'Thank you — your enquiry is on its way. We will be in touch within one business day.'
+        ? 'Thank you. Your manuscript is with us, and we will be in touch within one business day.'
+        : 'Thank you. Your inquiry is on its way, and we will be in touch within one business day.'
 );

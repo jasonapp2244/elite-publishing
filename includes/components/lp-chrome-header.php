@@ -50,7 +50,7 @@ $lpCta = ep_lp_cta($lp ?? '');
 <header class="ep-header ep-header--lp">
   <div class="container-ep ep-header__inner">
 
-    <a class="ep-logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> — home">
+    <a class="ep-logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> home">
       <?php /* Eager and synchronous: it is the first thing drawn and a header
                that pops in after the hero has painted reads as a broken page.
                No fetchpriority — that belongs to the hero image, which is the

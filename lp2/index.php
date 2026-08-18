@@ -396,7 +396,7 @@ $lpFlash = ep_lp_flash();
                   You retain 100% ownership of your content
                 </li>
                 <li class="check-list__item">
-                  Transparent, fee-for-service pricing—no hidden royalties
+                  Transparent, fee-for-service pricing with no hidden royalties
                 </li>
                 <li class="check-list__item">
                   End-to-end publishing and distribution support
@@ -471,7 +471,7 @@ $lpFlash = ep_lp_flash();
                 </h3>
                 <p class="service-card__summary">
                   Professional guidance to refine your manuscript for clarity,
-                  structure, and impact—without losing your unique voice.
+                  structure, and impact, without losing your unique voice.
                 </p>
                 <details class="disclosure">
                   <summary class="disclosure__trigger">Read More</summary>
@@ -480,7 +480,7 @@ $lpFlash = ep_lp_flash();
                       <p>
                         <strong>Elite Publishing</strong> provides professional,
                         faith-aligned guidance to help shape your manuscript for
-                        clarity, structure, flow, and reader engagement—without
+                        clarity, structure, flow, and reader engagement, without
                         compromising your unique voice or message. Our editorial
                         team works collaboratively with authors to strengthen
                         content, improve organization, and refine language so
@@ -530,11 +530,11 @@ $lpFlash = ep_lp_flash();
                         manuscript into a professionally designed book with a
                         custom cover, back cover copy, formatted interior, and
                         full distribution setup through Amazon and KDP for
-                        print-on-demand fulfillment—ideal for authors ready to
+                        print-on-demand fulfillment, ideal for authors ready to
                         publish a new title with professional quality and broad
-                        marketplace reach. (Author Provides Completed Manuscript
-                        – Editing Is Additional – Includes Two Rounds of
-                        Revisions)
+                        marketplace reach. (Author provides the completed manuscript.
+                        Editing is additional. Includes two rounds of
+                        revisions.)
                       </p>
                     </div>
                   </div>
@@ -576,7 +576,7 @@ $lpFlash = ep_lp_flash();
                         KDP on Amazon and through Ingram Spark, making your title
                         available for purchase at major retailers like Walmart,
                         Target, Barnes &amp; Noble, and independent
-                        bookstores—ideal for authors seeking wide marketplace
+                        bookstores, ideal for authors seeking wide marketplace
                         exposure and distribution without the need for inventory
                         management.
                       </p>
@@ -612,7 +612,7 @@ $lpFlash = ep_lp_flash();
                         <strong>Elite Publishing</strong> transforms your
                         print-ready PDF into a professionally formatted e-book
                         for seamless distribution through Amazon Kindle and
-                        Ingram Spark’s global e-book platforms—ideal for authors
+                        Ingram Spark’s global e-book platforms, ideal for authors
                         wanting to expand their reach through digital and mobile
                         readership.
                       </p>
@@ -646,38 +646,38 @@ $lpFlash = ep_lp_flash();
                         <strong>Book Replication:</strong> Provides a
                         high-quality exact reproduction of your existing book
                         through professional scanning and high-res PDF
-                        manuscript preparation for print-on-demand—perfect for
+                        manuscript preparation for print-on-demand, perfect for
                         authors who want an exact duplicate without updates or
-                        revisions. (No Updates – Rights Waiver Required.)
+                        revisions. (No updates. Rights waiver required.)
                       </p>
                       <p>
                         <strong>Book Retrofitting:</strong> Provides a
                         high-quality reproduction of your existing book with
-                        refreshed cover elements—new ISBNs and barcodes, new
-                        logos, and updated copyright pages—while maintaining the
-                        original content—ideal for relaunching a book with new,
-                        professional-quality updates. (One Revision Included –
-                        Rights Waiver Required.)
+                        refreshed cover elements (new ISBNs and barcodes, new
+                        logos, and updated copyright pages) while maintaining the
+                        original content, ideal for relaunching a book with new,
+                        professional-quality updates. (One revision included.
+                        Rights waiver required.)
                       </p>
                       <p>
                         <strong>Book Republishing Basic:</strong> Gives your
                         entire book a fresh look with limited author-directed
                         updates to your manuscript (repagination not required),
                         fully redesigned front and back covers, and a new
-                        publishing high-res PDF for print-on-demand—perfect for
+                        publishing high-res PDF for print-on-demand, perfect for
                         refining and relaunching an existing work with a
-                        modernized look and professional polish. (Includes Two
-                        Rounds of Revisions – Author Provides Updated Copy)
+                        modernized look and professional polish. (Includes two
+                        rounds of revisions. Author provides the updated copy.)
                       </p>
                       <p>
                         <strong>Book Republishing Advanced:</strong> Gives your
                         entire book a fresh look with unlimited author-directed
                         updates to your manuscript (repagination required),
                         fully redesigned front and back covers, and a new
-                        publishing high-res PDF for print-on-demand—perfect for
+                        publishing high-res PDF for print-on-demand, perfect for
                         refining and relaunching an existing work with a
-                        modernized look and professional polish. (Includes Two
-                        Rounds of Revisions – Author Provides Updated Copy)
+                        modernized look and professional polish. (Includes two
+                        rounds of revisions. Author provides the updated copy.)
                       </p>
                     </div>
                   </div>
@@ -699,7 +699,7 @@ $lpFlash = ep_lp_flash();
                 <h3 class="service-card__title">Global Distribution Channels</h3>
                 <p class="service-card__summary">
                   Your book available through Amazon, Barnes &amp; Noble,
-                  ChristianBook.com, and more—online and in-store.
+                  ChristianBook.com, and more, online and in-store.
                 </p>
                 <details class="disclosure">
                   <summary class="disclosure__trigger">Read More</summary>
@@ -713,7 +713,7 @@ $lpFlash = ep_lp_flash();
                         and international distribution partners. Through
                         strategic setup and platform integration, your title is
                         made accessible to both online shoppers and
-                        brick-and-mortar retailers—expanding visibility,
+                        brick-and-mortar retailers, expanding visibility,
                         discoverability, and long-term sales potential. This
                         service is ideal for authors seeking broad marketplace
                         reach without the complexity of managing distribution
@@ -879,7 +879,7 @@ $lpFlash = ep_lp_flash();
               </h2>
               <p class="section__lead">
                 Elite Publishing helps Christian authors
-                and ministries bring their messages to life—professionally,
+                and ministries bring their messages to life, professionally,
                 purposefully, and with excellence.
               </p>
 
@@ -900,13 +900,13 @@ $lpFlash = ep_lp_flash();
               </ul>
 
               <p class="section__lead">
-                <strong>Full-Service Publishing—Made Simple</strong>
+                <strong>Full-Service Publishing, Made Simple</strong>
               </p>
               <p>
                 Publishing a book does not have to be overwhelming. From
                 manuscript to marketplace, our experienced publishing team
                 provides <strong>end-to-end author services</strong> designed to
-                help you publish with confidence, clarity, and credibility—while
+                help you publish with confidence, clarity, and credibility, while
                 staying true to your message and mission. Whether you are
                 publishing your <strong>first book</strong>, launching an
                 <strong>eBook</strong>, or giving new life to an existing title,

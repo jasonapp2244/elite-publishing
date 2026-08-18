@@ -168,7 +168,7 @@ return [
         'meta_desc' => 'Audio book production from manuscript to store-ready master. Narrator casting, studio recording, editing, mastering and audiobook distribution.',
         'hero' => [
             'h1'    => "Bring Your Book To\nListeners With A\nProduced Audiobook",
-            'text'  => 'We manage audiobook production end to end — narrator casting, recording, editing and mastering — and deliver files to the specification each audiobook store requires.',
+            'text'  => 'We manage audiobook production end to end (narrator casting, recording, editing, and mastering) and deliver files to the specification each audiobook store requires.',
             'image' => 'img/svc/audio-book-production-hero',
         ],
         'intro' => [
@@ -208,10 +208,10 @@ return [
         'intro' => [
             'h2'    => "Professional Ghostwriting\nThat Brings Your Story To Life",
             'paras' => [
-                'Every great book starts with an idea—but not every idea becomes a book. Turning thoughts and experiences into a well-written manuscript requires structure, clarity, and storytelling expertise.',
+                'Every great book starts with an idea, but not every idea becomes a book. Turning thoughts and experiences into a well-written manuscript requires structure, clarity, and storytelling expertise.',
                 'Our ghostwriting service helps authors, entrepreneurs, and professionals transform raw ideas into engaging, publish-ready books. Whether you have a rough concept or a full outline, we turn it into a clear and compelling narrative.',
                 'We work closely with you to capture your voice, tone, and message so your book feels authentic while meeting professional publishing standards.',
-                'The result is a book that sounds like you—only clearer, stronger, and more impactful.',
+                'The result is a book that sounds like you, only clearer, stronger, and more impactful.',
             ],
             'image' => 'img/svc/ghostwriting-intro',
         ],
@@ -295,13 +295,13 @@ return [
      */
     'creative-content-writing' => [
         'title'     => 'Creative Content Writing',
-        'meta_desc' => 'Creative content writing for authors — book descriptions, author bios, website copy and launch emails, written in the same voice as your book.',
+        'meta_desc' => 'Creative content writing for authors: book descriptions, author bios, website copy, and launch emails, written in the same voice as your book.',
         'hero' => [
             /* Three lines, and each one has to fit the hero column at 76px —
                about 20 characters. "Creative Content Written" was 24 and wrapped
                to a fourth line. */
             'h1'    => "Content Written For\nYour Book And Your\nAuthor Platform",
-            'text'  => 'We write the copy that sits around your manuscript — book descriptions, author bios, website pages and launch emails — in the same voice as the book itself.',
+            'text'  => 'We write the copy that sits around your manuscript (book descriptions, author bios, website pages, and launch emails) in the same voice as the book itself.',
             'image' => 'img/svc/creative-content-writing-hero',
         ],
         'intro' => [
@@ -336,7 +336,7 @@ return [
         'meta_desc' => 'Blog article writing for author websites. Researched, well-structured articles on your subject and genre, written in your voice and ready to publish.',
         'hero' => [
             'h1'    => "Blog Articles That\nKeep Your Author\nSite Active",
-            'text'  => 'We research and write articles for your author website — on your subject, your genre, and the questions your readers are already asking.',
+            'text'  => 'We research and write articles for your author website: on your subject, your genre, and the questions your readers are already asking.',
             'image' => 'img/svc/blog-article-writing-hero',
         ],
         'intro' => [

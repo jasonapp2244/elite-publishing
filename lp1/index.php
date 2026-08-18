@@ -19,7 +19,7 @@ $lpFlash = ep_lp_flash();
         <meta name="theme-color" content="#005eda" />
 
         <title>
-            Elite Publishing — Award-Winning Children's Book Publishing Company
+            Elite Publishing: Award-Winning Children's Book Publishing Company
         </title>
         <meta
             name="description"
@@ -41,7 +41,7 @@ $lpFlash = ep_lp_flash();
         <meta property="og:site_name" content="Elite Publishing" />
         <meta
             property="og:title"
-            content="Elite Publishing — Award-Winning Children's Book Publishing Company"
+            content="Elite Publishing: Award-Winning Children's Book Publishing Company"
         />
         <meta
             property="og:description"
@@ -69,7 +69,7 @@ $lpFlash = ep_lp_flash();
         <meta name="twitter:card" content="summary_large_image" />
         <meta
             name="twitter:title"
-            content="Elite Publishing — Award-Winning Children's Book Publishing Company"
+            content="Elite Publishing: Award-Winning Children's Book Publishing Company"
         />
         <meta
             name="twitter:description"
@@ -196,7 +196,7 @@ $lpFlash = ep_lp_flash();
                                 Children Publishers specializes in end-to-end
                                 children's book publishing and has a proven
                                 track record of launching bestsellers of 17K+
-                                stories on 50+ platforms—all without rejections.
+                                stories on 50+ platforms, all without rejections.
                             </p>
                         </div>
 

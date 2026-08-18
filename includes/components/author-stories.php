@@ -60,7 +60,7 @@ if (empty($stories['cards'])) {
            data/shared.php and it becomes a real link to that video. */
         $video = $card['video'] ?? '';
         $label = sprintf(
-            'Play the author story of %s — %s',
+            'Play the author story of %s, %s',
             $card['name'] ?? 'this author',
             $card['title'] ?? ''
         );

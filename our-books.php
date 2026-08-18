@@ -13,7 +13,7 @@ require_once __DIR__ . '/includes/config.php';
 
 $pageKey         = 'books';
 $pageTitle       = 'Our Books';
-$pageDescription = 'A selection of titles across the genres we work in — fiction, '
+$pageDescription = 'A selection of titles across the genres we work in: fiction, '
                  . 'non-fiction, children\'s books and more.';
 $pageCss         = ['css/p-core.css'];
 

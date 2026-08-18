@@ -28,7 +28,7 @@ $nav = ep_nav();
 <header class="ep-header" id="ep-header">
   <div class="container-ep ep-header__inner">
 
-    <a class="ep-logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> — home">
+    <a class="ep-logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> home">
       <?php /* No fetchpriority here: the logo is small and would compete with
                the page's real LCP element (the hero band / hero photo) for
                early bandwidth. Eager + sync is enough to avoid a header pop. */ ?>

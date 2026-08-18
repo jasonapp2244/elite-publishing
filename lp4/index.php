@@ -17,7 +17,7 @@ $lpFlash = ep_lp_flash();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Audiobook Publishing Services | Elite Publishing</title>
-<meta name="description" content="Elite Publishing turns your manuscript into a professional audiobook — expert narration, full audio production, global distribution and marketing. Publish your audiobook with a team that treats your story like its own.">
+<meta name="description" content="Elite Publishing turns your manuscript into a professional audiobook: expert narration, full audio production, global distribution, and marketing. Publish your audiobook with a team that treats your story like its own.">
 <?php /* This page, not the home page — see the note in lp1/index.php. */ ?>
 <link rel="canonical" href="https://elitepublishing.co/lp4/">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -124,7 +124,7 @@ $lpFlash = ep_lp_flash();
     <div class="container-lp">
         <div class="section-head" data-animation="fade-up">
             <h2 class="section-head__title">Publishing Formats We <br class="br-lg"> <span class="accent">Prepare For You</span></h2>
-            <p class="section-head__sub">Every package includes professional formatting and setup for eBook, paperback, and hardcover &mdash; ready for distribution on major retail platforms.</p>
+            <p class="section-head__sub">Every package includes professional formatting and setup for eBook, paperback, and hardcover, ready for distribution on major retail platforms.</p>
         </div>
 
         <div class="formats-grid row g-4" data-stagger>

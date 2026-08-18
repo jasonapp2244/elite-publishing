@@ -29,7 +29,7 @@ require __DIR__ . '/includes/head.php';
     <p class="page-404__code">404</p>
     <h1 id="nf-h">This Page Has Not Been Written Yet</h1>
     <p class="lead page-404__intro">
-      Sorry — the page you were looking for does not exist, or it has moved. The link may be
+      Sorry, the page you were looking for does not exist, or it has moved. The link may be
       out of date, or the address may have a typo in it.
     </p>
     <p class="page-404__actions">

@@ -59,7 +59,7 @@ $reasons = [
     ['title' => 'A Schedule You Can Plan Around',
      'text'  => 'You get a dated stage-by-stage schedule at the start, and progress against it as the work runs.'],
     ['title' => 'End-to-End Solutions',
-     'text'  => 'From writing, design, publishing, to marketing — everything under one roof.'],
+     'text'  => 'From writing and design to publishing and marketing, everything under one roof.'],
     ['title' => 'Transparent Process',
      'text'  => "Know exactly what's happening at every stage of your book's journey."],
 ];

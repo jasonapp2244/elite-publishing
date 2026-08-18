@@ -252,7 +252,7 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
             'ip'      => ep_client_ip(),
         ]);
     }
-    ep_form_finish('ok', 'Thank you — your message has been sent. We will be in touch shortly.', [], [], $fragment);
+    ep_form_finish('ok', 'Thank you. Your message has been sent, and we will be in touch shortly.', [], [], $fragment);
 }
 
 // ---------------------------------------------------------------------------
@@ -335,7 +335,7 @@ $old = [
 if ($errors !== []) {
     ep_form_finish(
         'error',
-        'We could not send that just yet — please check the highlighted fields.',
+        'We could not send that just yet. Please check the highlighted fields.',
         $errors,
         $old,
         $fragment

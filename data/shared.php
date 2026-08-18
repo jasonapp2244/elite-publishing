@@ -39,7 +39,7 @@ return [
                 'slug'  => 'book-cover-design',
                 'title' => "Book Cover\nDesign",
                 'icon'  => 'layers',
-                'text'  => 'Readers judge books by their covers—and so do retail algorithms. Our cover artists design modern, high-impact covers that hold up at full size and as a store thumbnail.',
+                'text'  => 'Readers judge books by their covers, and so do retail algorithms. Our cover artists design modern, high-impact covers that hold up at full size and as a store thumbnail.',
                 'draft' => true,
             ],
             [
@@ -326,7 +326,7 @@ return [
                    design (DECISIONS §11 bug 1) and reproduced deliberately. The
                    content pass asks for correct grammar, so they are corrected
                    here — the wording and the genre list are untouched. */
-                'a'     => 'Fiction, non-fiction, romance, Christian, self-help, children\'s, poetry and academic — we match your project with a writer who specializes in your genre.',
+                'a'     => 'Fiction, nonfiction, romance, Christian, self-help, children\'s, poetry, and academic. We match your project with a writer who specializes in your genre.',
                 'draft' => false,
             ],
             [
@@ -396,7 +396,7 @@ return [
             'cols'     => 1,
             'cta'      => 'Continue',
             'options'  => [
-                ['emoji' => '💡', 'label' => 'Just an idea — I need help from scratch', 'selected' => false],
+                ['emoji' => '💡', 'label' => 'Just an idea, I need help from scratch', 'selected' => false],
                 ['emoji' => '📝', 'label' => 'I have an outline or partial draft',      'selected' => true],
                 ['emoji' => '📄', 'label' => 'My manuscript is complete',               'selected' => false],
                 ['emoji' => '🚀', 'label' => 'Ready to publish and launch',             'selected' => false],
@@ -409,11 +409,11 @@ return [
             'cols'     => 1,
             'cta'      => 'Continue',
             'options'  => [
-                ['emoji' => null, 'label' => '$2,500 — $5,000',    'selected' => false],
-                ['emoji' => null, 'label' => '$5,000 — $10,000',   'selected' => false],
-                ['emoji' => null, 'label' => '$10,000 — $20,000',  'selected' => true],
+                ['emoji' => null, 'label' => '$2,500 to $5,000',    'selected' => false],
+                ['emoji' => null, 'label' => '$5,000 to $10,000',   'selected' => false],
+                ['emoji' => null, 'label' => '$10,000 to $20,000',  'selected' => true],
                 ['emoji' => null, 'label' => '$20,000+',           'selected' => false],
-                ['emoji' => null, 'label' => 'Not sure — advise me', 'selected' => false],
+                ['emoji' => null, 'label' => 'Not sure, advise me', 'selected' => false],
             ],
         ],
         [
@@ -479,7 +479,7 @@ return [
         /* Was "…a professionally written, market-ready book that creates real
            impact." The last clause promised a result; the rest of the sentence
            already says what is delivered, so it ends there. */
-        'text'    => 'We help you build more than just a book—we help shape your author identity. Every project is handled with care, clarity, and full confidentiality while staying true to your voice. Our focus is a professionally written book, prepared to the standard the retailers and print partners require.',
+        'text'    => 'We help you build more than just a book. We help shape your author identity. Every project is handled with care, clarity, and full confidentiality while staying true to your voice. Our focus is a professionally written book, prepared to the standard the retailers and print partners require.',
         'chips'   => [
             '100% Confidential Process',
             'Your Voice, Your Style',

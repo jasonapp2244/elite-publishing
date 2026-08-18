@@ -48,7 +48,7 @@ $lpDomain = strtolower((string) substr(strrchr(EP_EMAIL, '@') ?: '@elitepublishi
 <footer class="ep-footer ep-footer--lp">
   <div class="container-ep ep-footer__inner">
 
-    <a class="ep-footer__logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> — home">
+    <a class="ep-footer__logo" href="<?= esc(url()) ?>" aria-label="<?= esc(EP_NAME) ?> home">
       <?php /* logo-ink is the single-colour mark. The full-colour logo.png used
                in the header has a green in it that sits almost on top of this
                footer's green field and disappears against it. */ ?>

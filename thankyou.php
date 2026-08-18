@@ -38,10 +38,10 @@ require __DIR__ . '/includes/head.php';
       <?= ep_icon('check', ['size' => 34]) ?>
     </span>
 
-    <h1 id="thanks-h">Thank you — your message is on its way</h1>
+    <h1 id="thanks-h">Thank you. Your message is on its way</h1>
 
     <p class="lead thanks__lead">
-      Our editorial team reads every enquiry and will get back to you shortly,
+      Our editorial team reads every inquiry and will get back to you shortly,
       usually within one working day.
     </p>
 

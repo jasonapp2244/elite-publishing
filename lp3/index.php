@@ -16,7 +16,7 @@ $lpFlash = ep_lp_flash();
 <meta charset="utf-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Elite Publishing — Your Book Marketing Command Center</title>
+<title>Elite Publishing: Your Book Marketing Command Center</title>
 <meta name="description" content="One portal to create, publish, and track every marketing effort for your book. Social posts, email campaigns, press releases, ads, distribution, and more.">
 
 <!-- Google tag (gtag.js).
@@ -54,7 +54,7 @@ $lpFlash = ep_lp_flash();
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Elite Publishing">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="Elite Publishing — Marketing tools built for authors">
+<meta property="og:title" content="Elite Publishing: Marketing tools built for authors">
 <meta property="og:description" content="A complete promotion toolkit for authors: book descriptions, press releases, social posts, trailers, email campaigns, and event tools — without becoming a full-time marketer.">
 <meta property="og:url" content="https://elitepublishing.co/lp3/">
 <?php /* Was the 452x360 site logo under a summary_large_image declaration — the
@@ -63,14 +63,14 @@ $lpFlash = ep_lp_flash();
 <meta property="og:image" content="https://elitepublishing.co/assets/img/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="628">
-<meta property="og:image:alt" content="Elite Publishing — marketing tools built for authors">
+<meta property="og:image:alt" content="Elite Publishing: marketing tools built for authors">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Elite Publishing — Marketing tools built for authors">
+<meta name="twitter:title" content="Elite Publishing: Marketing tools built for authors">
 <meta name="twitter:description" content="A complete promotion toolkit for authors: book descriptions, press releases, social posts, trailers, email campaigns, and event tools — without becoming a full-time marketer.">
 <meta name="twitter:image" content="https://elitepublishing.co/assets/img/og-default.jpg">
-<meta name="twitter:image:alt" content="Elite Publishing — marketing tools built for authors">
+<meta name="twitter:image:alt" content="Elite Publishing: marketing tools built for authors">
 
 <!-- Structured data: Organization + SoftwareApplication (helps Google rich results and AI assistants describe/recommend the product) -->
 <script type="application/ld+json">
@@ -98,7 +98,7 @@ $lpFlash = ep_lp_flash();
       "operatingSystem": "Web browser",
       "url": "https://elitepublishing.co/",
       "publisher": { "@id": "https://elitepublishing.co/#org" },
-      "description": "A complete promotion toolkit for indie authors: AI-drafted book descriptions, press releases, sell sheets, social posts, book trailers, email campaigns, ad copy, keyword and BISAC suggestions, and event tools — each reading your book's metadata to stay on-brand.",
+      "description": "A complete promotion toolkit for indie authors: AI-drafted book descriptions, press releases, sell sheets, social posts, book trailers, email campaigns, ad copy, keyword and BISAC suggestions, and event tools, each reading your book's metadata to stay on-brand.",
       "offers": [
         {
           "@type": "Offer",
@@ -190,7 +190,7 @@ $lpFlash = ep_lp_flash();
     <div class="hero-left">
       <span class="hero-eyebrow">Built for authors</span>
       <h1>Sell more books.<br>Spend less time on <em>marketing.</em></h1>
-      <p>Elite Publishing is a complete promotion toolkit — book descriptions, press releases, social posts, trailers, email campaigns, and event tools — without becoming a full-time marketer.</p>
+      <p>Elite Publishing is a complete promotion toolkit (book descriptions, press releases, social posts, trailers, email campaigns, and event tools) without becoming a full-time marketer.</p>
       <div class="hero-ctas">
         <?php /* The "See what your author website can look like" button was
                  removed on request. It called openSiteTour(), which is defined
@@ -211,7 +211,7 @@ $lpFlash = ep_lp_flash();
 
       <div class="auth-panel-title">Start Your Book Today</div>
       <div class="auth-panel-sub">Send us your manuscript and we'll be in touch.</div>
-      <div class="enquiry-note">Upload your draft and tell us what you'd like help with — we'll reply with the right plan and next steps for your launch.</div>
+      <div class="enquiry-note">Upload your draft and tell us what you'd like help with, and we'll reply with the right plan and next steps for your launch.</div>
 
       <form id="enquiry-form" novalidate
             method="post"
@@ -273,7 +273,7 @@ $lpFlash = ep_lp_flash();
 
       <!-- Swapped in by submitEnquiry() once the form validates. -->
       <div class="enquiry-success" id="enquiry-success" style="display:none">
-        <h3>Thanks<span id="enquiry-success-name"></span> — manuscript received</h3>
+        <h3>Thanks<span id="enquiry-success-name"></span>: manuscript received</h3>
         <?php /* Was "In the meantime, the free demo below tours every feature."
                  The demo link directly beneath this line was removed with the
                  hero button, so that sentence pointed at nothing — a promise
@@ -309,20 +309,20 @@ $lpFlash = ep_lp_flash();
       <div style="position:relative">
         <div style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#F5D775,#D8A72E);color:#3a2c00;font-weight:800;font-size:13px;letter-spacing:1.4px;text-transform:uppercase;padding:6px 15px;border-radius:999px;margin-bottom:20px;box-shadow:0 3px 12px rgba(0,0,0,0.20)">✨ New</div>
 
-        <h2 style="font-family:var(--font-serif);font-size:clamp(26px,4.5vw,36px);line-height:1.18;font-weight:700;margin:0 0 16px;max-width:820px">Now turn your book into an eBook — <em style="color:#F5D775;font-style:italic">right here, in minutes.</em></h2>
+        <h2 style="font-family:var(--font-serif);font-size:clamp(26px,4.5vw,36px);line-height:1.18;font-weight:700;margin:0 0 16px;max-width:820px">Now turn your book into an eBook, <em style="color:#F5D775;font-style:italic">right here, in minutes.</em></h2>
 
-        <p style="font-size:clamp(16px,2vw,18.5px);line-height:1.6;margin:0 0 28px;max-width:770px;color:rgba(255,255,255,0.93)">Every online store wants your book as an EPUB file — and making one used to mean buying special software or paying a formatter. Our new <strong>eBook Maker</strong> builds a clean, store-ready eBook from the file you already have. No extra software, no headaches. Then sell it anywhere you like.</p>
+        <p style="font-size:clamp(16px,2vw,18.5px);line-height:1.6;margin:0 0 28px;max-width:770px;color:rgba(255,255,255,0.93)">Every online store wants your book as an EPUB file, and making one used to mean buying special software or paying a formatter. Our new <strong>eBook Maker</strong> builds a clean, store-ready eBook from the file you already have. No extra software, no headaches. Then sell it anywhere you like.</p>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:30px">
           <div style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.20);border-radius:12px;padding:22px 24px">
             <div style="font-size:28px;margin-bottom:10px">📖</div>
             <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;margin-bottom:7px">Novels &amp; text books</div>
-            <div style="font-size:15.5px;line-height:1.55;color:rgba(255,255,255,0.86)">Upload a Word file and we structure your chapters, build a clickable table of contents, tidy stray formatting, and add your cover — automatically.</div>
+            <div style="font-size:15.5px;line-height:1.55;color:rgba(255,255,255,0.86)">Upload a Word file and we structure your chapters, build a clickable table of contents, tidy stray formatting, and add your cover, automatically.</div>
           </div>
           <div style="background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.20);border-radius:12px;padding:22px 24px">
             <div style="font-size:28px;margin-bottom:10px">🎨</div>
             <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;margin-bottom:7px">Picture &amp; children's books</div>
-            <div style="font-size:15.5px;line-height:1.55;color:rgba(255,255,255,0.86)">Upload your print-ready PDF and every page stays exactly as you designed it — artwork and words locked together in a true fixed-layout eBook. <strong>Something most tools can't do.</strong></div>
+            <div style="font-size:15.5px;line-height:1.55;color:rgba(255,255,255,0.86)">Upload your print-ready PDF and every page stays exactly as you designed it, with artwork and words locked together in a true fixed-layout eBook. <strong>Something most tools can't do.</strong></div>
           </div>
         </div>
 
@@ -348,7 +348,7 @@ $lpFlash = ep_lp_flash();
       <div style="flex:1;min-width:260px;max-width:760px">
         <div style="font-size:12px;letter-spacing:1.3px;text-transform:uppercase;opacity:0.85;margin-bottom:6px">Built by someone who's been in the trenches</div>
         <div style="font-family:var(--font-serif);font-size:20px;line-height:1.45;font-weight:600;margin-bottom:8px">Three decades helping authors print, publish, and market their books.</div>
-        <div style="font-size:14.5px;line-height:1.6;opacity:0.95">Elite Publishing is built by <strong>Bob Sims</strong>, founder of <strong>Zip Print &amp; Copy</strong> and <strong>Biblio Publishing</strong> in central Ohio — businesses that have served indie authors and small publishers for thirty years. This portal is the toolkit those authors kept asking for: every feature shaped by what authors actually struggle with, not what looks good in a pitch deck.</div>
+        <div style="font-size:14.5px;line-height:1.6;opacity:0.95">Elite Publishing is built by <strong>Bob Sims</strong>, founder of <strong>Zip Print &amp; Copy</strong> and <strong>Biblio Publishing</strong> in central Ohio, businesses that have served indie authors and small publishers for thirty years. This portal is the toolkit those authors kept asking for: every feature shaped by what authors actually struggle with, not what looks good in a pitch deck.</div>
       </div>
     </div>
   </div>
@@ -359,9 +359,9 @@ $lpFlash = ep_lp_flash();
       <div class="section-eyebrow">The reality</div>
       <div class="section-title">Writing the book was the <em>hard</em> part. Right?</div>
       <div class="problem-body">
-        <p>For most authors, the truth lands sometime around publication day: <strong>the writing was the easy part.</strong> Now you're supposed to launch a press campaign, build a newsletter, post across half a dozen social platforms, pitch reviewers and bookstores, run events — all while writing the next one.</p>
-        <p class="pull">Most of us never trained for any of it. So we either learn on the fly, hire a publicist we can't afford, or — most often — just don't do it. And the book quietly disappears.</p>
-        <p>Elite Publishing is built for the in-between. It gives you the tools a marketing team would use, designed for the way authors actually work. <strong>Whether you're traditionally published, hybrid, or fully independent</strong> — if you're the one doing the marketing, this is your toolkit.</p>
+        <p>For most authors, the truth lands sometime around publication day: <strong>the writing was the easy part.</strong> Now you're supposed to launch a press campaign, build a newsletter, post across half a dozen social platforms, pitch reviewers and bookstores, run events, all while writing the next one.</p>
+        <p class="pull">Most of us never trained for any of it. So we either learn on the fly, hire a publicist we can't afford, or, most often, just don't do it. And the book quietly disappears.</p>
+        <p>Elite Publishing is built for the in-between. It gives you the tools a marketing team would use, designed for the way authors actually work. <strong>Whether you're traditionally published, hybrid, or fully independent</strong>, if you're the one doing the marketing, this is your toolkit.</p>
       </div>
     </div>
   </div>
@@ -369,7 +369,7 @@ $lpFlash = ep_lp_flash();
   <!-- 3 steps -->
   <div class="section" id="how-it-works">
     <div class="section-eyebrow">How it works</div>
-    <div class="section-title">From a finished manuscript to a real campaign — in <em>three steps.</em></div>
+    <div class="section-title">From a finished manuscript to a real campaign, in <em>three steps.</em></div>
     <div class="section-sub">No new vocabulary, no marketing degree, no unanswered questions about which platform matters this month.</div>
 
     <div class="steps">
@@ -396,7 +396,7 @@ $lpFlash = ep_lp_flash();
       <div class="step">
         <div class="step-num">03</div>
         <h3>Reach readers</h3>
-        <p>Send to the right platform at the right time. Track what works. Repeat for the next book — without starting from scratch.</p>
+        <p>Send to the right platform at the right time. Track what works. Repeat for the next book, without starting from scratch.</p>
         <div class="step-features">
           <div class="step-feature">Schedule and crosspost</div>
           <div class="step-feature">Live previews per platform</div>
@@ -410,7 +410,7 @@ $lpFlash = ep_lp_flash();
   <div class="features-section" id="features">
     <div class="features-inner">
       <div class="section-eyebrow">Everything in one place</div>
-      <div class="section-title">For launch day — <em>and every month after</em></div>
+      <div class="section-title">For launch day, <em>and every month after</em></div>
       <div class="section-sub">Promotion is a campaign, not an event. This is the toolkit you'll keep using long after launch week.</div>
 
       <!-- Two-path author-control callout -->
@@ -422,7 +422,7 @@ $lpFlash = ep_lp_flash();
           <div class="dual-card author-side">
             <div class="dual-card-ico">✍️</div>
             <h4>Your words, your art</h4>
-            <p>Already wrote your blurb, taglines, or social copy? Made your own cover graphics or video? Use the toolkit to publish, schedule, and track across every platform — the AI never touches your work.</p>
+            <p>Already wrote your blurb, taglines, or social copy? Made your own cover graphics or video? Use the toolkit to publish, schedule, and track across every platform. The AI never touches your work.</p>
           </div>
           <div class="dual-card ai-side">
             <div class="dual-card-ico">✨</div>
@@ -447,7 +447,7 @@ $lpFlash = ep_lp_flash();
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="14" height="14"></rect><path d="M6 7h8 M6 10h8 M6 13h5"></path></svg>
           </div>
           <h3>Press releases</h3>
-          <p>AP-style press releases drafted to be sendable — proper dateline, lede, body, quote, boilerplate. Ready for the local paper or a niche blog.</p>
+          <p>AP-style press releases drafted to be sendable: proper dateline, lede, body, quote, boilerplate. Ready for the local paper or a niche blog.</p>
           <span class="feature-tag gold">AI-assisted</span>
         </div>
         <div class="feature-card">
@@ -463,7 +463,7 @@ $lpFlash = ep_lp_flash();
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6l8 5 8-5 M2 6v10h16V6z"></path></svg>
           </div>
           <h3>Cover letters &amp; pitches</h3>
-          <p>Drafted outreach for ARC programs, bookstore appearances, podcasts, and reviewers — tailored each time, never generic.</p>
+          <p>Drafted outreach for ARC programs, bookstore appearances, podcasts, and reviewers, tailored each time, never generic.</p>
           <span class="feature-tag">AI-assisted</span>
         </div>
         <div class="feature-card">
@@ -515,14 +515,14 @@ $lpFlash = ep_lp_flash();
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="16" r="2"></circle><circle cx="15" cy="16" r="2"></circle><path d="M2 2h2.5l2.5 9h8l2.5-6H6"></path></svg>
           </div>
           <h3>Sales channels</h3>
-          <p>Connect Amazon KDP, Shopify, Google Merchant, eBay, and Ingram Spark — track listings and routes from one dashboard.</p>
+          <p>Connect Amazon KDP, Shopify, Google Merchant, eBay, and Ingram Spark. Track listings and routes from one dashboard.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon blue">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 17l5-12 5 12 M5 12h6 M14 4l3 13 M14 4l-3 1"></path></svg>
           </div>
           <h3>Genre-specific guidance</h3>
-          <p>Cozy mystery hashtags, romance landing pages, thriller covers, literary press lists — advice that knows what you write.</p>
+          <p>Cozy mystery hashtags, romance landing pages, thriller covers, literary press lists: advice that knows what you write.</p>
         </div>
       </div>
     </div>
@@ -539,7 +539,7 @@ $lpFlash = ep_lp_flash();
       <div class="tour-row">
         <div class="tour-text">
           <h3>Your books, your AI context</h3>
-          <p>Every AI feature reads your book's metadata — title, genre, blurb, themes — to keep drafts on-brand and on-tone. The more you fill in, the better every output gets. The description tool already knows about the book it's writing for.</p>
+          <p>Every AI feature reads your book's metadata (title, genre, blurb, themes) to keep drafts on-brand and on-tone. The more you fill in, the better every output gets. The description tool already knows about the book it's writing for.</p>
           <ul class="tour-list">
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>One book record powers every tool</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Add a new field, every output improves</li>
@@ -553,7 +553,7 @@ $lpFlash = ep_lp_flash();
             <span role="button" tabindex="0" aria-label="Show cover 3" onclick="swapTourCover(this, 'assets/demo/cover-lighthouse-3.jpg')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();swapTourCover(this,'assets/demo/cover-lighthouse-3.jpg')}"></span>
           </div>
           <div class="mock-row with-book">
-            <img id="tour-cover-img" class="book-cover-mini" src="assets/demo/cover-lighthouse-1.jpg" alt="The Lighthouse Letters — cover">
+            <img id="tour-cover-img" class="book-cover-mini" src="assets/demo/cover-lighthouse-1.jpg" alt="The Lighthouse Letters, cover">
             <div class="book-meta"><strong>The Lighthouse Letters</strong><span class="genre">Cozy mystery · Margaret Hayes</span></div>
           </div>
           <div class="mock-block">"A late-summer murder draws an unlikely amateur sleuth onto the rocks of a quiet harbor town…"</div>
@@ -584,7 +584,7 @@ $lpFlash = ep_lp_flash();
       <div class="tour-row">
         <div class="tour-text">
           <h3>Trailers your readers will share</h3>
-          <p>From your cover, your blurb, and a few choices, the trailer renderer assembles a polished 30–60 second video — with AI backdrops, optional narration, music, and your tagline. Built especially for vertical formats that perform on BookTok and Reels.</p>
+          <p>From your cover, your blurb, and a few choices, the trailer renderer assembles a polished 30 to 60 second video, with AI backdrops, optional narration, music, and your tagline. Built especially for vertical formats that perform on BookTok and Reels.</p>
           <ul class="tour-list">
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Vertical, square, and widescreen formats</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>AI-generated backdrops tuned to genre</li>
@@ -613,7 +613,7 @@ $lpFlash = ep_lp_flash();
       <div class="tour-row reverse">
         <div class="tour-text">
           <h3>Events with built-in promotion</h3>
-          <p>Add a signing, podcast, or library talk. Get email reminders before the event so nothing falls off your calendar. Generate a social post or press release for the event with one click — proper details, proper tone, proper hashtags.</p>
+          <p>Add a signing, podcast, or library talk. Get email reminders before the event so nothing falls off your calendar. Generate a social post or press release for the event with one click: proper details, proper tone, proper hashtags.</p>
           <ul class="tour-list">
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>24-hour and 1-hour email reminders</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Promote any event in seconds</li>
@@ -640,7 +640,7 @@ $lpFlash = ep_lp_flash();
     <div class="features-inner">
       <div class="section-eyebrow">Pricing</div>
       <div class="section-title">Plans that match how much <em>you write.</em></div>
-      <div class="section-sub">Whether you publish a book a year or a book a month — there's a tier that fits.</div>
+      <div class="section-sub">Whether you publish a book a year or a book a month, there's a tier that fits.</div>
 
       <div class="price-grid">
 
@@ -648,7 +648,7 @@ $lpFlash = ep_lp_flash();
           <h3>Starter</h3>
           <p class="pitch">For authors testing the waters or planning their first launch.</p>
           <div class="price-row"><span class="price">$14.95</span><span class="per">/ month</span></div>
-          <div class="annual-note">$135 / year — save 25%</div>
+          <div class="annual-note">$135 / year, save 25%</div>
           <ul class="price-list">
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>1 book project</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>50 AI images / month</li>
@@ -656,7 +656,7 @@ $lpFlash = ep_lp_flash();
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>1,000 marketing emails / month</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Every tool, plus generous AI writing &amp; chat</li>
           </ul>
-          <button class="btn btn-outline" onclick="enquireAbout('Starter')">Enquire about Starter</button>
+          <button class="btn btn-outline" onclick="enquireAbout('Starter')">Inquire about Starter</button>
         </div>
 
         <div class="price-card featured">
@@ -672,7 +672,7 @@ $lpFlash = ep_lp_flash();
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>2,500 marketing emails / month</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Every tool, plus generous AI writing &amp; chat</li>
           </ul>
-          <button class="btn btn-green" onclick="enquireAbout('Pro')">Enquire about Pro</button>
+          <button class="btn btn-green" onclick="enquireAbout('Pro')">Inquire about Pro</button>
         </div>
 
         <div class="price-card">
@@ -687,15 +687,15 @@ $lpFlash = ep_lp_flash();
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>10,000 marketing emails / month</li>
             <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8l3 3 7-7"></path></svg>Every tool, plus unlimited AI writing &amp; chat</li>
           </ul>
-          <button class="btn btn-outline" onclick="enquireAbout('Studio')">Enquire about Studio</button>
+          <button class="btn btn-outline" onclick="enquireAbout('Studio')">Inquire about Studio</button>
         </div>
 
       </div>
 
-      <p class="pricing-foot" style="text-align:center"><strong>Image, trailer, and email allowances are per&nbsp;month</strong> and reset each billing period. Need more email? Add 5,000 sends for $10 — one-time, and they never expire.</p>
+      <p class="pricing-foot" style="text-align:center"><strong>Image, trailer, and email allowances are per&nbsp;month</strong> and reset each billing period. Need more email? Add 5,000 sends for $10, one-time, and they never expire.</p>
 
       <div style="max-width:1080px;margin:34px auto 0;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:28px 32px">
-        <h3 style="font-size:21px;margin:0 0 6px;text-align:center">Everything in the app — included on every plan</h3>
+        <h3 style="font-size:21px;margin:0 0 6px;text-align:center">Everything in the app, included on every plan</h3>
         <p style="color:var(--ink-soft,#64748b);margin:0 auto 22px;font-size:15px;text-align:center;max-width:700px">Plans differ only in the monthly allowances and book count above. Every tool below is on <strong>every</strong> tier.</p>
         <div id="plan-catalog">
           <div>
@@ -711,12 +711,12 @@ $lpFlash = ep_lp_flash();
             <ul><li>Trailer scripts with scene cues</li><li>30-second vertical trailer videos</li><li>Motion, music &amp; text overlays</li></ul>
           </div>
           <div>
-            <h4>📣 Social — 15 Platforms</h4>
+            <h4>📣 Social: 15 Platforms</h4>
             <ul><li>Facebook, Instagram, X/Twitter</li><li>Threads, TikTok, LinkedIn</li><li>Bluesky, Pinterest, Reddit</li><li>YouTube, Goodreads, BookBub</li><li>Substack, Medium, Discord</li><li>AutoPost + guided handoff</li><li>Content calendar &amp; scheduling</li></ul>
           </div>
           <div>
             <h4>🌐 Author Website</h4>
-            <p style="margin:0 0 6px;font-size:12.5px;color:var(--ink-mid);line-height:1.5">Your social accounts are rented land — a website is the one home base online that's fully yours.</p>
+            <p style="margin:0 0 6px;font-size:12.5px;color:var(--ink-mid);line-height:1.5">Your social accounts are rented land. A website is the one home base online that's fully yours.</p>
             <ul><li>One-click full site build (theme, pages &amp; store)</li><li>Genre-matched style packs</li><li>Automatic book publishing from the app</li><li>Built-in store for selling print books</li><li>Blog post publishing</li><li>Reviews preserved on every sync</li><li>Guided setup wizard &amp; host picks</li><li>Automatic plugin updates</li></ul>
           </div>
           <div>
@@ -782,8 +782,8 @@ $lpFlash = ep_lp_flash();
 
   <!-- Demo-mode banner — only shown when currentUser.is_demo === 1 -->
   <div id="demo-banner">
-    🎬 <strong>Demo mode</strong> — explore freely. AI generations are illustrative; nothing actually posts to social or sends email.
-    <a href="#" onclick="contactUs(); return false;">Enquire to start posting →</a>
+    🎬 <strong>Demo mode</strong>: explore freely. AI generations are illustrative; nothing actually posts to social or sends email.
+    <a href="#" onclick="contactUs(); return false;">Inquire to start posting →</a>
     <a href="#" onclick="doLogout(); return false;" style="opacity:0.85">Exit demo</a>
   </div>
 
@@ -930,7 +930,7 @@ $lpFlash = ep_lp_flash();
           <div class="quota-bar-fill" id="quota-bar-fill" style="width:0%"></div>
         </div>
         <div class="quota-upgrade" id="quota-upgrade-nudge">
-          Running low — <a href="#" onclick="navigate('account');return false" style="color:inherit;text-decoration:underline">upgrade your plan</a>
+          Running low. <a href="#" onclick="navigate('account');return false" style="color:inherit;text-decoration:underline">upgrade your plan</a>
         </div>
       </div>
       <button id="sidebar-feedback-btn" onclick="openFeedbackModal()" title="Report an issue or request a feature">
@@ -945,7 +945,7 @@ $lpFlash = ep_lp_flash();
       <div class="view active" id="view-dashboard">
         <div class="page-header">
           <h1>Dashboard</h1>
-          <p id="dash-welcome">Welcome back — here's how your books are performing</p>
+          <p id="dash-welcome">Welcome back. Here's how your books are performing</p>
         <button class="wt-ctx" type="button">Need help with setup?</button></div>
 
         <!-- ── Author's Game Plan ─────────────────────────────── -->
@@ -954,9 +954,9 @@ $lpFlash = ep_lp_flash();
             <h2 class="game-plan-title" id="game-plan-title">Your game plan for growing book sales</h2>
             <span class="game-plan-sub" id="game-plan-progress"></span>
           </div>
-          <p class="game-plan-sub" id="game-plan-intro">Here's what to tackle next — one click takes you straight there.</p>
+          <p class="game-plan-sub" id="game-plan-intro">Here's what to tackle next. One click takes you straight there.</p>
           <div id="game-plan-demo-note" class="game-plan-demo-note" style="display:none">
-            This is the game plan we build for every author — sign up and yours will pick up where this demo leaves off.
+            This is the game plan we build for every author. Sign up and yours will pick up where this demo leaves off.
           </div>
           <div class="game-plan-list" id="game-plan-list"></div>
           <div class="game-plan-footer">
@@ -965,8 +965,8 @@ $lpFlash = ep_lp_flash();
         </div>
 
         <div class="stat-grid">
-          <div class="stat-card"><div class="label">Total sales</div><div class="value">—</div><div class="sub">Connect sales channels</div></div>
-          <div class="stat-card"><div class="label">Email subscribers</div><div class="value">—</div><div class="sub">Set up email campaigns</div></div>
+          <div class="stat-card"><div class="label">Total sales</div><div class="value">No data</div><div class="sub">Connect sales channels</div></div>
+          <div class="stat-card"><div class="label">Email subscribers</div><div class="value">No data</div><div class="sub">Set up email campaigns</div></div>
           <div class="stat-card"><div class="label">Posts sent</div><div class="value" id="dash-posts">0</div><div class="sub up">via Elite Publishing</div></div>
           <div class="stat-card"><div class="label">Social reach</div><div class="value">—</div><div class="sub">Connect platforms</div></div>
         </div>
@@ -1854,7 +1854,7 @@ $lpFlash = ep_lp_flash();
               No account needed
             </div>
             <h1 style="margin:0 0 12px;font-size:clamp(26px,4.4vw,38px);line-height:1.18;color:#fff">
-              Turn your book into an eBook —<br><em style="color:#F5C96B">even if all you have is a scan</em>
+              Turn your book into an eBook,<br><em style="color:#F5C96B">even if all you have is a scan</em>
             </h1>
             <p style="margin:0 0 14px;font-size:17px;line-height:1.65;opacity:.95;max-width:44em">
               Amazon, Apple Books and Kobo won't accept a PDF. Upload what you've got —

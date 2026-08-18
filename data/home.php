@@ -119,7 +119,7 @@ return [
             . 'copyright throughout, and the files and artwork we produce are yours to '
             . 'keep and to use wherever you publish next.',
             'Services are modular. Take the whole route from manuscript to marketplace, or '
-            . 'the single stage your book is missing — scope, timeline and deliverables are '
+            . 'the single stage your book is missing: scope, timeline, and deliverables are '
             . 'agreed with you before any work starts.',
         ],
         'cta'     => ['label' => 'View Pricing Guide', 'href' => 'pricing'],

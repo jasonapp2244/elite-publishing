@@ -78,7 +78,7 @@ $pageCanonical   = 'services/' . $slug;                // not derivable from the
    a single 1200x628 file and there is no og-default-1280.jpg, so the old
    expression produced a 404 for any service that ever lost its hero. */
 $ogImage         = isset($hero['image']) ? $hero['image'] . '-1280.jpg' : 'img/og-default.jpg';
-$ogImageAlt      = $hero['alt'] ?? ($pageTitle . ' — ' . EP_NAME);
+$ogImageAlt      = $hero['alt'] ?? ($pageTitle . ', ' . EP_NAME);
 
 // Drives the dark navbar variant (SPEC §B.1) from CSS — see p-service.css.
 $bodyClass = 'page-service';

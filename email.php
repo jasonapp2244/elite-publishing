@@ -192,11 +192,11 @@ function ep_mail_body(array $d): string
     $label = [
         'wizard'       => 'Consultation wizard',
         'lp-contact'   => 'Landing page form',
-        'hero-contact' => 'Service page enquiry',
-        'lp1'          => 'Landing page LP1 enquiry',
-        'lp2'          => 'Landing page LP2 enquiry',
-        'lp3'          => 'Landing page LP3 enquiry',
-        'lp4'          => 'Landing page LP4 enquiry',
+        'hero-contact' => 'Service page inquiry',
+        'lp1'          => 'Landing page LP1 inquiry',
+        'lp2'          => 'Landing page LP2 inquiry',
+        'lp3'          => 'Landing page LP3 inquiry',
+        'lp4'          => 'Landing page LP4 inquiry',
     ][$d['form'] ?? ''] ?? 'Website contact form';
 
     $lines = [
@@ -224,7 +224,7 @@ function ep_mail_body(array $d): string
 
     $lines[] = 'Name:     ' . $oneLine((string) ($d['name'] ?? ''));
     $lines[] = 'Email:    ' . $oneLine((string) ($d['email'] ?? ''));
-    $lines[] = 'Phone:    ' . (($d['phone'] ?? '') !== '' ? $oneLine((string) $d['phone']) : '—');
+    $lines[] = 'Phone:    ' . (($d['phone'] ?? '') !== '' ? $oneLine((string) $d['phone']) : 'Not provided');
 
     if (($d['service'] ?? '') !== '') {
         $lines[] = 'Service:  ' . $d['service'];
@@ -233,9 +233,9 @@ function ep_mail_body(array $d): string
         $lines[] = 'Campaign: ' . $d['campaign'];
     }
     if (($d['form'] ?? '') === 'wizard') {
-        $lines[] = 'Genre:    ' . (($d['genre']  ?? '') !== '' ? $d['genre']  : '—');
-        $lines[] = 'Stage:    ' . (($d['stage']  ?? '') !== '' ? $d['stage']  : '—');
-        $lines[] = 'Budget:   ' . (($d['budget'] ?? '') !== '' ? $d['budget'] : '—');
+        $lines[] = 'Genre:    ' . (($d['genre']  ?? '') !== '' ? $d['genre']  : 'Not provided');
+        $lines[] = 'Stage:    ' . (($d['stage']  ?? '') !== '' ? $d['stage']  : 'Not provided');
+        $lines[] = 'Budget:   ' . (($d['budget'] ?? '') !== '' ? $d['budget'] : 'Not provided');
     }
 
     /* Whatever else the landing page collected. Each LP asks for a slightly
@@ -297,13 +297,13 @@ function ep_send_mail(array $d): bool
     /* A landing page names itself in the subject line, so four campaigns
        feeding one inbox can be filtered apart without opening anything. */
     $kind = ['wizard'     => 'Consultation request',
-             'lp-contact' => 'Landing page enquiry'][$d['form'] ?? ''] ?? 'Website enquiry';
+             'lp-contact' => 'Landing page inquiry'][$d['form'] ?? ''] ?? 'Website inquiry';
     if (($d['landing_page'] ?? '') !== '') {
-        $kind = ep_header_safe($d['landing_page']) . ' enquiry';
+        $kind = ep_header_safe($d['landing_page']) . ' inquiry';
     }
 
     $subject = ep_header_safe(sprintf(
-        '%s — %s',
+        '%s: %s',
         $kind,
         $name !== '' ? $name : 'no name given'
     ));

@@ -13,7 +13,7 @@ require_once __DIR__ . '/includes/config.php';
 
 $pageKey         = 'pricing';
 $pageTitle       = 'Pricing';
-$pageDescription = 'Publishing packages for every author — Basic, Standard and Premium. '
+$pageDescription = 'Publishing packages for every author: Basic, Standard, and Premium. '
                  . 'Flexible pricing whether you are starting from an idea or ready to publish.';
 $pageCss         = ['css/p-pricing.css'];
 $bodyClass       = 'page-pricing';
