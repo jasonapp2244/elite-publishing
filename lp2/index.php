@@ -160,21 +160,25 @@ $lpFlash = ep_lp_flash();
                   </p>
                 <?php endif; ?>
 
-                <!-- This page's own bot trap, kept as it was. The handler also
-                     checks the shared `website` honeypot above; two traps cost
-                     nothing and catch different bots. -->
-                <!-- Bot trap. Never shown, never focusable by a human. -->
-                <div class="form__honeypot" aria-hidden="true">
-                  <label for="company-website">Leave this field blank</label>
-                  <input
-                    type="text"
-                    id="company-website"
-                    name="company_website"
-                    tabindex="-1"
-                    autocomplete="off"
-                    data-honeypot
-                  />
-                </div>
+                <?php /* This page's own bot trap has been REMOVED.
+
+                   It was an input named company_website carrying data-honeypot,
+                   and assets/js/main.js aborted the submit whenever it had a
+                   value:
+
+                       if (honeypot && honeypot.value) return;
+
+                   "company_website" is a name browsers autofill. When one did,
+                   that line returned before anything happened — no request, no
+                   error, no message. The form did nothing at all when a real
+                   person filled it in and pressed Submit, and nothing on screen
+                   explained why. The comment it replaced claimed "two traps cost
+                   nothing"; this one cost every visitor whose browser was
+                   helpful.
+
+                   The field is deleted rather than renamed because the check
+                   that read it is gone too, along with the server-side honeypot,
+                   on request. Nothing is left to fill in. */ ?>
 
                 <div class="form__grid">
                   <div class="form__field form__field--full">

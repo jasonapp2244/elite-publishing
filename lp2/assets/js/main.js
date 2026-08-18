@@ -25,7 +25,10 @@
 
   /* Manuscript upload limits — keep in sync with the hint text and the
      `accept` attribute in index.html. */
-  var UPLOAD_EXTENSIONS = ["doc", "docx", "pdf", "rtf", "txt", "epub"];
+  /* No "txt": the mail filter drops any message carrying a text/plain
+     attachment, so the server refuses that extension. Offering it here only
+     produced a file the visitor could pick and the server would reject. */
+  var UPLOAD_EXTENSIONS = ["doc", "docx", "pdf", "rtf", "odt", "epub"];
   var UPLOAD_MAX_BYTES = 25 * 1024 * 1024;
   var NO_FILE_LABEL = "No file chosen";
 
@@ -176,7 +179,7 @@
       var extension = parts.length > 1 ? parts.pop().toLowerCase() : "";
 
       if (UPLOAD_EXTENSIONS.indexOf(extension) === -1) {
-        return "Upload a DOC, DOCX, PDF, RTF, TXT or EPUB file.";
+        return "Upload a DOC, DOCX, PDF, RTF, ODT or EPUB file.";
       }
       if (file.size > UPLOAD_MAX_BYTES) {
         return "That file is over 25 MB. Please send a smaller version.";
@@ -210,8 +213,15 @@
     form.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      // Silently accept and discard bot submissions.
-      if (honeypot && honeypot.value) return;
+      /* The client-side honeypot abort was REMOVED.
+
+         It read `if (honeypot && honeypot.value) return;` and the field it
+         watched is named company_website — a name browsers autofill. When one
+         did, this line returned before anything happened: no request, no
+         error, no message. The form simply did nothing when a real person
+         filled it in and pressed the button, which is exactly what was
+         reported. The server-side trap is gone too, on request, so there is
+         nothing left for this to mirror. */
 
       var fields = Array.prototype.filter.call(
         form.querySelectorAll("input, textarea"),
