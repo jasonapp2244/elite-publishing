@@ -286,8 +286,29 @@ $email   = ep_field('email', EP_FORM_MAX_EMAIL);
 $phone   = ep_field('phone', EP_FORM_MAX_PHONE);
 $message = ep_field('message', EP_FORM_MAX_MESSAGE);
 
-// Wizard answers are radio values; only the labels the wizard actually offers
-// are accepted, so nothing arbitrary reaches the inbox.
+/* Wizard answers.
+ *
+ * These are radio values, and they used to be dropped unless they matched a
+ * label in data/shared.php exactly. That is silent data loss the moment the
+ * page and the data file disagree by even one character, and it happened: the
+ * option labels were reworded ("$2,500 — $5,000" became "$2,500 to $5,000"),
+ * a visitor submitted a page rendered before that change, none of the three
+ * values matched the new list, and the enquiry arrived reading
+ *
+ *     Genre:    Not provided
+ *     Stage:    Not provided
+ *     Budget:   Not provided
+ *
+ * for someone who had answered all three. The lead was damaged by a copy edit,
+ * with nothing anywhere to say so.
+ *
+ * A value that matches the current list is still taken as-is. One that does not
+ * is now kept rather than discarded, sanitised the same way every other field
+ * is — control characters stripped, length clamped — because a stale label is
+ * an honest answer from the visitor, not an attack. The allow-list still does
+ * its real job: it decides which KEYS may appear (genre, stage, budget and
+ * nothing else), so a crafted POST cannot invent new lines in the mail body.
+ */
 $answers = [];
 foreach (['genre', 'stage', 'budget'] as $step) {
     $answers[$step] = '';
@@ -299,9 +320,13 @@ foreach (ep_data_get('shared', 'wizard') as $step) {
     }
     $allowed = array_column($step['options'] ?? [], 'label');
     $posted  = (string) ($_POST[$key] ?? '');
-    if (in_array($posted, $allowed, true)) {
-        $answers[$key] = $posted;
+    if ($posted === '') {
+        continue;
     }
+
+    $answers[$key] = in_array($posted, $allowed, true)
+        ? $posted
+        : ep_field($key, EP_FORM_MAX_NAME);
 }
 
 $errors = [];
@@ -322,11 +347,20 @@ if ($phone !== '' && !preg_match('/^[0-9+()\-.\s]{5,40}$/', $phone)) {
     $errors['phone'] = 'That phone number does not look right.';
 }
 
-// The wizard's message box is optional in the design; the service-page hero
-// form is a message form, so there it is required.
-if ($message !== '' && mb_strlen($message) < EP_FORM_MIN_MESSAGE) {
-    $errors['message'] = 'Please write a little more so we can help properly.';
-} elseif (!$isWizard && $message === '') {
+/* The minimum-length rule is REMOVED ON REQUEST.
+ *
+ * It rejected any message under EP_FORM_MIN_MESSAGE characters with "Please
+ * write a little more so we can help properly." A short message is still a real
+ * enquiry, and turning one away to enforce a word count loses the lead it was
+ * meant to improve. Whatever is typed is now sent.
+ *
+ * The service-page hero form still asks for SOMETHING, because it is a message
+ * form and an empty one carries no enquiry at all — but it no longer judges the
+ * length. EP_FORM_MIN_MESSAGE is left defined and unused; restoring the rule is
+ * putting back the first branch. The maximum still applies, since that one
+ * protects the mail body rather than the visitor.
+ */
+if (!$isWizard && $message === '') {
     $errors['message'] = 'Please tell us about your book.';
 }
 

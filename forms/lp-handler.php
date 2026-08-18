@@ -495,10 +495,13 @@ if ($phone === '') {
 
 /* The message is optional on the landing pages: LP3 and LP4 label it as notes,
    and requiring a covering note from someone who has already attached their
-   manuscript is friction for no gain. Only a too-short one is rejected. */
-if ($message !== '' && mb_strlen($message) < 5) {
-    $errors['message'] = 'Please write a little more so we can help properly.';
-}
+   manuscript is friction for no gain.
+
+   The minimum-length rule that used to sit here is REMOVED ON REQUEST. It
+   rejected anything under five characters with "Please write a little more so
+   we can help properly." An author who writes "Help" has still made an enquiry,
+   and refusing it loses the lead. Whatever is typed is sent; the 4000-character
+   maximum still applies, because that one protects the mail body. */
 
 [$attachment, $uploadError] = ep_lp_upload('manuscript');
 if ($uploadError !== null) {
